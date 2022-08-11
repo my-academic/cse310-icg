@@ -136,6 +136,17 @@ void bufferingVariable(string temp_var_name, string var_name, string idx = "")
         fprintf(asmCodeOut, "mov bx, %s\nmov ax, %s[bx]\nmov %s, ax\n\n", idx.c_str(), var_name.c_str(), temp_var_name.c_str());
 }
 
+void pushToStack(string str){
+    fprintf(asmCodeOut, "push %s\n", str.c_str());
+}
+
+void callFunction(string str) {
+    fprintf(asmCodeOut, "call %s_procedure\n", str.c_str());
+}
+
+void setReturnValueInAsm(string str) {
+    fprintf(asmCodeOut, "mov ax, %s\n\n", str.c_str());
+}
 // void saveASMinStack(nonterminals nt, string str){
 //   //cout<<nt<<": saving \n"<<str<<endl;
 //   asmCodeStack[nt].push(str);

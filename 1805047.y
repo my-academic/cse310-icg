@@ -524,12 +524,15 @@ argument_list : arguments
 arguments : arguments COMMA logic_expression
 {
 	args.push_back($3);
+	pushToStack($3->temp_id);
 	string str = stackPop(arguments) + "," + stackPop(logic_expression);
 	stackPush(arguments, str);
 	printLog("arguments", "arguments COMMA logic_expression", str);
 }
 	      | logic_expression
 {
+
+	pushToStack($1->temp_id);
 	args.push_back($1);
 	string str = stackPop(logic_expression);
 	stackPush(arguments, str);

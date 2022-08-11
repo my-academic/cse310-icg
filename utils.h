@@ -65,7 +65,8 @@ enum non_terminals
 
 vector<stack<string>> non_terminals_stack(50);
 
-bool isArray(symbol_info* lhs){
+bool isArray(symbol_info *lhs)
+{
   return lhs->getName().find('[') != std::string::npos;
 }
 
@@ -203,9 +204,27 @@ symbol_info *findVariable(symbol_info *symbolInfo)
 {
   pair<symbol_info *, string> p1 = findSymbol(symbolInfo);
   symbol_info *s = p1.first;
-  s->temp_id = s->getName() + p1.second;
   if (s == nullptr)
+  {
     printError("Undeclared variable " + symbolInfo->getName());
+    return s;
+  }
+  int i, size = current_function->sequence_of_parameters.size();
+  for (i = 0; i < size; i++)
+  {
+    symbol_info *si = current_function->sequence_of_parameters[i];
+    if (si->getName() == s->getName())
+    {
+      s = si;
+      break;
+    }
+  }
+  if (i < size)
+  {
+    s->temp_id = "[bp+" + to_string((size - 1 - i) * 2 + 4) + "]";
+  }
+  else
+    s->temp_id = s->getName() + p1.second;
   return s;
 }
 
@@ -351,7 +370,7 @@ void setFunctionValues(string return_type, symbol_info *symbolInfo, bool is_defi
     }
   }
   isFunctionStarted = true;
-  printCurrentStatement(return_type + " " +symbolInfo->getName() + " function");
+  printCurrentStatement(return_type + " " + symbolInfo->getName() + " function");
   addFuncDefinitionInAsm(symbolInfo->getName(), parameters.size());
 }
 
@@ -364,7 +383,7 @@ symbol_info *checkArrayIndex(string var_name, symbol_info *idx)
   }
   else
   {
-    pair<symbol_info*, string> p = symbolTable->lookup(var_name);
+    pair<symbol_info *, string> p = symbolTable->lookup(var_name);
     symbol_info *s = p.first;
     if (s == nullptr)
       printError("Undeclared array " + var_name);
@@ -417,9 +436,10 @@ symbol_info *checkAssignCompatibility(symbol_info *lhs, symbol_info *rhs)
   if (isArray(lhs))
   {
     printCurrentStatement(s->getName());
-    addCodeForArrayAssignment(lhs->temp_id,lhs->temp_index, rhs->temp_id);
+    addCodeForArrayAssignment(lhs->temp_id, lhs->temp_index, rhs->temp_id);
   }
-  else {
+  else
+  {
     printCurrentStatement(s->getName());
     addCodeForVariableAssignment(lhs->temp_id, rhs->temp_id);
   }
@@ -559,6 +579,8 @@ symbol_info *checkFunctionArguments(symbol_info *si)
   s->id_type = VARIABLE;
   s->variable_type = symbolInfo->return_type;
   args.clear();
+  printCurrentStatement(argus);
+  callFunction(si->getName());
   return s;
 }
 
@@ -568,6 +590,8 @@ void checkFuncReturnCompatibility(symbol_info *symbolInfo)
   {
     printError("return type does not match");
   }
+  printCurrentStatement("return " + symbolInfo->getName());
+  setReturnValueInAsm(symbolInfo->temp_id);
 }
 
 symbol_info *checkINDECopCompatibility(symbol_info *symbolInfo, string optr)
@@ -578,13 +602,15 @@ symbol_info *checkINDECopCompatibility(symbol_info *symbolInfo, string optr)
   symbol_info *s = new symbol_info(symbolInfo->getName() + optr, intermediate);
   s->id_type = VARIABLE;
   s->variable_type = symbolInfo->variable_type;
-  if(isArray(symbolInfo)){
+  if (isArray(symbolInfo))
+  {
     printCurrentStatement(s->getName());
-    addCodeForInDeOP(optr == "++" ? "inc": "dec", symbolInfo->temp_id, symbolInfo->temp_index);
+    addCodeForInDeOP(optr == "++" ? "inc" : "dec", symbolInfo->temp_id, symbolInfo->temp_index);
   }
-  else {
+  else
+  {
     printCurrentStatement(s->getName());
-    addCodeForInDeOP(optr == "++" ? "inc": "dec", symbolInfo->temp_id);
+    addCodeForInDeOP(optr == "++" ? "inc" : "dec", symbolInfo->temp_id);
   }
   return s;
 }

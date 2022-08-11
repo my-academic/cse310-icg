@@ -48,202 +48,183 @@ Line 3: parameter_list : parameter_list COMMA type_specifier ID
 
 int a,int b
 
-Line 5: compound_statement : LCURL RCURL
-
-{}
-
-
-Line 5: func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
-
-int add(int a,int b){}
-
-Line 5: unit : func_definition
-
-int add(int a,int b){}
-
-
-Line 5: program : program unit
-
-int a,b,c[2];
-int add(int a,int b){}
-
-
-Line 7: type_specifier : INT
-
-int
-
-Line 7: type_specifier : INT
-
-int
-
-Line 7: parameter_list : type_specifier ID
-
-int x
-
-Line 7: type_specifier : INT
-
-int
-
-Line 7: parameter_list : parameter_list COMMA type_specifier ID
-
-int x,int y
-
-Line 8: variable : ID
+Line 5: variable : ID
 
 a
 
-Line 8: factor : CONST_INT
+Line 5: factor : variable
 
-5
+a
 
-Line 8: unary_expression : factor
+Line 5: unary_expression : factor
 
-5
+a
 
-Line 8: term : unary_expression
+Line 5: term : unary_expression
 
-5
+a
 
-Line 8: simple_expression : term
+Line 5: simple_expression : term
 
-5
+a
 
-Line 8: rel_expression : simple_expression
+Line 5: rel_expression : simple_expression
 
-5
+a
 
-Line 8: logic_expression : rel_expression
+Line 5: logic_expression : rel_expression
 
-5
+a
 
-Line 8: expression : variable ASSIGNOP logic_expression
+Line 5: expression : logic_expression
 
-a=5
+a
 
-Line 8: expression_statement : expression SEMICOLON
+Line 5: factor : LPAREN expression RPAREN
 
-a=5;
+(a)
 
-Line 8: statement : expression_statement
+Line 5: unary_expression : factor
 
-a=5;
+(a)
+
+Line 5: term : unary_expression
+
+(a)
+
+Line 5: simple_expression : term
+
+(a)
+
+Line 5: rel_expression : simple_expression
+
+(a)
+
+Line 5: logic_expression : rel_expression
+
+(a)
+
+Line 5: expression : logic_expression
+
+(a)
+
+Line 5: statement : RETURN expression SEMICOLON
+
+return (a);
 
 
-Line 8: statements : statement
+Line 5: statements : statement
 
-a=5;
+return (a);
 
 
-Line 9: factor : CONST_INT
+Line 6: compound_statement : LCURL statements RCURL
 
-1
+{
+return (a);
+}
 
-Line 9: unary_expression : factor
 
-1
 
-Line 9: term : unary_expression
 
-1
+ScopeTable # 1_1 
+4 -->  < a : ID> 
+5 -->  < b : ID> 
 
-Line 9: simple_expression : term
 
-1
 
-Line 9: rel_expression : simple_expression
+ScopeTable # 1 
+4 -->  < a : ID> 
+5 -->  < b : ID> 
+6 -->  < c : ID> 
+17 -->  < add : ID> 
 
-1
+Line 6: func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
 
-Line 9: logic_expression : rel_expression
+int add(int a,int b){
+return (a);
+}
 
-1
+Line 6: unit : func_definition
 
-Line 9: expression : logic_expression
+int add(int a,int b){
+return (a);
+}
 
-1
 
-Line 9: variable : ID LTHIRD expression RTHIRD 
+Line 6: program : program unit
 
-c[1]
+int a,b,c[2];
+int add(int a,int b){
+return (a);
+}
+
+
+Line 8: type_specifier : INT
+
+int
+
+Line 8: type_specifier : INT
+
+int
+
+Line 8: parameter_list : type_specifier ID
+
+int x
+
+Line 8: type_specifier : INT
+
+int
+
+Line 8: parameter_list : parameter_list COMMA type_specifier ID
+
+int x,int y
 
 Line 9: variable : ID
 
 a
 
-Line 9: factor : variable
+Line 9: factor : CONST_INT
 
-a
+5
 
 Line 9: unary_expression : factor
 
-a
+5
 
 Line 9: term : unary_expression
 
-a
+5
 
 Line 9: simple_expression : term
 
-a
+5
 
 Line 9: rel_expression : simple_expression
 
-a
+5
 
 Line 9: logic_expression : rel_expression
 
-a
+5
 
 Line 9: expression : variable ASSIGNOP logic_expression
 
-c[1]=a
+a=5
 
 Line 9: expression_statement : expression SEMICOLON
 
-c[1]=a;
+a=5;
 
 Line 9: statement : expression_statement
 
-c[1]=a;
+a=5;
 
 
-Line 9: statements : statements statement
+Line 9: statements : statement
 
 a=5;
-c[1]=a;
 
-
-Line 10: factor : CONST_INT
-
-0
-
-Line 10: unary_expression : factor
-
-0
-
-Line 10: term : unary_expression
-
-0
-
-Line 10: simple_expression : term
-
-0
-
-Line 10: rel_expression : simple_expression
-
-0
-
-Line 10: logic_expression : rel_expression
-
-0
-
-Line 10: expression : logic_expression
-
-0
-
-Line 10: variable : ID LTHIRD expression RTHIRD 
-
-c[0]
 
 Line 10: factor : CONST_INT
 
@@ -276,118 +257,181 @@ Line 10: expression : logic_expression
 Line 10: variable : ID LTHIRD expression RTHIRD 
 
 c[1]
+
+Line 10: variable : ID
+
+a
 
 Line 10: factor : variable
 
-c[1]
+a
 
 Line 10: unary_expression : factor
 
-c[1]
+a
 
 Line 10: term : unary_expression
 
-c[1]
+a
 
 Line 10: simple_expression : term
 
-c[1]
+a
 
 Line 10: rel_expression : simple_expression
 
-c[1]
+a
 
 Line 10: logic_expression : rel_expression
 
-c[1]
-
-Line 10: expression : logic_expression
-
-c[1]
-
-Line 10: factor : LPAREN expression RPAREN
-
-(c[1])
-
-Line 10: unary_expression : factor
-
-(c[1])
-
-Line 10: term : unary_expression
-
-(c[1])
-
-Line 10: simple_expression : term
-
-(c[1])
-
-Line 10: rel_expression : simple_expression
-
-(c[1])
-
-Line 10: logic_expression : rel_expression
-
-(c[1])
+a
 
 Line 10: expression : variable ASSIGNOP logic_expression
 
-c[0]=(c[1])
+c[1]=a
 
 Line 10: expression_statement : expression SEMICOLON
 
-c[0]=(c[1]);
+c[1]=a;
 
 Line 10: statement : expression_statement
 
-c[0]=(c[1]);
+c[1]=a;
 
 
 Line 10: statements : statements statement
 
 a=5;
 c[1]=a;
-c[0]=(c[1]);
 
 
-Line 11: variable : ID
+Line 11: factor : CONST_INT
 
-a
-
-Line 11: factor : variable INCOP
-
-a++
+0
 
 Line 11: unary_expression : factor
 
-a++
+0
 
 Line 11: term : unary_expression
 
-a++
+0
 
 Line 11: simple_expression : term
 
-a++
+0
 
 Line 11: rel_expression : simple_expression
 
-a++
+0
 
 Line 11: logic_expression : rel_expression
 
-a++
+0
 
 Line 11: expression : logic_expression
 
-a++
+0
+
+Line 11: variable : ID LTHIRD expression RTHIRD 
+
+c[0]
+
+Line 11: factor : CONST_INT
+
+1
+
+Line 11: unary_expression : factor
+
+1
+
+Line 11: term : unary_expression
+
+1
+
+Line 11: simple_expression : term
+
+1
+
+Line 11: rel_expression : simple_expression
+
+1
+
+Line 11: logic_expression : rel_expression
+
+1
+
+Line 11: expression : logic_expression
+
+1
+
+Line 11: variable : ID LTHIRD expression RTHIRD 
+
+c[1]
+
+Line 11: factor : variable
+
+c[1]
+
+Line 11: unary_expression : factor
+
+c[1]
+
+Line 11: term : unary_expression
+
+c[1]
+
+Line 11: simple_expression : term
+
+c[1]
+
+Line 11: rel_expression : simple_expression
+
+c[1]
+
+Line 11: logic_expression : rel_expression
+
+c[1]
+
+Line 11: expression : logic_expression
+
+c[1]
+
+Line 11: factor : LPAREN expression RPAREN
+
+(c[1])
+
+Line 11: unary_expression : factor
+
+(c[1])
+
+Line 11: term : unary_expression
+
+(c[1])
+
+Line 11: simple_expression : term
+
+(c[1])
+
+Line 11: rel_expression : simple_expression
+
+(c[1])
+
+Line 11: logic_expression : rel_expression
+
+(c[1])
+
+Line 11: expression : variable ASSIGNOP logic_expression
+
+c[0]=(c[1])
 
 Line 11: expression_statement : expression SEMICOLON
 
-a++;
+c[0]=(c[1]);
 
 Line 11: statement : expression_statement
 
-a++;
+c[0]=(c[1]);
 
 
 Line 11: statements : statements statement
@@ -395,76 +439,47 @@ Line 11: statements : statements statement
 a=5;
 c[1]=a;
 c[0]=(c[1]);
-a++;
 
 
-Line 12: factor : CONST_INT
+Line 12: variable : ID
 
-0
-
-Line 12: unary_expression : factor
-
-0
-
-Line 12: term : unary_expression
-
-0
-
-Line 12: simple_expression : term
-
-0
-
-Line 12: rel_expression : simple_expression
-
-0
-
-Line 12: logic_expression : rel_expression
-
-0
-
-Line 12: expression : logic_expression
-
-0
-
-Line 12: variable : ID LTHIRD expression RTHIRD 
-
-c[0]
+a
 
 Line 12: factor : variable INCOP
 
-c[0]++
+a++
 
 Line 12: unary_expression : factor
 
-c[0]++
+a++
 
 Line 12: term : unary_expression
 
-c[0]++
+a++
 
 Line 12: simple_expression : term
 
-c[0]++
+a++
 
 Line 12: rel_expression : simple_expression
 
-c[0]++
+a++
 
 Line 12: logic_expression : rel_expression
 
-c[0]++
+a++
 
 Line 12: expression : logic_expression
 
-c[0]++
+a++
 
 Line 12: expression_statement : expression SEMICOLON
 
-c[0]++;
+a++;
 
 Line 12: statement : expression_statement
 
-c[0]++;
+a++;
 
 
 Line 12: statements : statements statement
@@ -473,10 +488,202 @@ a=5;
 c[1]=a;
 c[0]=(c[1]);
 a++;
+
+
+Line 13: factor : CONST_INT
+
+0
+
+Line 13: unary_expression : factor
+
+0
+
+Line 13: term : unary_expression
+
+0
+
+Line 13: simple_expression : term
+
+0
+
+Line 13: rel_expression : simple_expression
+
+0
+
+Line 13: logic_expression : rel_expression
+
+0
+
+Line 13: expression : logic_expression
+
+0
+
+Line 13: variable : ID LTHIRD expression RTHIRD 
+
+c[0]
+
+Line 13: factor : variable INCOP
+
+c[0]++
+
+Line 13: unary_expression : factor
+
+c[0]++
+
+Line 13: term : unary_expression
+
+c[0]++
+
+Line 13: simple_expression : term
+
+c[0]++
+
+Line 13: rel_expression : simple_expression
+
+c[0]++
+
+Line 13: logic_expression : rel_expression
+
+c[0]++
+
+Line 13: expression : logic_expression
+
+c[0]++
+
+Line 13: expression_statement : expression SEMICOLON
+
+c[0]++;
+
+Line 13: statement : expression_statement
+
 c[0]++;
 
 
-Line 13: compound_statement : LCURL statements RCURL
+Line 13: statements : statements statement
+
+a=5;
+c[1]=a;
+c[0]=(c[1]);
+a++;
+c[0]++;
+
+
+Line 14: variable : ID
+
+a
+
+Line 14: factor : variable
+
+a
+
+Line 14: unary_expression : factor
+
+a
+
+Line 14: term : unary_expression
+
+a
+
+Line 14: simple_expression : term
+
+a
+
+Line 14: rel_expression : simple_expression
+
+a
+
+Line 14: logic_expression : rel_expression
+
+a
+
+Line 14: arguments : logic_expression
+
+a
+
+Line 14: variable : ID
+
+b
+
+Line 14: factor : variable
+
+b
+
+Line 14: unary_expression : factor
+
+b
+
+Line 14: term : unary_expression
+
+b
+
+Line 14: simple_expression : term
+
+b
+
+Line 14: rel_expression : simple_expression
+
+b
+
+Line 14: logic_expression : rel_expression
+
+b
+
+Line 14: arguments : arguments COMMA logic_expression
+
+a,b
+
+Line 14: argument_list : arguments
+
+a,b
+
+Line 14: factor : ID LPAREN argument_list RPAREN
+
+add(a,b)
+
+Line 14: unary_expression : factor
+
+add(a,b)
+
+Line 14: term : unary_expression
+
+add(a,b)
+
+Line 14: simple_expression : term
+
+add(a,b)
+
+Line 14: rel_expression : simple_expression
+
+add(a,b)
+
+Line 14: logic_expression : rel_expression
+
+add(a,b)
+
+Line 14: expression : logic_expression
+
+add(a,b)
+
+Line 14: expression_statement : expression SEMICOLON
+
+add(a,b);
+
+Line 14: statement : expression_statement
+
+add(a,b);
+
+
+Line 14: statements : statements statement
+
+a=5;
+c[1]=a;
+c[0]=(c[1]);
+a++;
+c[0]++;
+add(a,b);
+
+
+Line 15: compound_statement : LCURL statements RCURL
 
 {
 a=5;
@@ -484,6 +691,7 @@ c[1]=a;
 c[0]=(c[1]);
 a++;
 c[0]++;
+add(a,b);
 }
 
 
@@ -502,7 +710,7 @@ ScopeTable # 1
 16 -->  < main : ID> 
 17 -->  < add : ID> 
 
-Line 13: func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
+Line 15: func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
 
 int main(int x,int y){
 a=5;
@@ -510,9 +718,10 @@ c[1]=a;
 c[0]=(c[1]);
 a++;
 c[0]++;
+add(a,b);
 }
 
-Line 13: unit : func_definition
+Line 15: unit : func_definition
 
 int main(int x,int y){
 a=5;
@@ -520,23 +729,27 @@ c[1]=a;
 c[0]=(c[1]);
 a++;
 c[0]++;
+add(a,b);
 }
 
 
-Line 13: program : program unit
+Line 15: program : program unit
 
 int a,b,c[2];
-int add(int a,int b){}
+int add(int a,int b){
+return (a);
+}
 int main(int x,int y){
 a=5;
 c[1]=a;
 c[0]=(c[1]);
 a++;
 c[0]++;
+add(a,b);
 }
 
 
-Line 13: start : program
+Line 15: start : program
 
 
 
@@ -550,6 +763,6 @@ ScopeTable # 1
 17 -->  < add : ID> 
 
 
-Total lines: 13
+Total lines: 15
 Total errors: 0
 

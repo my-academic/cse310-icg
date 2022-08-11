@@ -3,6 +3,15 @@
     "1805047_scope_table.h": "c",
     "1805047_symbol_info_list.h": "c",
     "1805047_symbol_info.h": "c",
-    "string": "c"
+    "string": "c",
+    "array": "c",
+    "bitset": "c",
+    "string_view": "c",
+    "initializer_list": "c",
+    "ranges": "c",
+    "span": "c",
+    "regex": "c",
+    "utility": "c",
+    "valarray": "c"
   }
 }

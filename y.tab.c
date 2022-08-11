@@ -680,7 +680,7 @@ static const yytype_int16 yyrline[] =
      238,   247,   253,   262,   268,   274,   280,   288,   294,   302,
      308,   315,   324,   329,   337,   343,   353,   359,   369,   375,
      386,   392,   403,   410,   419,   425,   435,   442,   449,   457,
-     469,   476,   483,   489,   495,   502,   511,   518,   524,   531
+     469,   476,   483,   489,   495,   502,   511,   518,   524,   532
 };
 #endif
 
@@ -2037,26 +2037,29 @@ yyreduce:
 #line 525 "1805047.y"
 {
 	args.push_back((yyvsp[0].symbolValue));
+	pushToStack((yyvsp[0].symbolValue)->temp_id);
 	string str = stackPop(arguments) + "," + stackPop(logic_expression);
 	stackPush(arguments, str);
 	printLog("arguments", "arguments COMMA logic_expression", str);
 }
-#line 2045 "y.tab.c"
+#line 2046 "y.tab.c"
     break;
 
   case 69: /* arguments: logic_expression  */
-#line 532 "1805047.y"
+#line 533 "1805047.y"
 {
+
+	pushToStack((yyvsp[0].symbolValue)->temp_id);
 	args.push_back((yyvsp[0].symbolValue));
 	string str = stackPop(logic_expression);
 	stackPush(arguments, str);
 	printLog("arguments", "logic_expression", str);
 }
-#line 2056 "y.tab.c"
+#line 2059 "y.tab.c"
     break;
 
 
-#line 2060 "y.tab.c"
+#line 2063 "y.tab.c"
 
       default: break;
     }
@@ -2249,7 +2252,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 541 "1805047.y"
+#line 544 "1805047.y"
 
 
 void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut){
