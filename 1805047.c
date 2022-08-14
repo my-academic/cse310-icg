@@ -6,8 +6,11 @@ int add(int a, int b) {
 }
 
 int main(int x, int y) {
+	a = !0;
 	a = 5;
-	c[1] = a;
+	a = !a;
+	c[1] = +a;
+	c[1] = -a;
 	c[0] = (c[1]);
 	a++;
 	c[0]++;

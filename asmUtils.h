@@ -102,7 +102,7 @@ void addFunctionEndStatementInAsm(string name, int param_count)
 
 void addCodeForConst(string var_name, string value)
 {
-    fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\n\n", value.c_str(), var_name.c_str());
+    fprintf(asmCodeOut, "mov %s, %s\n\n", var_name.c_str(), value.c_str());
 }
 
 void addArrayIndexInAsm(string var_name, string temp_idx)
@@ -146,6 +146,14 @@ void callFunction(string str) {
 
 void setReturnValueInAsm(string str) {
     fprintf(asmCodeOut, "mov ax, %s\n\n", str.c_str());
+}
+
+void negateInAssembly(string operand, string assigning){
+    fprintf(asmCodeOut, "mov ax, %s\nneg ax\nmov %s, ax\n", operand.c_str(), assigning.c_str());
+}
+
+void notOperationOfCinAssembly(string temp_id, string l1, string l2){
+    fprintf(asmCodeOut, "cmp %s, 0\nje %s\nmov %s, 0\njmp %s\n%s:\nmov %s, 1\n%s:\n", temp_id.c_str(), l1.c_str(), temp_id.c_str(), l2.c_str(), l1.c_str(), temp_id.c_str(), l2.c_str());
 }
 // void saveASMinStack(nonterminals nt, string str){
 //   //cout<<nt<<": saving \n"<<str<<endl;

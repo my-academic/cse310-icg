@@ -633,6 +633,13 @@ symbol_info *checkUnaryADDOPThings(string optr, symbol_info *symbolInfo)
   symbol_info *s = new symbol_info(optr + symbolInfo->getName(), intermediate);
   s->id_type = VARIABLE;
   s->variable_type = symbolInfo->variable_type;
+  printCurrentStatement(s->getName());
+  s->temp_id = symbolInfo->temp_id;
+  if(optr == "-"){
+    string temp = newTemp();
+    negateInAssembly(symbolInfo->temp_id, temp);
+    s->temp_id = temp;
+  }
   return s;
 }
 
@@ -644,6 +651,11 @@ symbol_info *checkNotCompatibility(symbol_info *symbolInfo)
   symbol_info *s = new symbol_info("!" + symbolInfo->getName(), intermediate);
   s->id_type = VARIABLE;
   s->variable_type = integer;
+  s->temp_id = symbolInfo->temp_id;
+  string l1 = newLabel();
+  string l2 = newLabel();
+  printCurrentStatement(s->getName());
+  notOperationOfCinAssembly(s->temp_id, l1, l2);
   return s;
 }
 

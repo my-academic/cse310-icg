@@ -18,3 +18,9 @@ t10 DW 0
 t11 DW 0
 t12 DW 0
 t13 DW 0
+t14 DW 0
+t15 DW 0
+t16 DW 0
+t17 DW 0
+t18 DW 0
+t19 DW 0

@@ -57,27 +57,25 @@ public:
         next = nullptr;
     }
 
-    // symbol_info operator=(const symbol_info &symbolInfo)
-    // {
-    //     this->name = symbolInfo.name;
-    //     this->type = symbolInfo.type;
-    //     this->id_type = symbolInfo.id_type;
+    symbol_info setAllValueOf(symbol_info *symbolInfo)
+    {
+        this->id_type = symbolInfo->id_type;
+        this->temp_index = symbolInfo->temp_index;
 
-    //     this->is_defined = symbolInfo.is_defined;
-    //     this->return_type = symbolInfo.return_type;
-    //     for (int i = 0; symbolInfo.sequence_of_parameters.size(); i++)
-    //     {
-    //         this->sequence_of_parameters.push_back(symbolInfo.sequence_of_parameters[i]);
-    //     }
+        this->is_defined = symbolInfo->is_defined;
+        this->return_type = symbolInfo->return_type;
+        // for (int i = 0; symbolInfo.sequence_of_parameters.size(); i++)
+        // {
+        //     this->sequence_of_parameters.push_back(symbolInfo.sequence_of_parameters[i]);
+        // }
+        this->is_parameters_inserted = symbolInfo->is_parameters_inserted;
+        this->return_type = symbolInfo->return_type;
 
-    //     this->size_of_array = symbolInfo.size_of_array;
+        this->variable_type = symbolInfo->variable_type;
+        this->array_type = symbolInfo->array_type;
 
-    //     this->variable_type = symbolInfo.variable_type;
-    //     this->int_value = symbolInfo.int_value;
-    //     this->float_value = symbolInfo.float_value;
-
-    //     return *this;
-    // }
+        return *this;
+    }
 
     ~symbol_info()
     {

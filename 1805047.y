@@ -462,8 +462,9 @@ factor	: variable
 	printLog("factor", "variable", str);
 	printCurrentStatement(str);
 	string temp = newTemp();
-	$$ = $1;
-	bufferingVariable(temp, $$->temp_id, $$->temp_index);
+	$$ = new symbol_info(str, "intermediate");
+	$$->setAllValueOf($1);
+	bufferingVariable(temp, $1->temp_id, $$->temp_index);
 	$$->temp_id = temp;
 }
 	| ID LPAREN argument_list RPAREN
