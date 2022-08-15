@@ -19,6 +19,7 @@ extern FILE *yyin;
 %union {
 	symbol_info* symbolValue;
 	string *input_string;
+	string *temp;
 }
 
 
@@ -26,11 +27,14 @@ extern FILE *yyin;
 %token IF ELSE FOR WHILE INT FLOAT VOID RETURN ASSIGNOP NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD COMMA SEMICOLON PRINTLN
 %token <symbolValue> ID 
 %token <input_string> ADDOP INCOP DECOP MULOP RELOP LOGICOP CONST_INT CONST_FLOAT 
+%type <temp> xyz
 
 %type <symbolValue> program unit parameter_list func_definition func_declaration compound_statement statements statement  variable logic_expression rel_expression simple_expression term unary_expression factor arguments argument_list expression expression_statement
 
 %type <input_string> type_specifier declaration_list var_declaration 
 
+%nonassoc LOWER_THAN_RPAREN
+%nonassoc RPAREN
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 
@@ -285,14 +289,14 @@ statement : var_declaration
 	stackPush(statement, str);
 	printLog("statement", "FOR LPAREN expression_statement expression_statement expression RPAREN statement", str + "\n");
 }
-	  | IF LPAREN expression RPAREN statement %prec LOWER_THAN_ELSE
+	  | IF LPAREN expression RPAREN xyz statement %prec LOWER_THAN_ELSE
 {
 	string str = "if(" + stackPop(expression) + ")" + stackPop(statement);
-	cout << $3->temp_id << endl;
 	stackPush(statement, str);
 	printLog("statement", "IF LPAREN expression RPAREN statement", str + "\n");
+	fprintf(asmCodeOut, "%s:\n", $5->c_str());
 }
-	  | IF LPAREN expression RPAREN statement ELSE statement
+	  | IF LPAREN expression RPAREN xyz statement ELSE statement
 {
 	string str1 = stackPop(statement);
 	string str2 = stackPop(statement);
@@ -323,6 +327,14 @@ statement : var_declaration
 	printLog("statement", "RETURN expression SEMICOLON", str + "\n");
 }
 	  ;
+
+xyz : 
+	  {
+		// cout << $<symbolValue>-1 ->temp_id << endl;
+		string temp = $<symbolValue>-1 ->temp_id;
+		$$ = new string(newLabel());
+		fprintf(asmCodeOut, "cmp %s, 0\nje %s\n", temp.c_str(), $$->c_str());
+	  } ;
 	  
 expression_statement 	: SEMICOLON	
 {
@@ -336,6 +348,8 @@ expression_statement 	: SEMICOLON
 	printLog("expression_statement", "expression SEMICOLON", str);
 }
 			;
+
+
 	  
 variable : ID 		
 {

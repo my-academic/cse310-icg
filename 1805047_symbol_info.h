@@ -20,6 +20,7 @@ private:
 public:
     string temp_id;
     string temp_index;
+    string inh_label;
 
     symbol_id_type id_type;
     // function

@@ -169,8 +169,7 @@ void mulopInAsm(string lt, string rt, string newt, string optr)
         mov ax, %s\n\
         mov bx, %s\n\
         mul bx\n\
-        mov %s, ax\n\
-        ",
+        mov %s, ax\n",
         rt.c_str(),
         lt.c_str(),
         newt.c_str());
@@ -181,8 +180,7 @@ void mulopInAsm(string lt, string rt, string newt, string optr)
         mov bx, %s\n\
         xor dx, dx\n\
         div bx\n\
-        mov %s, ax\n\
-        ",
+        mov %s, ax\n",
         lt.c_str(),
         rt.c_str(),
         newt.c_str());
@@ -193,8 +191,7 @@ void mulopInAsm(string lt, string rt, string newt, string optr)
         mov bx, %s\n\
         xor dx, dx\n\
         div bx\n\
-        mov %s, dx\n\
-        ",
+        mov %s, dx\n",
         lt.c_str(),
         rt.c_str(),
         newt.c_str());
@@ -225,8 +222,7 @@ void relopInAsm(string lt, string rt, string optr, string l1, string l2)
         jmp %s\n\
         %s:\n\
         mov %s, 1\n\
-        %s:\n\
-        ",
+        %s:\n",
         rt.c_str(),
         lt.c_str(),
         branching.c_str(), l1.c_str(),
@@ -250,8 +246,7 @@ void logicopInAsm(string lt, string rt, string optr, string l1, string l2)
         jmp %s\n\
         %s:\n\
         mov %s, %d\n\
-        %s:\n\
-        ",
+        %s:\n",
         lt.c_str(),
         branching.c_str(), l1.c_str(),
         rt.c_str(),
@@ -264,7 +259,6 @@ void logicopInAsm(string lt, string rt, string optr, string l1, string l2)
 }
 
 void printInAsm(string str){
-    // cout << str << endl;
     fprintf(asmCodeOut, "mov ax, %s\ncall print_number\n", str.c_str());
 }
 // void saveASMinStack(nonterminals nt, string str){

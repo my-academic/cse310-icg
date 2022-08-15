@@ -82,7 +82,8 @@ extern int yydebug;
     LOGICOP = 283,                 /* LOGICOP  */
     CONST_INT = 284,               /* CONST_INT  */
     CONST_FLOAT = 285,             /* CONST_FLOAT  */
-    LOWER_THAN_ELSE = 286          /* LOWER_THAN_ELSE  */
+    LOWER_THAN_RPAREN = 286,       /* LOWER_THAN_RPAREN  */
+    LOWER_THAN_ELSE = 287          /* LOWER_THAN_ELSE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -119,7 +120,8 @@ extern int yydebug;
 #define LOGICOP 283
 #define CONST_INT 284
 #define CONST_FLOAT 285
-#define LOWER_THAN_ELSE 286
+#define LOWER_THAN_RPAREN 286
+#define LOWER_THAN_ELSE 287
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -129,8 +131,9 @@ union YYSTYPE
 
 	symbol_info* symbolValue;
 	string *input_string;
+	string *temp;
 
-#line 134 "y.tab.h"
+#line 137 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

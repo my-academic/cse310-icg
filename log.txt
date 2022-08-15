@@ -56,22 +56,6 @@ Line 4: variable : ID
 
 i
 
-Line 4: factor : variable
-
-i
-
-Line 4: unary_expression : factor
-
-i
-
-Line 4: term : unary_expression
-
-i
-
-Line 4: simple_expression : term
-
-i
-
 Line 4: factor : CONST_INT
 
 3
@@ -88,29 +72,140 @@ Line 4: simple_expression : term
 
 3
 
-Line 4: rel_expression : simple_expression RELOP simple_expression	
+Line 4: rel_expression : simple_expression
 
-i==3
+3
 
 Line 4: logic_expression : rel_expression
 
+3
+
+Line 4: expression : variable ASSIGNOP logic_expression
+
+i=3
+
+Line 4: expression_statement : expression SEMICOLON
+
+i=3;
+
+Line 4: statement : expression_statement
+
+i=3;
+
+
+Line 4: statements : statements statement
+
+int i,j,k,ll,m,n,o,p;
+i=3;
+
+
+Line 5: variable : ID
+
+j
+
+Line 5: factor : CONST_INT
+
+999
+
+Line 5: unary_expression : factor
+
+999
+
+Line 5: term : unary_expression
+
+999
+
+Line 5: simple_expression : term
+
+999
+
+Line 5: rel_expression : simple_expression
+
+999
+
+Line 5: logic_expression : rel_expression
+
+999
+
+Line 5: expression : variable ASSIGNOP logic_expression
+
+j=999
+
+Line 5: expression_statement : expression SEMICOLON
+
+j=999;
+
+Line 5: statement : expression_statement
+
+j=999;
+
+
+Line 5: statements : statements statement
+
+int i,j,k,ll,m,n,o,p;
+i=3;
+j=999;
+
+
+Line 6: variable : ID
+
+i
+
+Line 6: factor : variable
+
+i
+
+Line 6: unary_expression : factor
+
+i
+
+Line 6: term : unary_expression
+
+i
+
+Line 6: simple_expression : term
+
+i
+
+Line 6: factor : CONST_INT
+
+3
+
+Line 6: unary_expression : factor
+
+3
+
+Line 6: term : unary_expression
+
+3
+
+Line 6: simple_expression : term
+
+3
+
+Line 6: rel_expression : simple_expression RELOP simple_expression	
+
 i==3
 
-Line 4: expression : logic_expression
+Line 6: logic_expression : rel_expression
 
 i==3
 
-Line 5: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
+Line 6: expression : logic_expression
+
+i==3
+
+Line 7: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
 
 println(j);
 
 
-Line 5: statements : statement
+Line 7: statements : statement
 
 println(j);
 
 
-Line 6: compound_statement : LCURL statements RCURL
+Line 8: compound_statement : LCURL statements RCURL
 
 {
 println(j);
@@ -138,74 +233,80 @@ ScopeTable # 1_1
 ScopeTable # 1 
 16 -->  < main : ID> 
 
-Line 6: statement : compound_statement
+Line 8: statement : compound_statement
 
 {
 println(j);
 }
 
 
-Line 11: statement : IF LPAREN expression RPAREN statement
+Line 13: statement : IF LPAREN expression RPAREN statement
 
 if(i==3){
 println(j);
 }
 
 
-Line 11: statements : statements statement
+Line 13: statements : statements statement
 
 int i,j,k,ll,m,n,o,p;
+i=3;
+j=999;
 if(i==3){
 println(j);
 }
 
 
-Line 11: factor : CONST_INT
+Line 13: factor : CONST_INT
 
 0
 
-Line 11: unary_expression : factor
+Line 13: unary_expression : factor
 
 0
 
-Line 11: term : unary_expression
+Line 13: term : unary_expression
 
 0
 
-Line 11: simple_expression : term
+Line 13: simple_expression : term
 
 0
 
-Line 11: rel_expression : simple_expression
+Line 13: rel_expression : simple_expression
 
 0
 
-Line 11: logic_expression : rel_expression
+Line 13: logic_expression : rel_expression
 
 0
 
-Line 11: expression : logic_expression
+Line 13: expression : logic_expression
 
 0
 
-Line 11: statement : RETURN expression SEMICOLON
+Line 13: statement : RETURN expression SEMICOLON
 
 return 0;
 
 
-Line 11: statements : statements statement
+Line 13: statements : statements statement
 
 int i,j,k,ll,m,n,o,p;
+i=3;
+j=999;
 if(i==3){
 println(j);
 }
 return 0;
 
 
-Line 12: compound_statement : LCURL statements RCURL
+Line 14: compound_statement : LCURL statements RCURL
 
 {
 int i,j,k,ll,m,n,o,p;
+i=3;
+j=999;
 if(i==3){
 println(j);
 }
@@ -230,31 +331,24 @@ ScopeTable # 1_1
 ScopeTable # 1 
 16 -->  < main : ID> 
 
-Line 12: func_definition : type_specifier ID LPAREN RPAREN compound_statement
+Line 14: func_definition : type_specifier ID LPAREN RPAREN compound_statement
 
 int main(){
 int i,j,k,ll,m,n,o,p;
+i=3;
+j=999;
 if(i==3){
 println(j);
 }
 return 0;
 }
 
-Line 12: unit : func_definition
+Line 14: unit : func_definition
 
 int main(){
 int i,j,k,ll,m,n,o,p;
-if(i==3){
-println(j);
-}
-return 0;
-}
-
-
-Line 12: program : unit
-
-int main(){
-int i,j,k,ll,m,n,o,p;
+i=3;
+j=999;
 if(i==3){
 println(j);
 }
@@ -262,7 +356,20 @@ return 0;
 }
 
 
-Line 13: start : program
+Line 14: program : unit
+
+int main(){
+int i,j,k,ll,m,n,o,p;
+i=3;
+j=999;
+if(i==3){
+println(j);
+}
+return 0;
+}
+
+
+Line 15: start : program
 
 
 
@@ -272,6 +379,6 @@ ScopeTable # 1
 16 -->  < main : ID> 
 
 
-Total lines: 13
+Total lines: 15
 Total errors: 0
 

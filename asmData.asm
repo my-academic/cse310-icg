@@ -14,3 +14,5 @@ p1_1 DW 0
 t0 DW 0
 t1 DW 0
 t2 DW 0
+t3 DW 0
+t4 DW 0
