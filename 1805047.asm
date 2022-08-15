@@ -24,6 +24,9 @@ t16 DW 0
 t17 DW 0
 t18 DW 0
 t19 DW 0
+t20 DW 0
+t21 DW 0
+t22 DW 0
 
 .code
 
@@ -80,38 +83,39 @@ mov a1, ax
 mov t2, 5
 
 
-;a = 5
+;b = 5
 mov ax, t2 
+mov b1, ax
+
+
+;2
+mov t3, 2
+
+
+;a = 2
+mov ax, t3 
 mov a1, ax
 
 
 ;a
 mov ax, a1
-mov t3, ax
+mov t4, ax
 
 
-;!a
-cmp t3, 0
-je L2
-mov t3, 0
-jmp L3
-L2:
-mov t3, 1
-L3:
+;b
+mov ax, b1
+mov t5, ax
 
-;a = !a
-mov ax, t3 
+
+;a*b
+mov ax, t4
+mov bx, t5
+mul bx
+mov t4, ax
+
+;a = a*b
+mov ax, t4 
 mov a1, ax
-
-
-;1
-mov t4, 1
-
-
-;c[1]
-mov bx, t4
-shl bx, 1
-mov t5, bx
 
 
 ;a
@@ -119,12 +123,18 @@ mov ax, a1
 mov t6, ax
 
 
-;+a
+;!a
+cmp t6, 0
+je L2
+mov t6, 0
+jmp L3
+L2:
+mov t6, 1
+L3:
 
-;c[1] = +a
+;a = !a
 mov ax, t6 
-mov bx, t5
-mov c1[bx], ax
+mov a1, ax
 
 
 ;1
@@ -142,46 +152,69 @@ mov ax, a1
 mov t9, ax
 
 
-;-a
-mov ax, t9
-neg ax
-mov t10, ax
+;+a
 
-;c[1] = -a
-mov ax, t10 
+;c[1] = +a
+mov ax, t9 
 mov bx, t8
 mov c1[bx], ax
 
 
+;1
+mov t10, 1
+
+
+;c[1]
+mov bx, t10
+shl bx, 1
+mov t11, bx
+
+
+;a
+mov ax, a1
+mov t12, ax
+
+
+;-a
+mov ax, t12
+neg ax
+mov t13, ax
+
+;c[1] = -a
+mov ax, t13 
+mov bx, t11
+mov c1[bx], ax
+
+
 ;0
-mov t11, 0
+mov t14, 0
 
 
 ;c[0]
-mov bx, t11
+mov bx, t14
 shl bx, 1
-mov t12, bx
+mov t15, bx
 
 
 ;1
-mov t13, 1
+mov t16, 1
 
 
 ;c[1]
-mov bx, t13
+mov bx, t16
 shl bx, 1
-mov t14, bx
+mov t17, bx
 
 
 ;c[1]
-mov bx, t14
+mov bx, t17
 mov ax, c1[bx]
-mov t15, ax
+mov t18, ax
 
 
 ;c[0] = (c[1])
-mov ax, t15 
-mov bx, t12
+mov ax, t18 
+mov bx, t15
 mov c1[bx], ax
 
 
@@ -190,31 +223,31 @@ inc a1
 
 
 ;0
-mov t16, 0
+mov t19, 0
 
 
 ;c[0]
-mov bx, t16
+mov bx, t19
 shl bx, 1
-mov t17, bx
+mov t20, bx
 
 
 ;c[0]++
-mov bx, t17
+mov bx, t20
 inc c1[bx]
 
 
 ;a
 mov ax, a1
-mov t18, ax
+mov t21, ax
 
-push t18
+push t21
 
 ;b
 mov ax, b1
-mov t19, ax
+mov t22, ax
 
-push t19
+push t22
 
 ;add(a,b)
 call add_procedure
@@ -222,9 +255,5 @@ call add_procedure
 mov ah, 4ch
 int 21h
 main endp
-
-
-;main function ended
-
 
 end main

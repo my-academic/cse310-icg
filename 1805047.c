@@ -5,9 +5,11 @@ int add(int a, int b) {
 	return (a);
 }
 
-int main(int x, int y) {
+int main() {
 	a = !0;
-	a = 5;
+	b = 5;
+	a = 2;
+	a = a * b;
 	a = !a;
 	c[1] = +a;
 	c[1] = -a;
