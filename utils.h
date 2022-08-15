@@ -504,6 +504,9 @@ symbol_info *checkAdditionCompatibility(symbol_info *left, string optr, symbol_i
     return nullptr;
 
   symbol_info *s = new symbol_info(left->getName() + optr + right->getName(), "intermediate");
+  printCurrentStatement(s->getName());
+  addopInAsm(left->temp_id, right->temp_id, optr);
+  s->temp_id = left->temp_id;
   s->id_type = VARIABLE;
   s->variable_type = left->variable_type == fraction || right->variable_type == fraction ? fraction : integer;
   return s;

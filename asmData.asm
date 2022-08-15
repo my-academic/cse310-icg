@@ -39,3 +39,11 @@ t31 DW 0
 t32 DW 0
 t33 DW 0
 t34 DW 0
+t35 DW 0
+t36 DW 0
+t37 DW 0
+t38 DW 0
+t39 DW 0
+t40 DW 0
+t41 DW 0
+t42 DW 0

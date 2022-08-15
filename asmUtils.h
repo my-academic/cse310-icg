@@ -164,6 +164,13 @@ void mulopInAsm(string lt, string rt, string newt, string optr){
     else 
         fprintf(asmCodeOut, "mov ax, %s\nmov bx, %s\nxor dx, dx\ndiv bx\nmov %s, dx\n", lt.c_str(), rt.c_str(), newt.c_str());
 }
+
+void addopInAsm(string lt, string rt, string optr){
+    if(optr == "+")
+        fprintf(asmCodeOut, "mov ax, %s\nadd %s, ax\n", rt.c_str(), lt.c_str());
+    else if(optr == "-")
+        fprintf(asmCodeOut, "mov ax, %s\nsub %s, ax\n", rt.c_str(), lt.c_str());
+}
 // void saveASMinStack(nonterminals nt, string str){
 //   //cout<<nt<<": saving \n"<<str<<endl;
 //   asmCodeStack[nt].push(str);
