@@ -47,6 +47,10 @@ t39 DW 0
 t40 DW 0
 t41 DW 0
 t42 DW 0
+t43 DW 0
+t44 DW 0
+t45 DW 0
+t46 DW 0
 
 .code
 
@@ -99,62 +103,80 @@ mov ax, t1
 mov a1, ax
 
 
-;0
-mov t2, 0
-
-
-;c[0]
-mov bx, t2
-shl bx, 1
-mov t3, bx
+;a
+mov ax, a1
+mov t2, ax
 
 
 ;5
-mov t4, 5
+mov t3, 5
 
 
-;c[0] = 5
-mov ax, t4 
-mov bx, t3
-mov c1[bx], ax
+;a>=5
+mov ax, t3
+cmp t2, ax
+jge L3
+mov t2, 0
+jmp L2
+L3:
+mov t2, 1
+L2:
 
-
-;19
-mov t5, 19
-
-
-;a = 19
-mov ax, t5 
+;a = a>=5
+mov ax, t2 
 mov a1, ax
 
 
 ;a
 mov ax, a1
-mov t6, ax
+mov t4, ax
+
+
+;5
+mov t5, 5
+
+
+;a<=5
+mov ax, t5
+cmp t4, ax
+jle L5
+mov t4, 0
+jmp L4
+L5:
+mov t4, 1
+L4:
+
+;a = a<=5
+mov ax, t4 
+mov a1, ax
 
 
 ;0
-mov t7, 0
+mov t6, 0
 
 
 ;c[0]
-mov bx, t7
+mov bx, t6
 shl bx, 1
-mov t8, bx
+mov t7, bx
 
 
-;c[0]
-mov bx, t8
-mov ax, c1[bx]
-mov t9, ax
+;5
+mov t8, 5
 
 
-;a+c[0]
-mov ax, t9
-add t6, ax
+;c[0] = 5
+mov ax, t8 
+mov bx, t7
+mov c1[bx], ax
 
-;a = a+c[0]
-mov ax, t6 
+
+;19
+mov t9, 19
+
+
+;a = 19
+mov ax, t9 
 mov a1, ax
 
 
@@ -179,11 +201,11 @@ mov ax, c1[bx]
 mov t13, ax
 
 
-;a-c[0]
+;a+c[0]
 mov ax, t13
-sub t10, ax
+add t10, ax
 
-;a = a-c[0]
+;a = a+c[0]
 mov ax, t10 
 mov a1, ax
 
@@ -209,14 +231,11 @@ mov ax, c1[bx]
 mov t17, ax
 
 
-;a%c[0]
-mov ax, t14
-mov bx, t17
-xor dx, dx
-div bx
-mov t14, dx
+;a-c[0]
+mov ax, t17
+sub t14, ax
 
-;a = a%c[0]
+;a = a-c[0]
 mov ax, t14 
 mov a1, ax
 
@@ -242,14 +261,14 @@ mov ax, c1[bx]
 mov t21, ax
 
 
-;a/c[0]
+;a%c[0]
 mov ax, t18
 mov bx, t21
 xor dx, dx
 div bx
-mov t18, ax
+mov t18, dx
 
-;a = a/c[0]
+;a = a%c[0]
 mov ax, t18 
 mov a1, ax
 
@@ -275,13 +294,14 @@ mov ax, c1[bx]
 mov t25, ax
 
 
-;a*c[0]
-mov ax, t25
-mov bx, t22
-mul bx
+;a/c[0]
+mov ax, t22
+mov bx, t25
+xor dx, dx
+div bx
 mov t22, ax
 
-;a = a*c[0]
+;a = a/c[0]
 mov ax, t22 
 mov a1, ax
 
@@ -291,98 +311,130 @@ mov ax, a1
 mov t26, ax
 
 
-;!a
-cmp t26, 0
-je L2
-mov t26, 0
-jmp L3
-L2:
-mov t26, 1
-L3:
-
-;a = !a
-mov ax, t26 
-mov a1, ax
+;0
+mov t27, 0
 
 
-;1
-mov t27, 1
-
-
-;c[1]
+;c[0]
 mov bx, t27
 shl bx, 1
 mov t28, bx
 
 
+;c[0]
+mov bx, t28
+mov ax, c1[bx]
+mov t29, ax
+
+
+;a*c[0]
+mov ax, t29
+mov bx, t26
+mul bx
+mov t26, ax
+
+;a = a*c[0]
+mov ax, t26 
+mov a1, ax
+
+
 ;a
 mov ax, a1
-mov t29, ax
+mov t30, ax
+
+
+;!a
+cmp t30, 0
+je L6
+mov t30, 0
+jmp L7
+L6:
+mov t30, 1
+L7:
+
+;a = !a
+mov ax, t30 
+mov a1, ax
+
+
+;1
+mov t31, 1
+
+
+;c[1]
+mov bx, t31
+shl bx, 1
+mov t32, bx
+
+
+;a
+mov ax, a1
+mov t33, ax
 
 
 ;+a
 
 ;c[1] = +a
-mov ax, t29 
-mov bx, t28
+mov ax, t33 
+mov bx, t32
 mov c1[bx], ax
 
 
 ;1
-mov t30, 1
+mov t34, 1
 
 
 ;c[1]
-mov bx, t30
-shl bx, 1
-mov t31, bx
-
-
-;a
-mov ax, a1
-mov t32, ax
-
-
-;-a
-mov ax, t32
-neg ax
-mov t33, ax
-
-;c[1] = -a
-mov ax, t33 
-mov bx, t31
-mov c1[bx], ax
-
-
-;0
-mov t34, 0
-
-
-;c[0]
 mov bx, t34
 shl bx, 1
 mov t35, bx
 
 
-;1
-mov t36, 1
+;a
+mov ax, a1
+mov t36, ax
 
 
-;c[1]
-mov bx, t36
+;-a
+mov ax, t36
+neg ax
+mov t37, ax
+
+;c[1] = -a
+mov ax, t37 
+mov bx, t35
+mov c1[bx], ax
+
+
+;0
+mov t38, 0
+
+
+;c[0]
+mov bx, t38
 shl bx, 1
-mov t37, bx
+mov t39, bx
+
+
+;1
+mov t40, 1
 
 
 ;c[1]
-mov bx, t37
+mov bx, t40
+shl bx, 1
+mov t41, bx
+
+
+;c[1]
+mov bx, t41
 mov ax, c1[bx]
-mov t38, ax
+mov t42, ax
 
 
 ;c[0] = (c[1])
-mov ax, t38 
-mov bx, t35
+mov ax, t42 
+mov bx, t39
 mov c1[bx], ax
 
 
@@ -391,31 +443,31 @@ inc a1
 
 
 ;0
-mov t39, 0
+mov t43, 0
 
 
 ;c[0]
-mov bx, t39
+mov bx, t43
 shl bx, 1
-mov t40, bx
+mov t44, bx
 
 
 ;c[0]++
-mov bx, t40
+mov bx, t44
 inc c1[bx]
 
 
 ;a
 mov ax, a1
-mov t41, ax
+mov t45, ax
 
-push t41
+push t45
 
 ;b
 mov ax, b1
-mov t42, ax
+mov t46, ax
 
-push t42
+push t46
 
 ;add(a,b)
 call add_procedure

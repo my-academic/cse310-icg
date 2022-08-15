@@ -214,37 +214,29 @@ Line 9: statements : statement
 a=!0;
 
 
-Line 10: factor : CONST_INT
+Line 10: variable : ID
 
-0
+a
+
+Line 10: variable : ID
+
+a
+
+Line 10: factor : variable
+
+a
 
 Line 10: unary_expression : factor
 
-0
+a
 
 Line 10: term : unary_expression
 
-0
+a
 
 Line 10: simple_expression : term
 
-0
-
-Line 10: rel_expression : simple_expression
-
-0
-
-Line 10: logic_expression : rel_expression
-
-0
-
-Line 10: expression : logic_expression
-
-0
-
-Line 10: variable : ID LTHIRD expression RTHIRD 
-
-c[0]
+a
 
 Line 10: factor : CONST_INT
 
@@ -262,104 +254,100 @@ Line 10: simple_expression : term
 
 5
 
-Line 10: rel_expression : simple_expression
+Line 10: rel_expression : simple_expression RELOP simple_expression	
 
-5
+a>=5
 
 Line 10: logic_expression : rel_expression
 
-5
+a>=5
 
 Line 10: expression : variable ASSIGNOP logic_expression
 
-c[0]=5
+a=a>=5
 
 Line 10: expression_statement : expression SEMICOLON
 
-c[0]=5;
+a=a>=5;
 
 Line 10: statement : expression_statement
 
-c[0]=5;
+a=a>=5;
 
 
 Line 10: statements : statements statement
 
 a=!0;
-c[0]=5;
+a=a>=5;
 
 
 Line 11: variable : ID
 
 a
 
-Line 11: factor : CONST_INT
+Line 11: variable : ID
 
-19
+a
+
+Line 11: factor : variable
+
+a
 
 Line 11: unary_expression : factor
 
-19
+a
 
 Line 11: term : unary_expression
 
-19
+a
 
 Line 11: simple_expression : term
 
-19
+a
 
-Line 11: rel_expression : simple_expression
+Line 11: factor : CONST_INT
 
-19
+5
+
+Line 11: unary_expression : factor
+
+5
+
+Line 11: term : unary_expression
+
+5
+
+Line 11: simple_expression : term
+
+5
+
+Line 11: rel_expression : simple_expression RELOP simple_expression	
+
+a<=5
 
 Line 11: logic_expression : rel_expression
 
-19
+a<=5
 
 Line 11: expression : variable ASSIGNOP logic_expression
 
-a=19
+a=a<=5
 
 Line 11: expression_statement : expression SEMICOLON
 
-a=19;
+a=a<=5;
 
 Line 11: statement : expression_statement
 
-a=19;
+a=a<=5;
 
 
 Line 11: statements : statements statement
 
 a=!0;
-c[0]=5;
-a=19;
+a=a>=5;
+a=a<=5;
 
-
-Line 12: variable : ID
-
-a
-
-Line 12: variable : ID
-
-a
-
-Line 12: factor : variable
-
-a
-
-Line 12: unary_expression : factor
-
-a
-
-Line 12: term : unary_expression
-
-a
-
-Line 12: simple_expression : term
-
-a
 
 Line 12: factor : CONST_INT
 
@@ -393,151 +381,99 @@ Line 12: variable : ID LTHIRD expression RTHIRD
 
 c[0]
 
-Line 12: factor : variable
+Line 12: factor : CONST_INT
 
-c[0]
+5
 
 Line 12: unary_expression : factor
 
-c[0]
+5
 
 Line 12: term : unary_expression
 
-c[0]
+5
 
-Line 12: simple_expression : simple_expression ADDOP term
+Line 12: simple_expression : term
 
-a+c[0]
+5
 
 Line 12: rel_expression : simple_expression
 
-a+c[0]
+5
 
 Line 12: logic_expression : rel_expression
 
-a+c[0]
+5
 
 Line 12: expression : variable ASSIGNOP logic_expression
 
-a=a+c[0]
+c[0]=5
 
 Line 12: expression_statement : expression SEMICOLON
 
-a=a+c[0];
+c[0]=5;
 
 Line 12: statement : expression_statement
 
-a=a+c[0];
+c[0]=5;
 
 
 Line 12: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
-a=19;
-a=a+c[0];
 
 
 Line 13: variable : ID
-
-a
-
-Line 13: variable : ID
-
-a
-
-Line 13: factor : variable
-
-a
-
-Line 13: unary_expression : factor
-
-a
-
-Line 13: term : unary_expression
-
-a
-
-Line 13: simple_expression : term
 
 a
 
 Line 13: factor : CONST_INT
 
-0
+19
 
 Line 13: unary_expression : factor
 
-0
+19
 
 Line 13: term : unary_expression
 
-0
+19
 
 Line 13: simple_expression : term
 
-0
+19
 
 Line 13: rel_expression : simple_expression
 
-0
+19
 
 Line 13: logic_expression : rel_expression
 
-0
-
-Line 13: expression : logic_expression
-
-0
-
-Line 13: variable : ID LTHIRD expression RTHIRD 
-
-c[0]
-
-Line 13: factor : variable
-
-c[0]
-
-Line 13: unary_expression : factor
-
-c[0]
-
-Line 13: term : unary_expression
-
-c[0]
-
-Line 13: simple_expression : simple_expression ADDOP term
-
-a-c[0]
-
-Line 13: rel_expression : simple_expression
-
-a-c[0]
-
-Line 13: logic_expression : rel_expression
-
-a-c[0]
+19
 
 Line 13: expression : variable ASSIGNOP logic_expression
 
-a=a-c[0]
+a=19
 
 Line 13: expression_statement : expression SEMICOLON
 
-a=a-c[0];
+a=19;
 
 Line 13: statement : expression_statement
 
-a=a-c[0];
+a=19;
 
 
 Line 13: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
-a=a+c[0];
-a=a-c[0];
 
 
 Line 14: variable : ID
@@ -557,6 +493,10 @@ Line 14: unary_expression : factor
 a
 
 Line 14: term : unary_expression
+
+a
+
+Line 14: simple_expression : term
 
 a
 
@@ -600,43 +540,43 @@ Line 14: unary_expression : factor
 
 c[0]
 
-Line 14: term : term MULOP unary_expression
+Line 14: term : unary_expression
 
-a%c[0]
+c[0]
 
-Line 14: simple_expression : term
+Line 14: simple_expression : simple_expression ADDOP term
 
-a%c[0]
+a+c[0]
 
 Line 14: rel_expression : simple_expression
 
-a%c[0]
+a+c[0]
 
 Line 14: logic_expression : rel_expression
 
-a%c[0]
+a+c[0]
 
 Line 14: expression : variable ASSIGNOP logic_expression
 
-a=a%c[0]
+a=a+c[0]
 
 Line 14: expression_statement : expression SEMICOLON
 
-a=a%c[0];
+a=a+c[0];
 
 Line 14: statement : expression_statement
 
-a=a%c[0];
+a=a+c[0];
 
 
 Line 14: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
-a=a-c[0];
-a=a%c[0];
 
 
 Line 15: variable : ID
@@ -656,6 +596,10 @@ Line 15: unary_expression : factor
 a
 
 Line 15: term : unary_expression
+
+a
+
+Line 15: simple_expression : term
 
 a
 
@@ -699,44 +643,44 @@ Line 15: unary_expression : factor
 
 c[0]
 
-Line 15: term : term MULOP unary_expression
+Line 15: term : unary_expression
 
-a/c[0]
+c[0]
 
-Line 15: simple_expression : term
+Line 15: simple_expression : simple_expression ADDOP term
 
-a/c[0]
+a-c[0]
 
 Line 15: rel_expression : simple_expression
 
-a/c[0]
+a-c[0]
 
 Line 15: logic_expression : rel_expression
 
-a/c[0]
+a-c[0]
 
 Line 15: expression : variable ASSIGNOP logic_expression
 
-a=a/c[0]
+a=a-c[0]
 
 Line 15: expression_statement : expression SEMICOLON
 
-a=a/c[0];
+a=a-c[0];
 
 Line 15: statement : expression_statement
 
-a=a/c[0];
+a=a-c[0];
 
 
 Line 15: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
 a=a-c[0];
-a=a%c[0];
-a=a/c[0];
 
 
 Line 16: variable : ID
@@ -801,43 +745,43 @@ c[0]
 
 Line 16: term : term MULOP unary_expression
 
-a*c[0]
+a%c[0]
 
 Line 16: simple_expression : term
 
-a*c[0]
+a%c[0]
 
 Line 16: rel_expression : simple_expression
 
-a*c[0]
+a%c[0]
 
 Line 16: logic_expression : rel_expression
 
-a*c[0]
+a%c[0]
 
 Line 16: expression : variable ASSIGNOP logic_expression
 
-a=a*c[0]
+a=a%c[0]
 
 Line 16: expression_statement : expression SEMICOLON
 
-a=a*c[0];
+a=a%c[0];
 
 Line 16: statement : expression_statement
 
-a=a*c[0];
+a=a%c[0];
 
 
 Line 16: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
 a=a-c[0];
 a=a%c[0];
-a=a/c[0];
-a=a*c[0];
 
 
 Line 17: variable : ID
@@ -856,83 +800,95 @@ Line 17: unary_expression : factor
 
 a
 
-Line 17: unary_expression : ADDOP unary_expression
+Line 17: term : unary_expression
 
-!a
+a
+
+Line 17: factor : CONST_INT
+
+0
+
+Line 17: unary_expression : factor
+
+0
 
 Line 17: term : unary_expression
 
-!a
+0
 
 Line 17: simple_expression : term
 
-!a
+0
 
 Line 17: rel_expression : simple_expression
 
-!a
+0
 
 Line 17: logic_expression : rel_expression
 
-!a
+0
+
+Line 17: expression : logic_expression
+
+0
+
+Line 17: variable : ID LTHIRD expression RTHIRD 
+
+c[0]
+
+Line 17: factor : variable
+
+c[0]
+
+Line 17: unary_expression : factor
+
+c[0]
+
+Line 17: term : term MULOP unary_expression
+
+a/c[0]
+
+Line 17: simple_expression : term
+
+a/c[0]
+
+Line 17: rel_expression : simple_expression
+
+a/c[0]
+
+Line 17: logic_expression : rel_expression
+
+a/c[0]
 
 Line 17: expression : variable ASSIGNOP logic_expression
 
-a=!a
+a=a/c[0]
 
 Line 17: expression_statement : expression SEMICOLON
 
-a=!a;
+a=a/c[0];
 
 Line 17: statement : expression_statement
 
-a=!a;
+a=a/c[0];
 
 
 Line 17: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
 a=a-c[0];
 a=a%c[0];
 a=a/c[0];
-a=a*c[0];
-a=!a;
 
 
-Line 18: factor : CONST_INT
+Line 18: variable : ID
 
-1
-
-Line 18: unary_expression : factor
-
-1
-
-Line 18: term : unary_expression
-
-1
-
-Line 18: simple_expression : term
-
-1
-
-Line 18: rel_expression : simple_expression
-
-1
-
-Line 18: logic_expression : rel_expression
-
-1
-
-Line 18: expression : logic_expression
-
-1
-
-Line 18: variable : ID LTHIRD expression RTHIRD 
-
-c[1]
+a
 
 Line 18: variable : ID
 
@@ -946,42 +902,84 @@ Line 18: unary_expression : factor
 
 a
 
-Line 18: unary_expression : ADDOP unary_expression
+Line 18: term : unary_expression
 
-+a
+a
+
+Line 18: factor : CONST_INT
+
+0
+
+Line 18: unary_expression : factor
+
+0
 
 Line 18: term : unary_expression
 
-+a
+0
 
 Line 18: simple_expression : term
 
-+a
+0
 
 Line 18: rel_expression : simple_expression
 
-+a
+0
 
 Line 18: logic_expression : rel_expression
 
-+a
+0
+
+Line 18: expression : logic_expression
+
+0
+
+Line 18: variable : ID LTHIRD expression RTHIRD 
+
+c[0]
+
+Line 18: factor : variable
+
+c[0]
+
+Line 18: unary_expression : factor
+
+c[0]
+
+Line 18: term : term MULOP unary_expression
+
+a*c[0]
+
+Line 18: simple_expression : term
+
+a*c[0]
+
+Line 18: rel_expression : simple_expression
+
+a*c[0]
+
+Line 18: logic_expression : rel_expression
+
+a*c[0]
 
 Line 18: expression : variable ASSIGNOP logic_expression
 
-c[1]=+a
+a=a*c[0]
 
 Line 18: expression_statement : expression SEMICOLON
 
-c[1]=+a;
+a=a*c[0];
 
 Line 18: statement : expression_statement
 
-c[1]=+a;
+a=a*c[0];
 
 
 Line 18: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
@@ -989,41 +987,11 @@ a=a-c[0];
 a=a%c[0];
 a=a/c[0];
 a=a*c[0];
-a=!a;
-c[1]=+a;
 
 
-Line 19: factor : CONST_INT
+Line 19: variable : ID
 
-1
-
-Line 19: unary_expression : factor
-
-1
-
-Line 19: term : unary_expression
-
-1
-
-Line 19: simple_expression : term
-
-1
-
-Line 19: rel_expression : simple_expression
-
-1
-
-Line 19: logic_expression : rel_expression
-
-1
-
-Line 19: expression : logic_expression
-
-1
-
-Line 19: variable : ID LTHIRD expression RTHIRD 
-
-c[1]
+a
 
 Line 19: variable : ID
 
@@ -1039,40 +1007,42 @@ a
 
 Line 19: unary_expression : ADDOP unary_expression
 
--a
+!a
 
 Line 19: term : unary_expression
 
--a
+!a
 
 Line 19: simple_expression : term
 
--a
+!a
 
 Line 19: rel_expression : simple_expression
 
--a
+!a
 
 Line 19: logic_expression : rel_expression
 
--a
+!a
 
 Line 19: expression : variable ASSIGNOP logic_expression
 
-c[1]=-a
+a=!a
 
 Line 19: expression_statement : expression SEMICOLON
 
-c[1]=-a;
+a=!a;
 
 Line 19: statement : expression_statement
 
-c[1]=-a;
+a=!a;
 
 
 Line 19: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
@@ -1081,41 +1051,7 @@ a=a%c[0];
 a=a/c[0];
 a=a*c[0];
 a=!a;
-c[1]=+a;
-c[1]=-a;
 
-
-Line 20: factor : CONST_INT
-
-0
-
-Line 20: unary_expression : factor
-
-0
-
-Line 20: term : unary_expression
-
-0
-
-Line 20: simple_expression : term
-
-0
-
-Line 20: rel_expression : simple_expression
-
-0
-
-Line 20: logic_expression : rel_expression
-
-0
-
-Line 20: expression : logic_expression
-
-0
-
-Line 20: variable : ID LTHIRD expression RTHIRD 
-
-c[0]
 
 Line 20: factor : CONST_INT
 
@@ -1148,75 +1084,57 @@ Line 20: expression : logic_expression
 Line 20: variable : ID LTHIRD expression RTHIRD 
 
 c[1]
+
+Line 20: variable : ID
+
+a
 
 Line 20: factor : variable
 
-c[1]
+a
 
 Line 20: unary_expression : factor
 
-c[1]
+a
+
+Line 20: unary_expression : ADDOP unary_expression
+
++a
 
 Line 20: term : unary_expression
 
-c[1]
++a
 
 Line 20: simple_expression : term
 
-c[1]
++a
 
 Line 20: rel_expression : simple_expression
 
-c[1]
++a
 
 Line 20: logic_expression : rel_expression
 
-c[1]
-
-Line 20: expression : logic_expression
-
-c[1]
-
-Line 20: factor : LPAREN expression RPAREN
-
-(c[1])
-
-Line 20: unary_expression : factor
-
-(c[1])
-
-Line 20: term : unary_expression
-
-(c[1])
-
-Line 20: simple_expression : term
-
-(c[1])
-
-Line 20: rel_expression : simple_expression
-
-(c[1])
-
-Line 20: logic_expression : rel_expression
-
-(c[1])
++a
 
 Line 20: expression : variable ASSIGNOP logic_expression
 
-c[0]=(c[1])
+c[1]=+a
 
 Line 20: expression_statement : expression SEMICOLON
 
-c[0]=(c[1]);
+c[1]=+a;
 
 Line 20: statement : expression_statement
 
-c[0]=(c[1]);
+c[1]=+a;
 
 
 Line 20: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
@@ -1226,54 +1144,90 @@ a=a/c[0];
 a=a*c[0];
 a=!a;
 c[1]=+a;
-c[1]=-a;
-c[0]=(c[1]);
 
+
+Line 21: factor : CONST_INT
+
+1
+
+Line 21: unary_expression : factor
+
+1
+
+Line 21: term : unary_expression
+
+1
+
+Line 21: simple_expression : term
+
+1
+
+Line 21: rel_expression : simple_expression
+
+1
+
+Line 21: logic_expression : rel_expression
+
+1
+
+Line 21: expression : logic_expression
+
+1
+
+Line 21: variable : ID LTHIRD expression RTHIRD 
+
+c[1]
 
 Line 21: variable : ID
 
 a
 
-Line 21: factor : variable INCOP
+Line 21: factor : variable
 
-a++
+a
 
 Line 21: unary_expression : factor
 
-a++
+a
+
+Line 21: unary_expression : ADDOP unary_expression
+
+-a
 
 Line 21: term : unary_expression
 
-a++
+-a
 
 Line 21: simple_expression : term
 
-a++
+-a
 
 Line 21: rel_expression : simple_expression
 
-a++
+-a
 
 Line 21: logic_expression : rel_expression
 
-a++
+-a
 
-Line 21: expression : logic_expression
+Line 21: expression : variable ASSIGNOP logic_expression
 
-a++
+c[1]=-a
 
 Line 21: expression_statement : expression SEMICOLON
 
-a++;
+c[1]=-a;
 
 Line 21: statement : expression_statement
 
-a++;
+c[1]=-a;
 
 
 Line 21: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
@@ -1284,8 +1238,6 @@ a=a*c[0];
 a=!a;
 c[1]=+a;
 c[1]=-a;
-c[0]=(c[1]);
-a++;
 
 
 Line 22: factor : CONST_INT
@@ -1320,46 +1272,108 @@ Line 22: variable : ID LTHIRD expression RTHIRD
 
 c[0]
 
-Line 22: factor : variable INCOP
+Line 22: factor : CONST_INT
 
-c[0]++
+1
 
 Line 22: unary_expression : factor
 
-c[0]++
+1
 
 Line 22: term : unary_expression
 
-c[0]++
+1
 
 Line 22: simple_expression : term
 
-c[0]++
+1
 
 Line 22: rel_expression : simple_expression
 
-c[0]++
+1
 
 Line 22: logic_expression : rel_expression
 
-c[0]++
+1
 
 Line 22: expression : logic_expression
 
-c[0]++
+1
+
+Line 22: variable : ID LTHIRD expression RTHIRD 
+
+c[1]
+
+Line 22: factor : variable
+
+c[1]
+
+Line 22: unary_expression : factor
+
+c[1]
+
+Line 22: term : unary_expression
+
+c[1]
+
+Line 22: simple_expression : term
+
+c[1]
+
+Line 22: rel_expression : simple_expression
+
+c[1]
+
+Line 22: logic_expression : rel_expression
+
+c[1]
+
+Line 22: expression : logic_expression
+
+c[1]
+
+Line 22: factor : LPAREN expression RPAREN
+
+(c[1])
+
+Line 22: unary_expression : factor
+
+(c[1])
+
+Line 22: term : unary_expression
+
+(c[1])
+
+Line 22: simple_expression : term
+
+(c[1])
+
+Line 22: rel_expression : simple_expression
+
+(c[1])
+
+Line 22: logic_expression : rel_expression
+
+(c[1])
+
+Line 22: expression : variable ASSIGNOP logic_expression
+
+c[0]=(c[1])
 
 Line 22: expression_statement : expression SEMICOLON
 
-c[0]++;
+c[0]=(c[1]);
 
 Line 22: statement : expression_statement
 
-c[0]++;
+c[0]=(c[1]);
 
 
 Line 22: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
@@ -1371,118 +1385,267 @@ a=!a;
 c[1]=+a;
 c[1]=-a;
 c[0]=(c[1]);
-a++;
-c[0]++;
 
 
 Line 23: variable : ID
 
 a
 
-Line 23: factor : variable
+Line 23: factor : variable INCOP
 
-a
-
-Line 23: unary_expression : factor
-
-a
-
-Line 23: term : unary_expression
-
-a
-
-Line 23: simple_expression : term
-
-a
-
-Line 23: rel_expression : simple_expression
-
-a
-
-Line 23: logic_expression : rel_expression
-
-a
-
-Line 23: arguments : logic_expression
-
-a
-
-Line 23: variable : ID
-
-b
-
-Line 23: factor : variable
-
-b
+a++
 
 Line 23: unary_expression : factor
 
-b
+a++
 
 Line 23: term : unary_expression
 
-b
+a++
 
 Line 23: simple_expression : term
 
-b
+a++
 
 Line 23: rel_expression : simple_expression
 
-b
+a++
 
 Line 23: logic_expression : rel_expression
 
-b
-
-Line 23: arguments : arguments COMMA logic_expression
-
-a,b
-
-Line 23: argument_list : arguments
-
-a,b
-
-Line 23: factor : ID LPAREN argument_list RPAREN
-
-add(a,b)
-
-Line 23: unary_expression : factor
-
-add(a,b)
-
-Line 23: term : unary_expression
-
-add(a,b)
-
-Line 23: simple_expression : term
-
-add(a,b)
-
-Line 23: rel_expression : simple_expression
-
-add(a,b)
-
-Line 23: logic_expression : rel_expression
-
-add(a,b)
+a++
 
 Line 23: expression : logic_expression
 
-add(a,b)
+a++
 
 Line 23: expression_statement : expression SEMICOLON
 
-add(a,b);
+a++;
 
 Line 23: statement : expression_statement
 
-add(a,b);
+a++;
 
 
 Line 23: statements : statements statement
 
 a=!0;
+a=a>=5;
+a=a<=5;
+c[0]=5;
+a=19;
+a=a+c[0];
+a=a-c[0];
+a=a%c[0];
+a=a/c[0];
+a=a*c[0];
+a=!a;
+c[1]=+a;
+c[1]=-a;
+c[0]=(c[1]);
+a++;
+
+
+Line 24: factor : CONST_INT
+
+0
+
+Line 24: unary_expression : factor
+
+0
+
+Line 24: term : unary_expression
+
+0
+
+Line 24: simple_expression : term
+
+0
+
+Line 24: rel_expression : simple_expression
+
+0
+
+Line 24: logic_expression : rel_expression
+
+0
+
+Line 24: expression : logic_expression
+
+0
+
+Line 24: variable : ID LTHIRD expression RTHIRD 
+
+c[0]
+
+Line 24: factor : variable INCOP
+
+c[0]++
+
+Line 24: unary_expression : factor
+
+c[0]++
+
+Line 24: term : unary_expression
+
+c[0]++
+
+Line 24: simple_expression : term
+
+c[0]++
+
+Line 24: rel_expression : simple_expression
+
+c[0]++
+
+Line 24: logic_expression : rel_expression
+
+c[0]++
+
+Line 24: expression : logic_expression
+
+c[0]++
+
+Line 24: expression_statement : expression SEMICOLON
+
+c[0]++;
+
+Line 24: statement : expression_statement
+
+c[0]++;
+
+
+Line 24: statements : statements statement
+
+a=!0;
+a=a>=5;
+a=a<=5;
+c[0]=5;
+a=19;
+a=a+c[0];
+a=a-c[0];
+a=a%c[0];
+a=a/c[0];
+a=a*c[0];
+a=!a;
+c[1]=+a;
+c[1]=-a;
+c[0]=(c[1]);
+a++;
+c[0]++;
+
+
+Line 25: variable : ID
+
+a
+
+Line 25: factor : variable
+
+a
+
+Line 25: unary_expression : factor
+
+a
+
+Line 25: term : unary_expression
+
+a
+
+Line 25: simple_expression : term
+
+a
+
+Line 25: rel_expression : simple_expression
+
+a
+
+Line 25: logic_expression : rel_expression
+
+a
+
+Line 25: arguments : logic_expression
+
+a
+
+Line 25: variable : ID
+
+b
+
+Line 25: factor : variable
+
+b
+
+Line 25: unary_expression : factor
+
+b
+
+Line 25: term : unary_expression
+
+b
+
+Line 25: simple_expression : term
+
+b
+
+Line 25: rel_expression : simple_expression
+
+b
+
+Line 25: logic_expression : rel_expression
+
+b
+
+Line 25: arguments : arguments COMMA logic_expression
+
+a,b
+
+Line 25: argument_list : arguments
+
+a,b
+
+Line 25: factor : ID LPAREN argument_list RPAREN
+
+add(a,b)
+
+Line 25: unary_expression : factor
+
+add(a,b)
+
+Line 25: term : unary_expression
+
+add(a,b)
+
+Line 25: simple_expression : term
+
+add(a,b)
+
+Line 25: rel_expression : simple_expression
+
+add(a,b)
+
+Line 25: logic_expression : rel_expression
+
+add(a,b)
+
+Line 25: expression : logic_expression
+
+add(a,b)
+
+Line 25: expression_statement : expression SEMICOLON
+
+add(a,b);
+
+Line 25: statement : expression_statement
+
+add(a,b);
+
+
+Line 25: statements : statements statement
+
+a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
@@ -1499,10 +1662,12 @@ c[0]++;
 add(a,b);
 
 
-Line 24: compound_statement : LCURL statements RCURL
+Line 26: compound_statement : LCURL statements RCURL
 
 {
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
@@ -1533,10 +1698,12 @@ ScopeTable # 1
 16 -->  < main : ID> 
 17 -->  < add : ID> 
 
-Line 24: func_definition : type_specifier ID LPAREN RPAREN compound_statement
+Line 26: func_definition : type_specifier ID LPAREN RPAREN compound_statement
 
 int main(){
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
@@ -1553,10 +1720,12 @@ c[0]++;
 add(a,b);
 }
 
-Line 24: unit : func_definition
+Line 26: unit : func_definition
 
 int main(){
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
@@ -1574,7 +1743,7 @@ add(a,b);
 }
 
 
-Line 24: program : program unit
+Line 26: program : program unit
 
 int a,b,c[2];
 int add(int a,int b){
@@ -1582,6 +1751,8 @@ return (a);
 }
 int main(){
 a=!0;
+a=a>=5;
+a=a<=5;
 c[0]=5;
 a=19;
 a=a+c[0];
@@ -1599,7 +1770,7 @@ add(a,b);
 }
 
 
-Line 24: start : program
+Line 26: start : program
 
 
 
@@ -1613,6 +1784,6 @@ ScopeTable # 1
 17 -->  < add : ID> 
 
 
-Total lines: 24
+Total lines: 26
 Total errors: 0
 

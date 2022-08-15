@@ -171,6 +171,16 @@ void addopInAsm(string lt, string rt, string optr){
     else if(optr == "-")
         fprintf(asmCodeOut, "mov ax, %s\nsub %s, ax\n", rt.c_str(), lt.c_str());
 }
+
+void relopInAsm(string lt, string rt, string optr, string l1, string l2){
+    string branching = optr == "<=" ? "jle" : 
+        optr == ">=" ? "jge" : 
+        optr == ">" ? "jg" : 
+        optr == "<" ? "jl" :
+        optr == "==" ? "je" :
+        optr == "!=" ? "jne" : "";
+    fprintf(asmCodeOut, "mov ax, %s\ncmp %s, ax\n%s %s\nmov %s, 0\njmp %s\n%s:\nmov %s, 1\n%s:\n", rt.c_str(), lt.c_str(), branching.c_str(), l1.c_str(), lt.c_str(), l2.c_str(), l1.c_str(), lt.c_str(), l2.c_str());
+}
 // void saveASMinStack(nonterminals nt, string str){
 //   //cout<<nt<<": saving \n"<<str<<endl;
 //   asmCodeStack[nt].push(str);

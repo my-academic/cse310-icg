@@ -518,6 +518,9 @@ symbol_info *checkRELOPCompetibility(symbol_info *left, string optr, symbol_info
     return nullptr;
 
   symbol_info *s = new symbol_info(left->getName() + optr + right->getName(), "intermediate");
+  printCurrentStatement(s->getName());
+  relopInAsm(left->temp_id, right->temp_id, optr, newLabel(), newLabel());
+  s->temp_id = left->temp_id;
   s->id_type = VARIABLE;
   s->variable_type = integer;
   return s;
