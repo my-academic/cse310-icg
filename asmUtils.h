@@ -132,171 +132,254 @@ void bufferingVariable(string temp_var_name, string var_name, string idx = "")
 {
     if (idx == "")
         fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\n\n", var_name.c_str(), temp_var_name.c_str());
-    else 
+    else
         fprintf(asmCodeOut, "mov bx, %s\nmov ax, %s[bx]\nmov %s, ax\n\n", idx.c_str(), var_name.c_str(), temp_var_name.c_str());
 }
 
-void pushToStack(string str){
+void pushToStack(string str)
+{
     fprintf(asmCodeOut, "push %s\n", str.c_str());
 }
 
-void callFunction(string str) {
+void callFunction(string str)
+{
     fprintf(asmCodeOut, "call %s_procedure\n", str.c_str());
 }
 
-void setReturnValueInAsm(string str) {
+void setReturnValueInAsm(string str)
+{
     fprintf(asmCodeOut, "mov ax, %s\n\n", str.c_str());
 }
 
-void negateInAssembly(string operand, string assigning){
+void negateInAssembly(string operand, string assigning)
+{
     fprintf(asmCodeOut, "mov ax, %s\nneg ax\nmov %s, ax\n", operand.c_str(), assigning.c_str());
 }
 
-void notOperationOfCinAssembly(string temp_id, string l1, string l2){
+void notOperationOfCinAssembly(string temp_id, string l1, string l2)
+{
     fprintf(asmCodeOut, "cmp %s, 0\nje %s\nmov %s, 0\njmp %s\n%s:\nmov %s, 1\n%s:\n", temp_id.c_str(), l1.c_str(), temp_id.c_str(), l2.c_str(), l1.c_str(), temp_id.c_str(), l2.c_str());
 }
 
-void mulopInAsm(string lt, string rt, string newt, string optr){
-    if(optr == "*")
-        fprintf(asmCodeOut, "mov ax, %s\nmov bx, %s\nmul bx\nmov %s, ax\n", rt.c_str(), lt.c_str(), newt.c_str());
-    else if(optr == "/")
-        fprintf(asmCodeOut, "mov ax, %s\nmov bx, %s\nxor dx, dx\ndiv bx\nmov %s, ax\n", lt.c_str(), rt.c_str(), newt.c_str());
-    else 
-        fprintf(asmCodeOut, "mov ax, %s\nmov bx, %s\nxor dx, dx\ndiv bx\nmov %s, dx\n", lt.c_str(), rt.c_str(), newt.c_str());
+void mulopInAsm(string lt, string rt, string newt, string optr)
+{
+    if (optr == "*")
+        fprintf(asmCodeOut, 
+        "\
+        mov ax, %s\n\
+        mov bx, %s\n\
+        mul bx\n\
+        mov %s, ax\n\
+        ",
+        rt.c_str(),
+        lt.c_str(),
+        newt.c_str());
+    else if (optr == "/")
+        fprintf(asmCodeOut,
+        "\
+        mov ax, %s\n\
+        mov bx, %s\n\
+        xor dx, dx\n\
+        div bx\n\
+        mov %s, ax\n\
+        ",
+        lt.c_str(),
+        rt.c_str(),
+        newt.c_str());
+    else
+        fprintf(asmCodeOut,
+        "\
+        mov ax, %s\n\
+        mov bx, %s\n\
+        xor dx, dx\n\
+        div bx\n\
+        mov %s, dx\n\
+        ",
+        lt.c_str(),
+        rt.c_str(),
+        newt.c_str());
 }
 
-void addopInAsm(string lt, string rt, string optr){
-    if(optr == "+")
+void addopInAsm(string lt, string rt, string optr)
+{
+    if (optr == "+")
         fprintf(asmCodeOut, "mov ax, %s\nadd %s, ax\n", rt.c_str(), lt.c_str());
-    else if(optr == "-")
+    else if (optr == "-")
         fprintf(asmCodeOut, "mov ax, %s\nsub %s, ax\n", rt.c_str(), lt.c_str());
 }
 
-void relopInAsm(string lt, string rt, string optr, string l1, string l2){
-    string branching = optr == "<=" ? "jle" : 
-        optr == ">=" ? "jge" : 
-        optr == ">" ? "jg" : 
-        optr == "<" ? "jl" :
-        optr == "==" ? "je" :
-        optr == "!=" ? "jne" : "";
-    fprintf(asmCodeOut, "mov ax, %s\ncmp %s, ax\n%s %s\nmov %s, 0\njmp %s\n%s:\nmov %s, 1\n%s:\n", rt.c_str(), lt.c_str(), branching.c_str(), l1.c_str(), lt.c_str(), l2.c_str(), l1.c_str(), lt.c_str(), l2.c_str());
+void relopInAsm(string lt, string rt, string optr, string l1, string l2)
+{
+    string branching = optr == "<=" ? "jle" : optr == ">=" ? "jge"
+                                          : optr == ">"    ? "jg"
+                                          : optr == "<"    ? "jl"
+                                          : optr == "=="   ? "je"
+                                          : optr == "!="   ? "jne"
+                                                           : "";
+    fprintf(asmCodeOut, 
+        "\
+        mov ax, %s\n\
+        cmp %s, ax\n\
+        %s %s\n\
+        mov %s, 0\n\
+        jmp %s\n\
+        %s:\n\
+        mov %s, 1\n\
+        %s:\n\
+        ",
+        rt.c_str(),
+        lt.c_str(),
+        branching.c_str(), l1.c_str(),
+        lt.c_str(),
+        l2.c_str(),
+        l1.c_str(),
+        lt.c_str(),
+        l2.c_str());
+}
+
+void logicopInAsm(string lt, string rt, string optr, string l1, string l2)
+{
+    string branching = optr == "&&" ? "je" : optr == "||" ? "jne" :"";
+    fprintf(asmCodeOut, 
+        "\
+        cmp %s, 0\n\
+        %s %s\n\
+        cmp %s, 0\n\
+        %s %s\n\
+        mov %s, %d\n\
+        jmp %s\n\
+        %s:\n\
+        mov %s, %d\n\
+        %s:\n\
+        ",
+        lt.c_str(),
+        branching.c_str(), l1.c_str(),
+        rt.c_str(),
+        branching.c_str(), l1.c_str(),
+        lt.c_str(), optr == "&&",
+        l2.c_str(),
+        l1.c_str(),
+        lt.c_str(), optr == "||",
+        l2.c_str());
 }
 // void saveASMinStack(nonterminals nt, string str){
-//   //cout<<nt<<": saving \n"<<str<<endl;
-//   asmCodeStack[nt].push(str);
-// }
+//   //cout<<nt<<": saving \n
+// "<<str<<endl;
+    //   asmCodeStack[nt].push(str);
+    // }
 
-// string getASMfromStack(nonterminals nt){
-//   if(!asmCodeStack[nt].empty()){
-//     string str =  asmCodeStack[nt].top();
-//     asmCodeStack[nt].pop();
-//     //cout<<nt<<": getting \n"<<str<<endl;
-//     return str;
-//   }
-//   return "";
-// }
+    // string getASMfromStack(nonterminals nt){
+    //   if(!asmCodeStack[nt].empty()){
+    //     string str =  asmCodeStack[nt].top();
+    //     asmCodeStack[nt].pop();
+    //     //cout<<nt<<": getting \n"<<str<<endl;
+    //     return str;
+    //   }
+    //   return "";
+    // }
 
-// void handle_data(string temp, bool vartype=true,string type="VARIABLE", string arrSize=""){
-//   string t;
-//   if(type=="VARIABLE"){
-//     temp = !vartype ? temp : temp+to_string(symboltable->countTables);
-//     t= temp + " DW  0\n\t\t";
-//   }
-//   else if(type=="ARRAY"){
-//     temp = !vartype ? temp : temp+to_string(symboltable->countTables);
-//     t = temp + " DW "+arrSize+" DUP(0)\n\t\t";
-//   }
-//   else{
-//     cout<<"handle_data function: check here\n";
-//   }
-//   tempVar=temp;
-//   tempSet=true;
-//   data_asmcode+=t;
-// }
+    // void handle_data(string temp, bool vartype=true,string type="VARIABLE", string arrSize=""){
+    //   string t;
+    //   if(type=="VARIABLE"){
+    //     temp = !vartype ? temp : temp+to_string(symboltable->countTables);
+    //     t= temp + " DW  0\n\t\t";
+    //   }
+    //   else if(type=="ARRAY"){
+    //     temp = !vartype ? temp : temp+to_string(symboltable->countTables);
+    //     t = temp + " DW "+arrSize+" DUP(0)\n\t\t";
+    //   }
+    //   else{
+    //     cout<<"handle_data function: check here\n";
+    //   }
+    //   tempVar=temp;
+    //   tempSet=true;
+    //   data_asmcode+=t;
+    // }
 
-// string codeOptimization(string inputCode){
-//   string finalOutput="";
-//   vector<string> lines;
-//   vector <string> token1, token2, token;
+    // string codeOptimization(string inputCode){
+    //   string finalOutput="";
+    //   vector<string> lines;
+    //   vector <string> token1, token2, token;
 
-//   // stringstream class check1
-//   stringstream check1(inputCode);
+    //   // stringstream class check1
+    //   stringstream check1(inputCode);
 
-//   string intermediate;
+    //   string intermediate;
 
-//   // Tokenizing w.r.t. space '\n'
-//   while(getline(check1, intermediate, '\n')) {lines.push_back(intermediate);}
+    //   // Tokenizing w.r.t. space '\n'
+    //   while(getline(check1, intermediate, '\n')) {lines.push_back(intermediate);}
 
-//   for(int i = 0; i < lines.size(); i++){
-//       //cout << lines[i] << '\n';
-//       stringstream check2(lines[i]);
-//       while(getline(check2, intermediate, ' ')) {
-//         if(intermediate[intermediate.length()-1]==','){
-//           intermediate.replace(intermediate.length()-1,1,"");
-//         }
-//         token.push_back(intermediate);
-//       }
+    //   for(int i = 0; i < lines.size(); i++){
+    //       //cout << lines[i] << '\n';
+    //       stringstream check2(lines[i]);
+    //       while(getline(check2, intermediate, ' ')) {
+    //         if(intermediate[intermediate.length()-1]==','){
+    //           intermediate.replace(intermediate.length()-1,1,"");
+    //         }
+    //         token.push_back(intermediate);
+    //       }
 
-//       if(token1.size()==0){
-//         token1 = token;
-//         token.clear();
-//       }
-//       else if(token2.size()==0){
-//         token2 = token;
-//         token.clear();
-//       }
-//       else{
-//         token1.clear();
-//         token1 = token2;
-//         token2.clear();
-//         token2 = token;
-//         token.clear();
-//       }
+    //       if(token1.size()==0){
+    //         token1 = token;
+    //         token.clear();
+    //       }
+    //       else if(token2.size()==0){
+    //         token2 = token;
+    //         token.clear();
+    //       }
+    //       else{
+    //         token1.clear();
+    //         token1 = token2;
+    //         token2.clear();
+    //         token2 = token;
+    //         token.clear();
+    //       }
 
-//       //optimization for mov
-//       if(token1.size()==token2.size() && token1.size()==3){
-//         //cout<<token1.size()<<endl;
-//         // for(int j=0;j<token2.size();j++){
-//         //   cout<<"first : "<<token1[j]<<" \tsecond line : "<<token2[j]<<"\n";
-//         // }
-//         if(token1[0]=="mov" && token2[0]=="mov"){
-//           if(token1[2]==token2[1] && token1[1] == token2[2]){
-//             cout<<lines[i]<<" is redundant.\n";
-//             lines[i]=";"+lines[i]+"    is removed for optimization";
-//           }
-//         }
-//       }
+    //       //optimization for mov
+    //       if(token1.size()==token2.size() && token1.size()==3){
+    //         //cout<<token1.size()<<endl;
+    //         // for(int j=0;j<token2.size();j++){
+    //         //   cout<<"first : "<<token1[j]<<" \tsecond line : "<<token2[j]<<"\n";
+    //         // }
+    //         if(token1[0]=="mov" && token2[0]=="mov"){
+    //           if(token1[2]==token2[1] && token1[1] == token2[2]){
+    //             cout<<lines[i]<<" is redundant.\n";
+    //             lines[i]=";"+lines[i]+"    is removed for optimization";
+    //           }
+    //         }
+    //       }
 
-//       finalOutput += lines[i]+"\n";
-//   }
-//   return finalOutput;
-// }
+    //       finalOutput += lines[i]+"\n";
+    //   }
+    //   return finalOutput;
+    // }
 
-// void WriteOptimized_code(){
-//   string model= ".model small\n";
-//   string stack = "\n.stack 100h\n";
-//   string datapart = "\n.data \n\n\t\t"+data_asmcode+"\n";
-//   string codepart = "\n.code\n\nmain proc \nmov ax,@data\nmov ds,ax\n\n"+codeOptimization(code_asmcode)+"\n";
-//   optimizedCode<<model+stack+datapart+codepart+"\n\nMOV AH, 4CH\nINT 21H\nmain ENDP\n\n";
-//   optimizedCode<<codeOptimization(func_asmcode);
-//   optimizedCode<<println_code;
-//   optimizedCode<<"\n\nEND MAIN\n";
-// }
+    // void WriteOptimized_code(){
+    //   string model= ".model small\n";
+    //   string stack = "\n.stack 100h\n";
+    //   string datapart = "\n.data \n\n\t\t"+data_asmcode+"\n";
+    //   string codepart = "\n.code\n\nmain proc \nmov ax,@data\nmov ds,ax\n\n"+codeOptimization(code_asmcode)+"\n";
+    //   optimizedCode<<model+stack+datapart+codepart+"\n\nMOV AH, 4CH\nINT 21H\nmain ENDP\n\n";
+    //   optimizedCode<<codeOptimization(func_asmcode);
+    //   optimizedCode<<println_code;
+    //   optimizedCode<<"\n\nEND MAIN\n";
+    // }
 
-// void initialASMcode(){
-//   string model= ".model small\n";
-//   string stack = "\n.stack 100h\n";
-//   string datapart = "\n.data \n\n\t\t"+data_asmcode+"\n";
-//   string codepart = "\n.code\n\nmain proc \nmov ax,@data\nmov ds,ax\n\n"+code_asmcode+"\n";
-//   codefile<<model+stack+datapart+codepart+"\n\nMOV AH, 4CH\nINT 21H\nmain ENDP\n\n";
-//   codefile<<func_asmcode;
-//   codefile<<println_code;
-//   codefile<<"\n\nEND MAIN\n";
+    // void initialASMcode(){
+    //   string model= ".model small\n";
+    //   string stack = "\n.stack 100h\n";
+    //   string datapart = "\n.data \n\n\t\t"+data_asmcode+"\n";
+    //   string codepart = "\n.code\n\nmain proc \nmov ax,@data\nmov ds,ax\n\n"+code_asmcode+"\n";
+    //   codefile<<model+stack+datapart+codepart+"\n\nMOV AH, 4CH\nINT 21H\nmain ENDP\n\n";
+    //   codefile<<func_asmcode;
+    //   codefile<<println_code;
+    //   codefile<<"\n\nEND MAIN\n";
 
-//   WriteOptimized_code();
-// }
+    //   WriteOptimized_code();
+    // }
 
-string newLabel()
+    string
+    newLabel()
 {
     string lb = "L";
     lb += to_string(labelCount);
