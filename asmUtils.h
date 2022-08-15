@@ -65,7 +65,7 @@ void initiateAssembly()
 
     //   string model= ".model small\n";
     //   string stack = "\n.stack 100h\n";
-    fprintf(asmDataOut, ".model small\n.stack 100h\n.data\n");
+    fprintf(asmDataOut, ".model small\n.stack 100h\n.data\nMINUS DB ?\nNUMBER_STRING DB \'00000$\'\n");
     fprintf(asmCodeOut, "\n.code\n\n");
 }
 
@@ -261,6 +261,11 @@ void logicopInAsm(string lt, string rt, string optr, string l1, string l2)
         l1.c_str(),
         lt.c_str(), optr == "||",
         l2.c_str());
+}
+
+void printInAsm(string str){
+    // cout << str << endl;
+    fprintf(asmCodeOut, "mov ax, %s\ncall print_number\n", str.c_str());
 }
 // void saveASMinStack(nonterminals nt, string str){
 //   //cout<<nt<<": saving \n

@@ -288,6 +288,7 @@ statement : var_declaration
 	  | IF LPAREN expression RPAREN statement %prec LOWER_THAN_ELSE
 {
 	string str = "if(" + stackPop(expression) + ")" + stackPop(statement);
+	cout << $3->temp_id << endl;
 	stackPush(statement, str);
 	printLog("statement", "IF LPAREN expression RPAREN statement", str + "\n");
 }
@@ -308,8 +309,10 @@ statement : var_declaration
 	  | PRINTLN LPAREN ID RPAREN SEMICOLON
 {
 	findVariable($3);
-	string str = "printf(" + $3->getName() + ");";
+	string str = "println(" + $3->getName() + ");";
 	stackPush(statement, str);
+	printCurrentStatement(str);
+	printInAsm($3->temp_id);
 	printLog("statement", "PRINTLN LPAREN ID RPAREN SEMICOLON", str + "\n");
 }
 	  | RETURN expression SEMICOLON
@@ -544,7 +547,7 @@ arguments : arguments COMMA logic_expression
 
 %%
 
-void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut){
+void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut, FILE* asmPrintOut){
 	char ch;
 	do {
         ch = fgetc(asmDataOut);
@@ -563,13 +566,22 @@ void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut){
         // Checking if character is not EOF.
         // If it is EOF stop eading.
     } while (ch != EOF);
-	fprintf(wholeasm, "end main");
+
+	do {
+        ch = fgetc(asmPrintOut);
+
+		if(ch == EOF) break;
+        fprintf(wholeasm, "%c", ch);
+ 
+        // Checking if character is not EOF.
+        // If it is EOF stop eading.
+    } while (ch != EOF);
 }
 
 
 int main(int argc,char *argv[])
 {
-	FILE *fp, *wholeasm;
+	FILE *fp, *wholeasm, *asmPrintOut;
 	if((fp=fopen(argv[1],"r"))==NULL)
 	{
 		printf("Cannot Open Input File.\n");
@@ -594,9 +606,10 @@ int main(int argc,char *argv[])
 
 	asmDataOut = fopen("asmData.asm", "r");
 	asmCodeOut = fopen("asmCode.asm", "r");
+ 	asmPrintOut= fopen("println.asm", "r");
 	wholeasm = fopen("1805047.asm", "w");
 
-	concatFile(wholeasm, asmDataOut, asmCodeOut);
+	concatFile(wholeasm, asmDataOut, asmCodeOut,asmPrintOut);
 
 	fclose(asmDataOut);
 	fclose(asmCodeOut);

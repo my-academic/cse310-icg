@@ -153,7 +153,7 @@ int printKeyword(string type, char* id){
         return VOID;
     if(up == "return")
         return RETURN;
-    if(up == "printf")
+    if(up == "println")
         return PRINTLN;
 
 }
@@ -215,7 +215,7 @@ rthird []]
 comma (,)
 semicolon (;)
 identifier [A-Za-z_]+[A-Za-z0-9_]*
-keywords ((if)|(else)|(for)|(while)|(do)|(int)|(char)|(float)|(double)|(void)|(return)|(default)|(continue)|(printf))
+keywords ((if)|(else)|(for)|(while)|(do)|(int)|(char)|(float)|(double)|(void)|(return)|(default)|(continue)|(println))
 special_character_2 ((\n)|(\t)|(\\)|(\')|(\")|(\a)|(\f)|(\r)|(\b)|(\v)|(\0))
 special_character_3 ((\t)|(\\)|(\')|(\")|(\a)|(\f)|(\r)|(\b)|(\v)|(\0))
 
