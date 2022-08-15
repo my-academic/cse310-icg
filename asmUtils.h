@@ -22,6 +22,7 @@ using namespace std;
 // //log and error file
 // ofstream logfile, errorfile;
 FILE *asmDataOut, *asmCodeOut;
+string else_if_label = "";
 
 // asm code for println function
 //  ifstream ifs("printlnASM.txt");

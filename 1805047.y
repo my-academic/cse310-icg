@@ -27,7 +27,7 @@ extern FILE *yyin;
 %token IF ELSE FOR WHILE INT FLOAT VOID RETURN ASSIGNOP NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD COMMA SEMICOLON PRINTLN
 %token <symbolValue> ID 
 %token <input_string> ADDOP INCOP DECOP MULOP RELOP LOGICOP CONST_INT CONST_FLOAT 
-%type <temp> xyz
+%type <temp> label_if else_if_label
 
 %type <symbolValue> program unit parameter_list func_definition func_declaration compound_statement statements statement  variable logic_expression rel_expression simple_expression term unary_expression factor arguments argument_list expression expression_statement
 
@@ -289,20 +289,22 @@ statement : var_declaration
 	stackPush(statement, str);
 	printLog("statement", "FOR LPAREN expression_statement expression_statement expression RPAREN statement", str + "\n");
 }
-	  | IF LPAREN expression RPAREN xyz statement %prec LOWER_THAN_ELSE
+	  | IF LPAREN expression RPAREN label_if statement %prec LOWER_THAN_ELSE
 {
 	string str = "if(" + stackPop(expression) + ")" + stackPop(statement);
 	stackPush(statement, str);
 	printLog("statement", "IF LPAREN expression RPAREN statement", str + "\n");
 	fprintf(asmCodeOut, "%s:\n", $5->c_str());
 }
-	  | IF LPAREN expression RPAREN xyz statement ELSE statement
+	  | IF LPAREN expression RPAREN label_if statement ELSE else_if_label statement
 {
 	string str1 = stackPop(statement);
 	string str2 = stackPop(statement);
 	string str = "if (" + stackPop(expression) + ")" + str2 + "\nelse " + str1;
 	stackPush(statement, str);
 	printLog("statement", "IF LPAREN expression RPAREN statement ELSE statement", str + "\n");
+	else_if_label = "";
+	fprintf(asmCodeOut, "%s:\n", $8->c_str());
 }
 	  | WHILE LPAREN expression RPAREN statement
 {
@@ -328,13 +330,23 @@ statement : var_declaration
 }
 	  ;
 
-xyz : 
-	  {
-		// cout << $<symbolValue>-1 ->temp_id << endl;
-		string temp = $<symbolValue>-1 ->temp_id;
-		$$ = new string(newLabel());
-		fprintf(asmCodeOut, "cmp %s, 0\nje %s\n", temp.c_str(), $$->c_str());
-	  } ;
+label_if : 
+		{
+			string temp = $<symbolValue>-1 ->temp_id;
+			$$ = new string(newLabel());
+			fprintf(asmCodeOut, "cmp %s, 0\nje %s\n", temp.c_str(), $$->c_str());
+		} ;
+
+else_if_label : 
+		{
+			if(else_if_label == "") 
+				$$ = new string(newLabel());
+			else 
+				$$ = new string(else_if_label);
+			fprintf(asmCodeOut, "jmp %s\n", $$->c_str());
+			string temp = *$<temp>-2;
+			fprintf(asmCodeOut, "%s:\n", temp.c_str());
+		};
 	  
 expression_statement 	: SEMICOLON	
 {
