@@ -7,9 +7,11 @@ int add(int a, int b) {
 
 int main() {
 	a = !0;
-	b = 5;
-	a = 2;
-	a = a * b;
+	c[0] = 5;
+	a = 19;
+	a = a % c[0];
+	a = a /c[0];
+	a = a * c[0];
 	a = !a;
 	c[1] = +a;
 	c[1] = -a;

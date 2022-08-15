@@ -491,7 +491,7 @@ symbol_info *checkAndDoMulopThings(symbol_info *left, string optr, symbol_info *
 
   symbol_info *s = new symbol_info(left->getName() + optr + right->getName(), "intermediate");
   printCurrentStatement(s->getName());
-  mulopInAsm(left->temp_id, right->temp_id, left->temp_id);
+  mulopInAsm(left->temp_id, right->temp_id, left->temp_id, optr);
   s->id_type = VARIABLE;
   s->temp_id = left->temp_id;
   s->variable_type = left->variable_type == fraction || right->variable_type == fraction ? fraction : integer;

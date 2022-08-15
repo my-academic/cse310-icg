@@ -27,3 +27,15 @@ t19 DW 0
 t20 DW 0
 t21 DW 0
 t22 DW 0
+t23 DW 0
+t24 DW 0
+t25 DW 0
+t26 DW 0
+t27 DW 0
+t28 DW 0
+t29 DW 0
+t30 DW 0
+t31 DW 0
+t32 DW 0
+t33 DW 0
+t34 DW 0

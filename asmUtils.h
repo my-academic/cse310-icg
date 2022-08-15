@@ -156,8 +156,13 @@ void notOperationOfCinAssembly(string temp_id, string l1, string l2){
     fprintf(asmCodeOut, "cmp %s, 0\nje %s\nmov %s, 0\njmp %s\n%s:\nmov %s, 1\n%s:\n", temp_id.c_str(), l1.c_str(), temp_id.c_str(), l2.c_str(), l1.c_str(), temp_id.c_str(), l2.c_str());
 }
 
-void mulopInAsm(string lt, string rt, string newt){
-    fprintf(asmCodeOut, "mov ax, %s\nmov bx, %s\nmul bx\nmov %s, ax\n", lt.c_str(), rt.c_str(), newt.c_str());
+void mulopInAsm(string lt, string rt, string newt, string optr){
+    if(optr == "*")
+        fprintf(asmCodeOut, "mov ax, %s\nmov bx, %s\nmul bx\nmov %s, ax\n", rt.c_str(), lt.c_str(), newt.c_str());
+    else if(optr == "/")
+        fprintf(asmCodeOut, "mov ax, %s\nmov bx, %s\nxor dx, dx\ndiv bx\nmov %s, ax\n", lt.c_str(), rt.c_str(), newt.c_str());
+    else 
+        fprintf(asmCodeOut, "mov ax, %s\nmov bx, %s\nxor dx, dx\ndiv bx\nmov %s, dx\n", lt.c_str(), rt.c_str(), newt.c_str());
 }
 // void saveASMinStack(nonterminals nt, string str){
 //   //cout<<nt<<": saving \n"<<str<<endl;
