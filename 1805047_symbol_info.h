@@ -21,6 +21,10 @@ public:
     string temp_id;
     string temp_index;
     string inh_label;
+    string inh_label2;
+    string inh_label3;
+
+    vector<string> return_label;
 
     symbol_id_type id_type;
     // function

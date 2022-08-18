@@ -27,7 +27,7 @@ extern FILE *yyin;
 %token IF ELSE FOR WHILE INT FLOAT VOID RETURN ASSIGNOP NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD COMMA SEMICOLON PRINTLN
 %token <symbolValue> ID 
 %token <input_string> ADDOP INCOP DECOP MULOP RELOP LOGICOP CONST_INT CONST_FLOAT 
-%type <temp> label_if else_if_label
+%type <temp> label_if else_if_label while_label
 
 %type <symbolValue> program unit parameter_list func_definition func_declaration compound_statement statements statement  variable logic_expression rel_expression simple_expression term unary_expression factor arguments argument_list expression expression_statement
 
@@ -112,7 +112,7 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN
 	string str = stackPop(type_specifier) + " " + $2->getName() + "(" + stackPop(parameter_list) + ")" + stackPop(compound_statement);
 	stackPush(func_definition, str);
 	printLog("func_definition", "type_specifier ID LPAREN parameter_list RPAREN compound_statement", str);
-	addFunctionEndStatementInAsm(current_function->getName(), current_function->sequence_of_parameters.size());
+	addFunctionEndStatementInAsm(current_function->getName(), current_function->sequence_of_parameters.size(), current_function->return_label);
 
 	printCurrentStatement($2->getName() + " function ended\n\n");
 	current_function = nullptr;
@@ -125,7 +125,7 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN
 	string str = stackPop(type_specifier) + " " + $2->getName() + "()" + stackPop(compound_statement);
 	stackPush(func_definition, str);
 	printLog("func_definition", "type_specifier ID LPAREN RPAREN compound_statement", str);
-	addFunctionEndStatementInAsm(current_function->getName(), current_function->sequence_of_parameters.size());
+	addFunctionEndStatementInAsm(current_function->getName(), current_function->sequence_of_parameters.size(), current_function->return_label);
 	current_function = nullptr;
 }
  		;				
@@ -281,13 +281,28 @@ statement : var_declaration
 	stackPush(statement, str);
 	printLog("statement", "compound_statement", str + "\n");
 }
-	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
+	  | FOR LPAREN expression_statement {
+		string condition_label = newLabel();
+		fprintf(asmCodeOut, "%s:\n", condition_label.c_str());
+		$3->inh_label = condition_label;
+	  } expression_statement {
+		string condition_false_label = newLabel();
+		string start_statement = newLabel();
+		string indecop_label = newLabel();
+		fprintf(asmCodeOut, "cmp %s, 0\nje %s\njmp %s\n%s:\n", $5->temp_id.c_str(), condition_false_label.c_str(), start_statement.c_str(), indecop_label.c_str());
+		$5->inh_label = condition_false_label;
+		$5->inh_label2 = start_statement;
+		$5->inh_label3 = indecop_label;
+	  } expression {
+		fprintf(asmCodeOut, "jmp %s\n%s:\n", $3->inh_label.c_str(), $5->inh_label2.c_str());
+	  } RPAREN statement
 {
 	string str1 = stackPop(expression_statement);
 	string str2 = stackPop(expression_statement);
 	string str = "for(" + str2 + str1 + stackPop(expression) + ")" + stackPop(statement);
 	stackPush(statement, str);
 	printLog("statement", "FOR LPAREN expression_statement expression_statement expression RPAREN statement", str + "\n");
+	fprintf(asmCodeOut, "jmp %s\n%s:\n", $5->inh_label3.c_str(), $5->inh_label.c_str());
 }
 	  | IF LPAREN expression RPAREN label_if statement %prec LOWER_THAN_ELSE
 {
@@ -306,11 +321,20 @@ statement : var_declaration
 	else_if_label = "";
 	fprintf(asmCodeOut, "%s:\n", $8->c_str());
 }
-	  | WHILE LPAREN expression RPAREN statement
+	  | WHILE LPAREN while_label {
+		string condition_check_label = newLabel();
+		fprintf(asmCodeOut, "%s:\n", condition_check_label.c_str());
+		$3 = new string(condition_check_label);
+	  } expression {
+		string condition_false_label = newLabel();
+		fprintf(asmCodeOut, "cmp %s, 0\nje %s\n", $5->temp_id.c_str(), condition_false_label.c_str());
+		$5->inh_label = condition_false_label;
+	  } RPAREN statement
 {
 	string str = "while (" + stackPop(expression) + ")" + stackPop(statement);
 	stackPush(statement, str);
 	printLog("statement", "WHILE LPAREN expression RPAREN statement", str + "\n");
+	fprintf(asmCodeOut, "jmp %s\n%s:\n", $3->c_str(), $5->inh_label.c_str());
 }
 	  | PRINTLN LPAREN ID RPAREN SEMICOLON
 {
@@ -347,6 +371,8 @@ else_if_label :
 			string temp = *$<temp>-2;
 			fprintf(asmCodeOut, "%s:\n", temp.c_str());
 		};
+
+while_label : {};
 	  
 expression_statement 	: SEMICOLON	
 {
@@ -575,6 +601,11 @@ arguments : arguments COMMA logic_expression
 
 void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut, FILE* asmPrintOut){
 	char ch;
+	// cout << has_main_function << endl;
+	if(!has_main_function || syntax_error_count + lexical_error_count > 0) {
+		printError("program has no main function");
+		return;
+	}
 	do {
         ch = fgetc(asmDataOut);
 		if(ch == EOF) break;
@@ -625,8 +656,6 @@ int main(int argc,char *argv[])
 
 
 	fclose(yyin);
-	fclose(logout);
-	fclose(errorout);
 	fclose(asmDataOut);
 	fclose(asmCodeOut);
 
@@ -640,5 +669,7 @@ int main(int argc,char *argv[])
 	fclose(asmDataOut);
 	fclose(asmCodeOut);
 	fclose(wholeasm);
+	fclose(logout);
+	fclose(errorout);
 	return 0;
 }

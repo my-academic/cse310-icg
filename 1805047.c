@@ -1,37 +1,20 @@
-int main(){
- 
-	int i,j,k;
-	
-	i = 3;
-	j = 8;
-	k = 6;
-	
-	
-	if(i==3){
-		println(j);
-	}
-	
-	if(j<8){
-		 (i);
-	}
-	else{
-		println(k);
-	}
-	
-	if(k != 6){
-		println(k);
-	}
-	else if(j > 8){
-		println(j);
-	}
-	else if(i < 5){
-		println(i);
-	}
-	else{
-		k = 0;
-		println(k);
-	}
- 
- 
+int func (int n){
+  int i;
+  if (n==0) return 0;
+  i=n;
+  return func(n-1)+i;
+}
+
+int func2 (int n){
+  int i;
+  if (n==0) return 0;
+  i=n;
+  return func(n-1)+i;
+}
+
+int main() {
+	int a;
+	a = func(7);
+	println(a);
 	return 0;
 }

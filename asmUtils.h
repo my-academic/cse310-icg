@@ -24,6 +24,8 @@ using namespace std;
 FILE *asmDataOut, *asmCodeOut;
 string else_if_label = "";
 
+bool has_main_function = false;
+
 // asm code for println function
 //  ifstream ifs("printlnASM.txt");
 //  string println_code( (std::istreambuf_iterator<char>(ifs) ),(std::istreambuf_iterator<char>()    ) );
@@ -80,15 +82,20 @@ void addDataInAssembly(string name, string scope_id, bool is_array = false, int 
 
 void addFuncDefinitionInAsm(string name, int param_count)
 {
-
+    has_main_function |= (name == "main");
     if (name == "main")
         fprintf(asmCodeOut, "main proc\nmov ax, @data\nmov ds,ax\n\n");
     else
         fprintf(asmCodeOut, "%s_procedure proc\npush bp\nmov bp, sp\n\n", name.c_str());
 }
 
-void addFunctionEndStatementInAsm(string name, int param_count)
+void addFunctionEndStatementInAsm(string name, int param_count, vector<string> return_label)
 {
+    for (size_t i = 0; i < return_label.size(); i++)
+    {
+        fprintf(asmCodeOut, "%s: \n", return_label[i].c_str());
+    }
+    
     if (name == "main")
     {
         fprintf(asmCodeOut, "\nmov ah, 4ch\nint 21h\n");
@@ -121,12 +128,12 @@ void addCodeForVariableAssignment(string lhs, string rhs)
     fprintf(asmCodeOut, "mov ax, %s \nmov %s, ax\n\n", rhs.c_str(), lhs.c_str());
 }
 
-void addCodeForInDeOP(string op, string variable, string idx = "")
+void addCodeForInDeOP(string op, string temp, string variable, string idx = "")
 {
     if (idx != "")
-        fprintf(asmCodeOut, "mov bx, %s\n%s %s[bx]\n\n", idx.c_str(), op.c_str(), variable.c_str());
+        fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\nmov bx, %s\n%s %s[bx]\n\n", variable.c_str(), temp.c_str(), idx.c_str(), op.c_str(), variable.c_str());
     else
-        fprintf(asmCodeOut, "%s %s\n\n", op.c_str(), variable.c_str());
+        fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\n%s %s\n\n", variable.c_str(), temp.c_str(), op.c_str(), variable.c_str());
 }
 
 void bufferingVariable(string temp_var_name, string var_name, string idx = "")
@@ -142,14 +149,14 @@ void pushToStack(string str)
     fprintf(asmCodeOut, "push %s\n", str.c_str());
 }
 
-void callFunction(string str)
+void callFunction(string str, string temp)
 {
-    fprintf(asmCodeOut, "call %s_procedure\n", str.c_str());
+    fprintf(asmCodeOut, "call %s_procedure\nmov %s, ax\n", str.c_str(), temp.c_str());
 }
 
-void setReturnValueInAsm(string str)
+void setReturnValueInAsm(string str, string return_label)
 {
-    fprintf(asmCodeOut, "mov ax, %s\n\n", str.c_str());
+    fprintf(asmCodeOut, "mov ax, %s\njmp %s\n", str.c_str(), return_label.c_str());
 }
 
 void negateInAssembly(string operand, string assigning)

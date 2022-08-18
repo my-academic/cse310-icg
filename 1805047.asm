@@ -4,8 +4,6 @@
 MINUS DB ?
 NUMBER_STRING DB '00000$'
 i1_1 DW 0
-j1_1 DW 0
-k1_1 DW 0
 t0 DW 0
 t1 DW 0
 t2 DW 0
@@ -14,6 +12,7 @@ t4 DW 0
 t5 DW 0
 t6 DW 0
 t7 DW 0
+i1_2 DW 0
 t8 DW 0
 t9 DW 0
 t10 DW 0
@@ -21,8 +20,189 @@ t11 DW 0
 t12 DW 0
 t13 DW 0
 t14 DW 0
+t15 DW 0
+a1_3 DW 0
+t16 DW 0
+t17 DW 0
+t18 DW 0
 
 .code
+
+
+;int func function
+func_procedure proc
+push bp
+mov bp, sp
+
+
+;n
+mov ax, [bp+4]
+mov t0, ax
+
+
+;0
+mov t1, 0
+
+
+;n==0
+        mov ax, t1
+        cmp t0, ax
+        je L1
+        mov t0, 0
+        jmp L0
+        L1:
+        mov t0, 1
+        L0:
+cmp t0, 0
+je L2
+
+;0
+mov t2, 0
+
+
+;return 0
+mov ax, t2
+jmp L3
+L2:
+
+;n
+mov ax, [bp+4]
+mov t3, ax
+
+
+;i = n
+mov ax, t3 
+mov i1_1, ax
+
+
+;n
+mov ax, [bp+4]
+mov t4, ax
+
+
+;1
+mov t5, 1
+
+
+;n-1
+mov ax, t5
+sub t4, ax
+push t4
+
+;func(n-1)
+call func_procedure
+mov t6, ax
+
+;i
+mov ax, i1_1
+mov t7, ax
+
+
+;func(n-1)+i
+mov ax, t7
+add t6, ax
+
+;return func(n-1)+i
+mov ax, t6
+jmp L4
+L3: 
+L4: 
+
+pop bp
+ret 2
+func_procedure endp
+
+
+;func function ended
+
+
+
+;int func2 function
+func2_procedure proc
+push bp
+mov bp, sp
+
+
+;n
+mov ax, [bp+4]
+mov t8, ax
+
+
+;0
+mov t9, 0
+
+
+;n==0
+        mov ax, t9
+        cmp t8, ax
+        je L6
+        mov t8, 0
+        jmp L5
+        L6:
+        mov t8, 1
+        L5:
+cmp t8, 0
+je L7
+
+;0
+mov t10, 0
+
+
+;return 0
+mov ax, t10
+jmp L8
+L7:
+
+;n
+mov ax, [bp+4]
+mov t11, ax
+
+
+;i = n
+mov ax, t11 
+mov i1_2, ax
+
+
+;n
+mov ax, [bp+4]
+mov t12, ax
+
+
+;1
+mov t13, 1
+
+
+;n-1
+mov ax, t13
+sub t12, ax
+push t12
+
+;func(n-1)
+call func_procedure
+mov t14, ax
+
+;i
+mov ax, i1_2
+mov t15, ax
+
+
+;func(n-1)+i
+mov ax, t15
+add t14, ax
+
+;return func(n-1)+i
+mov ax, t14
+jmp L9
+L8: 
+L9: 
+
+pop bp
+ret 2
+func2_procedure endp
+
+
+;func2 function ended
+
 
 
 ;int main function
@@ -31,195 +211,32 @@ mov ax, @data
 mov ds,ax
 
 
-;3
-mov t0, 3
+;7
+mov t16, 7
+
+push t16
+
+;func(7)
+call func_procedure
+mov t17, ax
+
+;a = func(7)
+mov ax, t17 
+mov a1_3, ax
 
 
-;i = 3
-mov ax, t0 
-mov i1_1, ax
-
-
-;8
-mov t1, 8
-
-
-;j = 8
-mov ax, t1 
-mov j1_1, ax
-
-
-;6
-mov t2, 6
-
-
-;k = 6
-mov ax, t2 
-mov k1_1, ax
-
-
-;i
-mov ax, i1_1
-mov t3, ax
-
-
-;3
-mov t4, 3
-
-
-;i==3
-        mov ax, t4
-        cmp t3, ax
-        je L1
-        mov t3, 0
-        jmp L0
-        L1:
-        mov t3, 1
-        L0:
-cmp t3, 0
-je L2
-
-;println(j);
-mov ax, j1_1
+;println(a);
+mov ax, a1_3
 call print_number
-L2:
-
-;j
-mov ax, j1_1
-mov t5, ax
-
-
-;8
-mov t6, 8
-
-
-;j<8
-        mov ax, t6
-        cmp t5, ax
-        jl L4
-        mov t5, 0
-        jmp L3
-        L4:
-        mov t5, 1
-        L3:
-cmp t5, 0
-je L5
-
-;println(i);
-mov ax, i1_1
-call print_number
-jmp L6
-L5:
-
-;println(k);
-mov ax, k1_1
-call print_number
-L6:
-
-;k
-mov ax, k1_1
-mov t7, ax
-
-
-;6
-mov t8, 6
-
-
-;k!=6
-        mov ax, t8
-        cmp t7, ax
-        jne L8
-        mov t7, 0
-        jmp L7
-        L8:
-        mov t7, 1
-        L7:
-cmp t7, 0
-je L9
-
-;println(k);
-mov ax, k1_1
-call print_number
-jmp L10
-L9:
-
-;j
-mov ax, j1_1
-mov t9, ax
-
-
-;8
-mov t10, 8
-
-
-;j>8
-        mov ax, t10
-        cmp t9, ax
-        jg L12
-        mov t9, 0
-        jmp L11
-        L12:
-        mov t9, 1
-        L11:
-cmp t9, 0
-je L13
-
-;println(j);
-mov ax, j1_1
-call print_number
-jmp L14
-L13:
-
-;i
-mov ax, i1_1
-mov t11, ax
-
-
-;5
-mov t12, 5
-
-
-;i<5
-        mov ax, t12
-        cmp t11, ax
-        jl L16
-        mov t11, 0
-        jmp L15
-        L16:
-        mov t11, 1
-        L15:
-cmp t11, 0
-je L17
-
-;println(i);
-mov ax, i1_1
-call print_number
-jmp L18
-L17:
 
 ;0
-mov t13, 0
-
-
-;k = 0
-mov ax, t13 
-mov k1_1, ax
-
-
-;println(k);
-mov ax, k1_1
-call print_number
-L18:
-L14:
-L10:
-
-;0
-mov t14, 0
+mov t18, 0
 
 
 ;return 0
-mov ax, t14
-
+mov ax, t18
+jmp L10
+L10: 
 
 mov ah, 4ch
 int 21h

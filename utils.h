@@ -590,9 +590,10 @@ symbol_info *checkFunctionArguments(symbol_info *si)
   symbol_info *s = new symbol_info(argus, intermediate);
   s->id_type = VARIABLE;
   s->variable_type = symbolInfo->return_type;
+  s->temp_id = newTemp();
   args.clear();
   printCurrentStatement(argus);
-  callFunction(si->getName());
+  callFunction(si->getName(), s->temp_id);
   return s;
 }
 
@@ -602,8 +603,10 @@ void checkFuncReturnCompatibility(symbol_info *symbolInfo)
   {
     printError("return type does not match");
   }
+  string label = newLabel();
+  current_function->return_label.push_back(label);
   printCurrentStatement("return " + symbolInfo->getName());
-  setReturnValueInAsm(symbolInfo->temp_id);
+  setReturnValueInAsm(symbolInfo->temp_id, label);
 }
 
 symbol_info *checkINDECopCompatibility(symbol_info *symbolInfo, string optr)
@@ -614,15 +617,16 @@ symbol_info *checkINDECopCompatibility(symbol_info *symbolInfo, string optr)
   symbol_info *s = new symbol_info(symbolInfo->getName() + optr, intermediate);
   s->id_type = VARIABLE;
   s->variable_type = symbolInfo->variable_type;
+  s->temp_id = newTemp();
   if (isArray(symbolInfo))
   {
     printCurrentStatement(s->getName());
-    addCodeForInDeOP(optr == "++" ? "inc" : "dec", symbolInfo->temp_id, symbolInfo->temp_index);
+    addCodeForInDeOP(optr == "++" ? "inc" : "dec", s->temp_id, symbolInfo->temp_id, symbolInfo->temp_index);
   }
   else
   {
     printCurrentStatement(s->getName());
-    addCodeForInDeOP(optr == "++" ? "inc" : "dec", symbolInfo->temp_id);
+    addCodeForInDeOP(optr == "++" ? "inc" : "dec", s->temp_id, symbolInfo->temp_id);
   }
   return s;
 }
