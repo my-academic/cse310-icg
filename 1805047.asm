@@ -3,205 +3,107 @@
 .data
 MINUS DB ?
 NUMBER_STRING DB '00000$'
-i1_1 DW 0
-t0 DW 0
-t1 DW 0
-t2 DW 0
-t3 DW 0
-t4 DW 0
-t5 DW 0
-t6 DW 0
-t7 DW 0
-i1_2 DW 0
-t8 DW 0
-t9 DW 0
-t10 DW 0
-t11 DW 0
-t12 DW 0
-t13 DW 0
-t14 DW 0
-t15 DW 0
+x1_2 DW 0
 a1_3 DW 0
-t16 DW 0
-t17 DW 0
-t18 DW 0
+b1_3 DW 0
 
 .code
 
 
-;int func function
-func_procedure proc
+;int f function
+f_procedure proc
 push bp
 mov bp, sp
 
 
-;n
-mov ax, [bp+4]
-mov t0, ax
+;2
+push 2
 
+;a
+push [bp+4]
 
-;0
-mov t1, 0
+;2*a
+        pop ax
+        pop bx
+        mul bx
+push ax
 
+;return 2*a
+pop ax
+jmp L0
 
-;n==0
-        mov ax, t1
-        cmp t0, ax
-        je L1
-        mov t0, 0
-        jmp L0
-        L1:
-        mov t0, 1
-        L0:
-cmp t0, 0
-je L2
+;9
+push 9
 
-;0
-mov t2, 0
+;a = 9
+pop ax
+mov [bp+4], ax
 
-
-;return 0
-mov ax, t2
-jmp L3
-L2:
-
-;n
-mov ax, [bp+4]
-mov t3, ax
-
-
-;i = n
-mov ax, t3 
-mov i1_1, ax
-
-
-;n
-mov ax, [bp+4]
-mov t4, ax
-
-
-;1
-mov t5, 1
-
-
-;n-1
-mov ax, t5
-sub t4, ax
-push t4
-
-;func(n-1)
-call func_procedure
-mov t6, ax
-
-;i
-mov ax, i1_1
-mov t7, ax
-
-
-;func(n-1)+i
-mov ax, t7
-add t6, ax
-
-;return func(n-1)+i
-mov ax, t6
-jmp L4
-L3: 
-L4: 
+push ax
+pop cx
+L0: 
 
 pop bp
 ret 2
-func_procedure endp
+f_procedure endp
 
 
-;func function ended
+;f function ended
 
 
 
-;int func2 function
-func2_procedure proc
+;int g function
+g_procedure proc
 push bp
 mov bp, sp
 
 
-;n
-mov ax, [bp+4]
-mov t8, ax
+;a
+push [bp+6]
 
+;f(a)
+call f_procedure
+push ax
 
-;0
-mov t9, 0
+;a
+push [bp+6]
 
+;f(a)+a
+pop bx
+pop ax
+add ax, bx
+push ax
 
-;n==0
-        mov ax, t9
-        cmp t8, ax
-        je L6
-        mov t8, 0
-        jmp L5
-        L6:
-        mov t8, 1
-        L5:
-cmp t8, 0
-je L7
+;b
+push [bp+4]
 
-;0
-mov t10, 0
+;f(a)+a+b
+pop bx
+pop ax
+add ax, bx
+push ax
 
+;x = f(a)+a+b
+pop ax
+mov x1_2, ax
 
-;return 0
-mov ax, t10
-jmp L8
-L7:
+push ax
+pop cx
 
-;n
-mov ax, [bp+4]
-mov t11, ax
+;x
+push x1_2
 
-
-;i = n
-mov ax, t11 
-mov i1_2, ax
-
-
-;n
-mov ax, [bp+4]
-mov t12, ax
-
-
-;1
-mov t13, 1
-
-
-;n-1
-mov ax, t13
-sub t12, ax
-push t12
-
-;func(n-1)
-call func_procedure
-mov t14, ax
-
-;i
-mov ax, i1_2
-mov t15, ax
-
-
-;func(n-1)+i
-mov ax, t15
-add t14, ax
-
-;return func(n-1)+i
-mov ax, t14
-jmp L9
-L8: 
-L9: 
+;return x
+pop ax
+jmp L1
+L1: 
 
 pop bp
-ret 2
-func2_procedure endp
+ret 4
+g_procedure endp
 
 
-;func2 function ended
+;g function ended
 
 
 
@@ -211,32 +113,96 @@ mov ax, @data
 mov ds,ax
 
 
-;7
-mov t16, 7
+;1
+push 1
 
-push t16
+;2                                                                                                                                                           
+push 2
 
-;func(7)
-call func_procedure
-mov t17, ax
+;1||2
+        pop bx
+        pop ax
+        cmp ax, 0
+        jne L3
+        cmp bx, 0
+        jne L3
+        push 0
+        jmp L2
+        L3:
+        push 1
+        L2:
 
-;a = func(7)
-mov ax, t17 
+;a = 1||2
+pop ax
 mov a1_3, ax
 
+push ax
+pop cx
+
+;2
+push 2
+
+;0
+push 0
+
+;2&&0
+        pop bx
+        pop ax
+        cmp ax, 0
+        je L5
+        cmp bx, 0
+        je L5
+        push 1
+        jmp L4
+        L5:
+        push 0
+        L4:
+
+;a = 2&&0
+pop ax
+mov a1_3, ax
+
+push ax
+pop cx
+
+;2
+push 2
+
+;b = 2
+pop ax
+mov b1_3, ax
+
+push ax
+pop cx
+
+;a
+push a1_3
+
+;b
+push b1_3
+
+;g(a,b)
+call g_procedure
+push ax
+
+;a = g(a,b)
+pop ax
+mov a1_3, ax
+
+push ax
+pop cx
 
 ;println(a);
 mov ax, a1_3
 call print_number
 
 ;0
-mov t18, 0
-
+push 0
 
 ;return 0
-mov ax, t18
-jmp L10
-L10: 
+pop ax
+jmp L6
+L6: 
 
 mov ah, 4ch
 int 21h

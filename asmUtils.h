@@ -26,6 +26,11 @@ string else_if_label = "";
 
 bool has_main_function = false;
 
+void pushToStackTemp(string str) {
+    fprintf(asmCodeOut, "push %s\n", str.c_str());
+}
+
+
 // asm code for println function
 //  ifstream ifs("printlnASM.txt");
 //  string println_code( (std::istreambuf_iterator<char>(ifs) ),(std::istreambuf_iterator<char>()    ) );
@@ -115,25 +120,31 @@ void addCodeForConst(string var_name, string value)
 
 void addArrayIndexInAsm(string var_name, string temp_idx)
 {
-    fprintf(asmCodeOut, "mov bx, %s\nshl bx, 1\nmov %s, bx\n\n", var_name.c_str(), temp_idx.c_str());
+    fprintf(asmCodeOut, "pop bx\nshl bx, 1\npush bx\n\n");
 }
 
 void addCodeForArrayAssignment(string lhs, string idx, string rhs)
 {
-    fprintf(asmCodeOut, "mov ax, %s \nmov bx, %s\nmov %s[bx], ax\n\n", rhs.c_str(), idx.c_str(), lhs.c_str());
+    fprintf(asmCodeOut, "pop ax\npop bx\nmov %s[bx], ax\n\n", lhs.c_str());
+    pushToStackTemp("ax");
 }
 
 void addCodeForVariableAssignment(string lhs, string rhs)
 {
-    fprintf(asmCodeOut, "mov ax, %s \nmov %s, ax\n\n", rhs.c_str(), lhs.c_str());
+    fprintf(asmCodeOut, "pop ax\nmov %s, ax\n\n", lhs.c_str());
+    pushToStackTemp("ax");
 }
 
 void addCodeForInDeOP(string op, string temp, string variable, string idx = "")
 {
+    // if (idx != "")
+    //     fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\nmov bx, %s\n%s %s[bx]\n\n", variable.c_str(), temp.c_str(), idx.c_str(), op.c_str(), variable.c_str());
+    // else
+    //     fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\n%s %s\n\n", variable.c_str(), temp.c_str(), op.c_str(), variable.c_str());
     if (idx != "")
-        fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\nmov bx, %s\n%s %s[bx]\n\n", variable.c_str(), temp.c_str(), idx.c_str(), op.c_str(), variable.c_str());
+        fprintf(asmCodeOut, "pop bx\npush %s[bx]\n%s %s[bx]\n\n",  idx.c_str(),  variable.c_str(), op.c_str(), variable.c_str());
     else
-        fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\n%s %s\n\n", variable.c_str(), temp.c_str(), op.c_str(), variable.c_str());
+        fprintf(asmCodeOut, "push %s\n%s %s\n\n", variable.c_str(), op.c_str(), variable.c_str());
 }
 
 void bufferingVariable(string temp_var_name, string var_name, string idx = "")
@@ -151,22 +162,26 @@ void pushToStack(string str)
 
 void callFunction(string str, string temp)
 {
-    fprintf(asmCodeOut, "call %s_procedure\nmov %s, ax\n", str.c_str(), temp.c_str());
+    // fprintf(asmCodeOut, "call %s_procedure\nmov %s, ax\n", str.c_str(), temp.c_str());
+    fprintf(asmCodeOut, "call %s_procedure\n", str.c_str());
+    pushToStackTemp("ax");
 }
 
 void setReturnValueInAsm(string str, string return_label)
 {
-    fprintf(asmCodeOut, "mov ax, %s\njmp %s\n", str.c_str(), return_label.c_str());
+    fprintf(asmCodeOut, "pop ax\njmp %s\n", return_label.c_str());
 }
 
 void negateInAssembly(string operand, string assigning)
 {
-    fprintf(asmCodeOut, "mov ax, %s\nneg ax\nmov %s, ax\n", operand.c_str(), assigning.c_str());
+    fprintf(asmCodeOut, "pop ax\nneg ax\n");
+    pushToStackTemp("ax");
 }
 
 void notOperationOfCinAssembly(string temp_id, string l1, string l2)
 {
-    fprintf(asmCodeOut, "cmp %s, 0\nje %s\nmov %s, 0\njmp %s\n%s:\nmov %s, 1\n%s:\n", temp_id.c_str(), l1.c_str(), temp_id.c_str(), l2.c_str(), l1.c_str(), temp_id.c_str(), l2.c_str());
+    fprintf(asmCodeOut, "pop ax\ncmp ax, 0\nje %s\nmov ax, 0\njmp %s\n%s:\nmov ax, 1\n%s:\n", l1.c_str(), l2.c_str(), l1.c_str(), l2.c_str());
+    pushToStackTemp("ax");
 }
 
 void mulopInAsm(string lt, string rt, string newt, string optr)
@@ -174,43 +189,28 @@ void mulopInAsm(string lt, string rt, string newt, string optr)
     if (optr == "*")
         fprintf(asmCodeOut, 
         "\
-        mov ax, %s\n\
-        mov bx, %s\n\
-        mul bx\n\
-        mov %s, ax\n",
-        rt.c_str(),
-        lt.c_str(),
-        newt.c_str());
-    else if (optr == "/")
-        fprintf(asmCodeOut,
-        "\
-        mov ax, %s\n\
-        mov bx, %s\n\
-        xor dx, dx\n\
-        div bx\n\
-        mov %s, ax\n",
-        lt.c_str(),
-        rt.c_str(),
-        newt.c_str());
+        pop ax\n\
+        pop bx\n\
+        mul bx\n");
     else
         fprintf(asmCodeOut,
         "\
-        mov ax, %s\n\
-        mov bx, %s\n\
+        pop bx\n\
+        pop ax\n\
         xor dx, dx\n\
-        div bx\n\
-        mov %s, dx\n",
-        lt.c_str(),
-        rt.c_str(),
-        newt.c_str());
+        div bx\n");
+    pushToStackTemp(optr == "%" ? "dx" : "ax");
 }
 
 void addopInAsm(string lt, string rt, string optr)
 {
-    if (optr == "+")
-        fprintf(asmCodeOut, "mov ax, %s\nadd %s, ax\n", rt.c_str(), lt.c_str());
-    else if (optr == "-")
-        fprintf(asmCodeOut, "mov ax, %s\nsub %s, ax\n", rt.c_str(), lt.c_str());
+    // if (optr == "+")
+    //     fprintf(asmCodeOut, "mov ax, %s\nadd %s, ax\n", rt.c_str(), lt.c_str());
+    // else if (optr == "-")
+    //     fprintf(asmCodeOut, "mov ax, %s\nsub %s, ax\n", rt.c_str(), lt.c_str());
+    string cmd = optr == "-" ? "sub" : "add";
+    fprintf(asmCodeOut, "pop bx\npop ax\n%s ax, bx\n", cmd.c_str());
+    pushToStackTemp("ax");
 }
 
 void relopInAsm(string lt, string rt, string optr, string l1, string l2)
@@ -223,21 +223,18 @@ void relopInAsm(string lt, string rt, string optr, string l1, string l2)
                                                            : "";
     fprintf(asmCodeOut, 
         "\
-        mov ax, %s\n\
-        cmp %s, ax\n\
+        pop ax\n\
+        pop bx\n\
+        cmp bx, ax\n\
         %s %s\n\
-        mov %s, 0\n\
+        push 0\n\
         jmp %s\n\
         %s:\n\
-        mov %s, 1\n\
+        push 1\n\
         %s:\n",
-        rt.c_str(),
-        lt.c_str(),
         branching.c_str(), l1.c_str(),
-        lt.c_str(),
         l2.c_str(),
         l1.c_str(),
-        lt.c_str(),
         l2.c_str());
 }
 
@@ -246,29 +243,31 @@ void logicopInAsm(string lt, string rt, string optr, string l1, string l2)
     string branching = optr == "&&" ? "je" : optr == "||" ? "jne" :"";
     fprintf(asmCodeOut, 
         "\
-        cmp %s, 0\n\
+        pop bx\n\
+        pop ax\n\
+        cmp ax, 0\n\
         %s %s\n\
-        cmp %s, 0\n\
+        cmp bx, 0\n\
         %s %s\n\
-        mov %s, %d\n\
+        push %d\n\
         jmp %s\n\
         %s:\n\
-        mov %s, %d\n\
+        push %d\n\
         %s:\n",
-        lt.c_str(),
         branching.c_str(), l1.c_str(),
-        rt.c_str(),
         branching.c_str(), l1.c_str(),
-        lt.c_str(), optr == "&&",
+        optr == "&&",
         l2.c_str(),
         l1.c_str(),
-        lt.c_str(), optr == "||",
+        optr == "||",
         l2.c_str());
 }
 
 void printInAsm(string str){
     fprintf(asmCodeOut, "mov ax, %s\ncall print_number\n", str.c_str());
 }
+
+
 // void saveASMinStack(nonterminals nt, string str){
 //   //cout<<nt<<": saving \n
 // "<<str<<endl;

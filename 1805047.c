@@ -1,20 +1,20 @@
-int func (int n){
-  int i;
-  if (n==0) return 0;
-  i=n;
-  return func(n-1)+i;
+int f(int a){
+    return 2*a;
+    a=9;
 }
 
-int func2 (int n){
-  int i;
-  if (n==0) return 0;
-  i=n;
-  return func(n-1)+i;
+int g(int a, int b){
+    int x;
+    x=f(a)+a+b;
+    return x;
 }
 
-int main() {
-	int a;
-	a = func(7);
-	println(a);
-	return 0;
+int main(){
+    int a,b;
+    a= 1 || 2;
+	a = 2 && 
+    b=2;
+    a=g(a,b);
+    println(a);
+    return 0;
 }

@@ -395,7 +395,7 @@ symbol_info *checkArrayIndex(string var_name, symbol_info *idx)
       t->id_type = VARIABLE;
       t->variable_type = s->array_type;
       t->temp_id = var_name + p.second;
-      t->temp_index = newTemp();
+      // t->temp_index = newTemp();
       printCurrentStatement(t->getName());
       addArrayIndexInAsm(idx->temp_id, t->temp_index);
       return t;
@@ -459,9 +459,10 @@ symbol_info *setIntermediateValues(string symbol_type, string variable_type, flo
   symbol_info *target = new symbol_info(name, symbol_type);
   target->id_type = VARIABLE;
   target->variable_type = variable_type;
-  target->temp_id = newTemp();
+  // target->temp_id = newTemp();
   printCurrentStatement(target->getName());
-  addCodeForConst(target->temp_id, name);
+  // addCodeForConst(target->temp_id, name);
+  pushToStackTemp(name);
   return target;
 }
 
@@ -590,7 +591,7 @@ symbol_info *checkFunctionArguments(symbol_info *si)
   symbol_info *s = new symbol_info(argus, intermediate);
   s->id_type = VARIABLE;
   s->variable_type = symbolInfo->return_type;
-  s->temp_id = newTemp();
+  // s->temp_id = newTemp();
   args.clear();
   printCurrentStatement(argus);
   callFunction(si->getName(), s->temp_id);
@@ -617,7 +618,7 @@ symbol_info *checkINDECopCompatibility(symbol_info *symbolInfo, string optr)
   symbol_info *s = new symbol_info(symbolInfo->getName() + optr, intermediate);
   s->id_type = VARIABLE;
   s->variable_type = symbolInfo->variable_type;
-  s->temp_id = newTemp();
+  // s->temp_id = newTemp();
   if (isArray(symbolInfo))
   {
     printCurrentStatement(s->getName());
@@ -685,6 +686,7 @@ symbol_info *checkLPAREN_Expression_RPAREN(symbol_info *symbolInfo)
   s->temp_index = symbolInfo->temp_index;
   s->id_type = VARIABLE;
   s->variable_type = symbolInfo->variable_type;
+  // pushToStack(s->temp_id);
   return s;
 }
 

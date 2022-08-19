@@ -8,788 +8,741 @@ int
 
 Line 1: parameter_list : type_specifier ID
 
-int n
+int a
 
-Line 2: type_specifier : INT
+Line 2: factor : CONST_INT
 
-int
+2
 
-Line 2: declaration_list : ID
+Line 2: unary_expression : factor
 
-i
+2
 
-Line 2: var_declaration : type_specifier declaration_list SEMICOLON
+Line 2: term : unary_expression
 
-int i;
+2
 
-Line 2: statement : var_declaration
+Line 2: variable : ID
 
-int i;
+a
+
+Line 2: factor : variable
+
+a
+
+Line 2: unary_expression : factor
+
+a
+
+Line 2: term : term MULOP unary_expression
+
+2*a
+
+Line 2: simple_expression : term
+
+2*a
+
+Line 2: rel_expression : simple_expression
+
+2*a
+
+Line 2: logic_expression : rel_expression
+
+2*a
+
+Line 2: expression : logic_expression
+
+2*a
+
+Line 2: statement : RETURN expression SEMICOLON
+
+return 2*a;
 
 
 Line 2: statements : statement
 
-int i;
+return 2*a;
 
 
 Line 3: variable : ID
 
-n
-
-Line 3: factor : variable
-
-n
-
-Line 3: unary_expression : factor
-
-n
-
-Line 3: term : unary_expression
-
-n
-
-Line 3: simple_expression : term
-
-n
+a
 
 Line 3: factor : CONST_INT
 
-0
+9
 
 Line 3: unary_expression : factor
 
-0
+9
 
 Line 3: term : unary_expression
 
-0
+9
 
 Line 3: simple_expression : term
 
-0
-
-Line 3: rel_expression : simple_expression RELOP simple_expression	
-
-n==0
-
-Line 3: logic_expression : rel_expression
-
-n==0
-
-Line 3: expression : logic_expression
-
-n==0
-
-Line 3: factor : CONST_INT
-
-0
-
-Line 3: unary_expression : factor
-
-0
-
-Line 3: term : unary_expression
-
-0
-
-Line 3: simple_expression : term
-
-0
+9
 
 Line 3: rel_expression : simple_expression
 
-0
+9
 
 Line 3: logic_expression : rel_expression
 
-0
+9
 
-Line 3: expression : logic_expression
+Line 3: expression : variable ASSIGNOP logic_expression
 
-0
+a=9
 
-Line 3: statement : RETURN expression SEMICOLON
+Line 3: expression_statement : expression SEMICOLON
 
-return 0;
+a=9;
 
+Line 3: statement : expression_statement
 
-Line 4: statement : IF LPAREN expression RPAREN statement
+a=9;
 
-if(n==0)return 0;
 
+Line 3: statements : statements statement
 
-Line 4: statements : statements statement
+return 2*a;
+a=9;
 
-int i;
-if(n==0)return 0;
 
-
-Line 4: variable : ID
-
-i
-
-Line 4: variable : ID
-
-n
-
-Line 4: factor : variable
-
-n
-
-Line 4: unary_expression : factor
-
-n
-
-Line 4: term : unary_expression
-
-n
-
-Line 4: simple_expression : term
-
-n
-
-Line 4: rel_expression : simple_expression
-
-n
-
-Line 4: logic_expression : rel_expression
-
-n
-
-Line 4: expression : variable ASSIGNOP logic_expression
-
-i=n
-
-Line 4: expression_statement : expression SEMICOLON
-
-i=n;
-
-Line 4: statement : expression_statement
-
-i=n;
-
-
-Line 4: statements : statements statement
-
-int i;
-if(n==0)return 0;
-i=n;
-
-
-Line 5: variable : ID
-
-n
-
-Line 5: factor : variable
-
-n
-
-Line 5: unary_expression : factor
-
-n
-
-Line 5: term : unary_expression
-
-n
-
-Line 5: simple_expression : term
-
-n
-
-Line 5: factor : CONST_INT
-
-1
-
-Line 5: unary_expression : factor
-
-1
-
-Line 5: term : unary_expression
-
-1
-
-Line 5: simple_expression : simple_expression ADDOP term
-
-n-1
-
-Line 5: rel_expression : simple_expression
-
-n-1
-
-Line 5: logic_expression : rel_expression
-
-n-1
-
-Line 5: arguments : logic_expression
-
-n-1
-
-Line 5: argument_list : arguments
-
-n-1
-
-Line 5: factor : ID LPAREN argument_list RPAREN
-
-func(n-1)
-
-Line 5: unary_expression : factor
-
-func(n-1)
-
-Line 5: term : unary_expression
-
-func(n-1)
-
-Line 5: simple_expression : term
-
-func(n-1)
-
-Line 5: variable : ID
-
-i
-
-Line 5: factor : variable
-
-i
-
-Line 5: unary_expression : factor
-
-i
-
-Line 5: term : unary_expression
-
-i
-
-Line 5: simple_expression : simple_expression ADDOP term
-
-func(n-1)+i
-
-Line 5: rel_expression : simple_expression
-
-func(n-1)+i
-
-Line 5: logic_expression : rel_expression
-
-func(n-1)+i
-
-Line 5: expression : logic_expression
-
-func(n-1)+i
-
-Line 5: statement : RETURN expression SEMICOLON
-
-return func(n-1)+i;
-
-
-Line 5: statements : statements statement
-
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
-
-
-Line 6: compound_statement : LCURL statements RCURL
+Line 4: compound_statement : LCURL statements RCURL
 
 {
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
+return 2*a;
+a=9;
 }
 
 
 
 
 ScopeTable # 1_1 
-12 -->  < i : ID> 
-17 -->  < n : ID> 
+4 -->  < a : ID> 
 
 
 
 ScopeTable # 1 
-13 -->  < func : ID> 
+9 -->  < f : ID> 
 
-Line 6: func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
+Line 4: func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
 
-int func(int n){
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
+int f(int a){
+return 2*a;
+a=9;
 }
 
-Line 6: unit : func_definition
+Line 4: unit : func_definition
 
-int func(int n){
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
+int f(int a){
+return 2*a;
+a=9;
 }
 
 
-Line 6: program : unit
+Line 4: program : unit
 
-int func(int n){
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
+int f(int a){
+return 2*a;
+a=9;
 }
 
 
-Line 8: type_specifier : INT
+Line 6: type_specifier : INT
 
 int
 
-Line 8: type_specifier : INT
+Line 6: type_specifier : INT
 
 int
 
-Line 8: parameter_list : type_specifier ID
+Line 6: parameter_list : type_specifier ID
 
-int n
+int a
 
-Line 9: type_specifier : INT
+Line 6: type_specifier : INT
 
 int
 
-Line 9: declaration_list : ID
+Line 6: parameter_list : parameter_list COMMA type_specifier ID
 
-i
+int a,int b
 
-Line 9: var_declaration : type_specifier declaration_list SEMICOLON
+Line 7: type_specifier : INT
 
-int i;
+int
 
-Line 9: statement : var_declaration
+Line 7: declaration_list : ID
 
-int i;
+x
 
+Line 7: var_declaration : type_specifier declaration_list SEMICOLON
 
-Line 9: statements : statement
+int x;
 
-int i;
+Line 7: statement : var_declaration
 
+int x;
 
-Line 10: variable : ID
 
-n
+Line 7: statements : statement
 
-Line 10: factor : variable
+int x;
 
-n
 
-Line 10: unary_expression : factor
+Line 8: variable : ID
 
-n
+x
 
-Line 10: term : unary_expression
+Line 8: variable : ID
 
-n
+a
 
-Line 10: simple_expression : term
+Line 8: factor : variable
 
-n
+a
 
-Line 10: factor : CONST_INT
+Line 8: unary_expression : factor
 
-0
+a
 
-Line 10: unary_expression : factor
+Line 8: term : unary_expression
 
-0
+a
 
-Line 10: term : unary_expression
+Line 8: simple_expression : term
 
-0
+a
 
-Line 10: simple_expression : term
+Line 8: rel_expression : simple_expression
 
-0
+a
 
-Line 10: rel_expression : simple_expression RELOP simple_expression	
+Line 8: logic_expression : rel_expression
 
-n==0
+a
 
-Line 10: logic_expression : rel_expression
+Line 8: arguments : logic_expression
 
-n==0
+a
 
-Line 10: expression : logic_expression
+Line 8: argument_list : arguments
 
-n==0
+a
 
-Line 10: factor : CONST_INT
+Line 8: factor : ID LPAREN argument_list RPAREN
 
-0
+f(a)
 
-Line 10: unary_expression : factor
+Line 8: unary_expression : factor
 
-0
+f(a)
 
-Line 10: term : unary_expression
+Line 8: term : unary_expression
 
-0
+f(a)
 
-Line 10: simple_expression : term
+Line 8: simple_expression : term
 
-0
+f(a)
 
-Line 10: rel_expression : simple_expression
+Line 8: variable : ID
 
-0
+a
 
-Line 10: logic_expression : rel_expression
+Line 8: factor : variable
 
-0
+a
 
-Line 10: expression : logic_expression
+Line 8: unary_expression : factor
 
-0
+a
 
-Line 10: statement : RETURN expression SEMICOLON
+Line 8: term : unary_expression
 
-return 0;
+a
 
+Line 8: simple_expression : simple_expression ADDOP term
 
-Line 11: statement : IF LPAREN expression RPAREN statement
+f(a)+a
 
-if(n==0)return 0;
+Line 8: variable : ID
 
+b
 
-Line 11: statements : statements statement
+Line 8: factor : variable
 
-int i;
-if(n==0)return 0;
+b
 
+Line 8: unary_expression : factor
 
-Line 11: variable : ID
+b
 
-i
+Line 8: term : unary_expression
 
-Line 11: variable : ID
+b
 
-n
+Line 8: simple_expression : simple_expression ADDOP term
 
-Line 11: factor : variable
+f(a)+a+b
 
-n
+Line 8: rel_expression : simple_expression
 
-Line 11: unary_expression : factor
+f(a)+a+b
 
-n
+Line 8: logic_expression : rel_expression
 
-Line 11: term : unary_expression
+f(a)+a+b
 
-n
+Line 8: expression : variable ASSIGNOP logic_expression
 
-Line 11: simple_expression : term
+x=f(a)+a+b
 
-n
+Line 8: expression_statement : expression SEMICOLON
 
-Line 11: rel_expression : simple_expression
+x=f(a)+a+b;
 
-n
+Line 8: statement : expression_statement
 
-Line 11: logic_expression : rel_expression
+x=f(a)+a+b;
 
-n
 
-Line 11: expression : variable ASSIGNOP logic_expression
+Line 8: statements : statements statement
 
-i=n
+int x;
+x=f(a)+a+b;
 
-Line 11: expression_statement : expression SEMICOLON
 
-i=n;
+Line 9: variable : ID
 
-Line 11: statement : expression_statement
+x
 
-i=n;
+Line 9: factor : variable
 
+x
 
-Line 11: statements : statements statement
+Line 9: unary_expression : factor
 
-int i;
-if(n==0)return 0;
-i=n;
+x
 
+Line 9: term : unary_expression
 
-Line 12: variable : ID
+x
 
-n
+Line 9: simple_expression : term
 
-Line 12: factor : variable
+x
 
-n
+Line 9: rel_expression : simple_expression
 
-Line 12: unary_expression : factor
+x
 
-n
+Line 9: logic_expression : rel_expression
 
-Line 12: term : unary_expression
+x
 
-n
+Line 9: expression : logic_expression
 
-Line 12: simple_expression : term
+x
 
-n
+Line 9: statement : RETURN expression SEMICOLON
 
-Line 12: factor : CONST_INT
+return x;
 
-1
 
-Line 12: unary_expression : factor
+Line 9: statements : statements statement
 
-1
+int x;
+x=f(a)+a+b;
+return x;
 
-Line 12: term : unary_expression
 
-1
-
-Line 12: simple_expression : simple_expression ADDOP term
-
-n-1
-
-Line 12: rel_expression : simple_expression
-
-n-1
-
-Line 12: logic_expression : rel_expression
-
-n-1
-
-Line 12: arguments : logic_expression
-
-n-1
-
-Line 12: argument_list : arguments
-
-n-1
-
-Line 12: factor : ID LPAREN argument_list RPAREN
-
-func(n-1)
-
-Line 12: unary_expression : factor
-
-func(n-1)
-
-Line 12: term : unary_expression
-
-func(n-1)
-
-Line 12: simple_expression : term
-
-func(n-1)
-
-Line 12: variable : ID
-
-i
-
-Line 12: factor : variable
-
-i
-
-Line 12: unary_expression : factor
-
-i
-
-Line 12: term : unary_expression
-
-i
-
-Line 12: simple_expression : simple_expression ADDOP term
-
-func(n-1)+i
-
-Line 12: rel_expression : simple_expression
-
-func(n-1)+i
-
-Line 12: logic_expression : rel_expression
-
-func(n-1)+i
-
-Line 12: expression : logic_expression
-
-func(n-1)+i
-
-Line 12: statement : RETURN expression SEMICOLON
-
-return func(n-1)+i;
-
-
-Line 12: statements : statements statement
-
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
-
-
-Line 13: compound_statement : LCURL statements RCURL
+Line 10: compound_statement : LCURL statements RCURL
 
 {
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
+int x;
+x=f(a)+a+b;
+return x;
 }
 
 
 
 
 ScopeTable # 1_2 
-12 -->  < i : ID> 
-17 -->  < n : ID> 
+4 -->  < a : ID> 
+5 -->  < b : ID> 
+27 -->  < x : ID> 
 
 
 
 ScopeTable # 1 
-11 -->  < func2 : ID> 
-13 -->  < func : ID> 
+9 -->  < f : ID> 
+10 -->  < g : ID> 
 
-Line 13: func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
+Line 10: func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
 
-int func2(int n){
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
+int g(int a,int b){
+int x;
+x=f(a)+a+b;
+return x;
 }
 
-Line 13: unit : func_definition
+Line 10: unit : func_definition
 
-int func2(int n){
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
-}
-
-
-Line 13: program : program unit
-
-int func(int n){
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
-}
-int func2(int n){
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
+int g(int a,int b){
+int x;
+x=f(a)+a+b;
+return x;
 }
 
 
-Line 15: type_specifier : INT
+Line 10: program : program unit
+
+int f(int a){
+return 2*a;
+a=9;
+}
+int g(int a,int b){
+int x;
+x=f(a)+a+b;
+return x;
+}
+
+
+Line 12: type_specifier : INT
 
 int
 
-Line 16: type_specifier : INT
+Line 13: type_specifier : INT
 
 int
 
-Line 16: declaration_list : ID
+Line 13: declaration_list : ID
 
 a
 
-Line 16: var_declaration : type_specifier declaration_list SEMICOLON
+Line 13: declaration_list : declaration_list COMMA ID
 
-int a;
+a,b
 
-Line 16: statement : var_declaration
+Line 13: var_declaration : type_specifier declaration_list SEMICOLON
 
-int a;
+int a,b;
+
+Line 13: statement : var_declaration
+
+int a,b;
 
 
-Line 16: statements : statement
+Line 13: statements : statement
 
-int a;
+int a,b;
+
+
+Line 14: variable : ID
+
+a
+
+Line 14: factor : CONST_INT
+
+1
+
+Line 14: unary_expression : factor
+
+1
+
+Line 14: term : unary_expression
+
+1
+
+Line 14: simple_expression : term
+
+1
+
+Line 14: rel_expression : simple_expression
+
+1
+
+Line 14: factor : CONST_INT
+
+2
+
+Line 14: unary_expression : factor
+
+2
+
+Line 14: term : unary_expression
+
+2
+
+Line 14: simple_expression : term
+
+2
+
+Line 14: rel_expression : simple_expression
+
+2
+
+Line 14: logic_expression : rel_expression LOGICOP rel_expression 
+
+1||2
+
+Line 14: expression : variable ASSIGNOP logic_expression
+
+a=1||2
+
+Line 14: expression_statement : expression SEMICOLON
+
+a=1||2;
+
+Line 14: statement : expression_statement
+
+a=1||2;
+
+
+Line 14: statements : statements statement
+
+int a,b;
+a=1||2;
+
+
+Line 15: variable : ID
+
+a
+
+Line 15: factor : CONST_INT
+
+2
+
+Line 15: unary_expression : factor
+
+2
+
+Line 15: term : unary_expression
+
+2
+
+Line 15: simple_expression : term
+
+2
+
+Line 15: rel_expression : simple_expression
+
+2
+
+Line 15: factor : CONST_INT
+
+0
+
+Line 15: unary_expression : factor
+
+0
+
+Line 15: term : unary_expression
+
+0
+
+Line 15: simple_expression : term
+
+0
+
+Line 15: rel_expression : simple_expression
+
+0
+
+Line 15: logic_expression : rel_expression LOGICOP rel_expression 
+
+2&&0
+
+Line 15: expression : variable ASSIGNOP logic_expression
+
+a=2&&0
+
+Line 15: expression_statement : expression SEMICOLON
+
+a=2&&0;
+
+Line 15: statement : expression_statement
+
+a=2&&0;
+
+
+Line 15: statements : statements statement
+
+int a,b;
+a=1||2;
+a=2&&0;
+
+
+Line 16: variable : ID
+
+b
+
+Line 16: factor : CONST_INT
+
+2
+
+Line 16: unary_expression : factor
+
+2
+
+Line 16: term : unary_expression
+
+2
+
+Line 16: simple_expression : term
+
+2
+
+Line 16: rel_expression : simple_expression
+
+2
+
+Line 16: logic_expression : rel_expression
+
+2
+
+Line 16: expression : variable ASSIGNOP logic_expression
+
+b=2
+
+Line 16: expression_statement : expression SEMICOLON
+
+b=2;
+
+Line 16: statement : expression_statement
+
+b=2;
+
+
+Line 16: statements : statements statement
+
+int a,b;
+a=1||2;
+a=2&&0;
+b=2;
 
 
 Line 17: variable : ID
 
 a
 
-Line 17: factor : CONST_INT
+Line 17: variable : ID
 
-7
+a
+
+Line 17: factor : variable
+
+a
 
 Line 17: unary_expression : factor
 
-7
+a
 
 Line 17: term : unary_expression
 
-7
+a
 
 Line 17: simple_expression : term
 
-7
+a
 
 Line 17: rel_expression : simple_expression
 
-7
+a
 
 Line 17: logic_expression : rel_expression
 
-7
+a
 
 Line 17: arguments : logic_expression
 
-7
+a
 
-Line 17: argument_list : arguments
+Line 17: variable : ID
 
-7
+b
 
-Line 17: factor : ID LPAREN argument_list RPAREN
+Line 17: factor : variable
 
-func(7)
+b
 
 Line 17: unary_expression : factor
 
-func(7)
+b
 
 Line 17: term : unary_expression
 
-func(7)
+b
 
 Line 17: simple_expression : term
 
-func(7)
+b
 
 Line 17: rel_expression : simple_expression
 
-func(7)
+b
 
 Line 17: logic_expression : rel_expression
 
-func(7)
+b
+
+Line 17: arguments : arguments COMMA logic_expression
+
+a,b
+
+Line 17: argument_list : arguments
+
+a,b
+
+Line 17: factor : ID LPAREN argument_list RPAREN
+
+g(a,b)
+
+Line 17: unary_expression : factor
+
+g(a,b)
+
+Line 17: term : unary_expression
+
+g(a,b)
+
+Line 17: simple_expression : term
+
+g(a,b)
+
+Line 17: rel_expression : simple_expression
+
+g(a,b)
+
+Line 17: logic_expression : rel_expression
+
+g(a,b)
 
 Line 17: expression : variable ASSIGNOP logic_expression
 
-a=func(7)
+a=g(a,b)
 
 Line 17: expression_statement : expression SEMICOLON
 
-a=func(7);
+a=g(a,b);
 
 Line 17: statement : expression_statement
 
-a=func(7);
+a=g(a,b);
 
 
 Line 17: statements : statements statement
 
-int a;
-a=func(7);
+int a,b;
+a=1||2;
+a=2&&0;
+b=2;
+a=g(a,b);
 
 
 Line 18: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
@@ -799,8 +752,11 @@ println(a);
 
 Line 18: statements : statements statement
 
-int a;
-a=func(7);
+int a,b;
+a=1||2;
+a=2&&0;
+b=2;
+a=g(a,b);
 println(a);
 
 
@@ -839,8 +795,11 @@ return 0;
 
 Line 19: statements : statements statement
 
-int a;
-a=func(7);
+int a,b;
+a=1||2;
+a=2&&0;
+b=2;
+a=g(a,b);
 println(a);
 return 0;
 
@@ -848,8 +807,11 @@ return 0;
 Line 20: compound_statement : LCURL statements RCURL
 
 {
-int a;
-a=func(7);
+int a,b;
+a=1||2;
+a=2&&0;
+b=2;
+a=g(a,b);
 println(a);
 return 0;
 }
@@ -859,19 +821,23 @@ return 0;
 
 ScopeTable # 1_3 
 4 -->  < a : ID> 
+5 -->  < b : ID> 
 
 
 
 ScopeTable # 1 
-11 -->  < func2 : ID> 
-13 -->  < func : ID> 
+9 -->  < f : ID> 
+10 -->  < g : ID> 
 16 -->  < main : ID> 
 
 Line 20: func_definition : type_specifier ID LPAREN RPAREN compound_statement
 
 int main(){
-int a;
-a=func(7);
+int a,b;
+a=1||2;
+a=2&&0;
+b=2;
+a=g(a,b);
 println(a);
 return 0;
 }
@@ -879,8 +845,11 @@ return 0;
 Line 20: unit : func_definition
 
 int main(){
-int a;
-a=func(7);
+int a,b;
+a=1||2;
+a=2&&0;
+b=2;
+a=g(a,b);
 println(a);
 return 0;
 }
@@ -888,21 +857,21 @@ return 0;
 
 Line 20: program : program unit
 
-int func(int n){
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
+int f(int a){
+return 2*a;
+a=9;
 }
-int func2(int n){
-int i;
-if(n==0)return 0;
-i=n;
-return func(n-1)+i;
+int g(int a,int b){
+int x;
+x=f(a)+a+b;
+return x;
 }
 int main(){
-int a;
-a=func(7);
+int a,b;
+a=1||2;
+a=2&&0;
+b=2;
+a=g(a,b);
 println(a);
 return 0;
 }
@@ -915,8 +884,8 @@ Line 20: start : program
 
 
 ScopeTable # 1 
-11 -->  < func2 : ID> 
-13 -->  < func : ID> 
+9 -->  < f : ID> 
+10 -->  < g : ID> 
 16 -->  < main : ID> 
 
 
