@@ -24,6 +24,9 @@ using namespace std;
 FILE *asmDataOut, *asmCodeOut;
 string else_if_label = "";
 
+vector<vector<string>> variables; // stack for variables
+int bp_current_position = 0;
+
 bool has_main_function = false;
 
 void pushToStackTemp(string str) {

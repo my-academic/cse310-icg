@@ -523,7 +523,10 @@ factor	: variable
 	// $$->setAllValueOf($1);
 	// bufferingVariable(temp, $1->temp_id, $$->temp_index);
 	// $$->temp_id = temp;
-	pushToStackTemp($1->temp_id);
+	if(isArray($1))
+		fprintf(asmCodeOut, "pop bx\npush %s[bx]\n", $1->temp_id.c_str());
+	else
+		pushToStackTemp($1->temp_id);
 }
 	| ID LPAREN argument_list RPAREN
 {

@@ -1,3 +1,5 @@
+
+
 int f(int a){
     return 2*a;
     a=9;
@@ -10,11 +12,15 @@ int g(int a, int b){
 }
 
 int main(){
-    int a,b;
-    a= 1 || 2;
-	a = 2 && 
+    int a,b,c, y[3];
+	a =2;
+	{
+		int a , b;
+		a = 2;
+	}
     b=2;
-    a=g(a,b);
+	// c[4] = 6;
+	// a = c[4];
     println(a);
     return 0;
 }

@@ -692,8 +692,8 @@ static const yytype_int16 yyrline[] =
      242,   251,   258,   267,   273,   279,   285,   289,   297,   285,
      308,   315,   325,   329,   325,   340,   349,   359,   365,   375,
      377,   382,   394,   400,   410,   416,   426,   432,   443,   449,
-     460,   467,   476,   482,   492,   499,   506,   514,   528,   535,
-     542,   548,   554,   561,   570,   577,   583,   591
+     460,   467,   476,   482,   492,   499,   506,   514,   531,   538,
+     545,   551,   557,   564,   573,   580,   586,   594
 };
 #endif
 
@@ -2060,96 +2060,99 @@ yyreduce:
 	// $$->setAllValueOf($1);
 	// bufferingVariable(temp, $1->temp_id, $$->temp_index);
 	// $$->temp_id = temp;
-	pushToStackTemp((yyvsp[0].symbolValue)->temp_id);
+	if(isArray((yyvsp[0].symbolValue)))
+		fprintf(asmCodeOut, "pop bx\npush %s[bx]\n", (yyvsp[0].symbolValue)->temp_id.c_str());
+	else
+		pushToStackTemp((yyvsp[0].symbolValue)->temp_id);
 }
-#line 2066 "y.tab.c"
+#line 2069 "y.tab.c"
     break;
 
   case 68: /* factor: ID LPAREN argument_list RPAREN  */
-#line 529 "1805047.y"
+#line 532 "1805047.y"
 {
 	string str = (yyvsp[-3].symbolValue)->getName() + "(" + stackPop(argument_list) + ")";
 	stackPush(factor, str);
 	printLog("factor", "ID LPAREN argument_list RPAREN", str);
 	(yyval.symbolValue) = checkFunctionArguments((yyvsp[-3].symbolValue));
 }
-#line 2077 "y.tab.c"
+#line 2080 "y.tab.c"
     break;
 
   case 69: /* factor: LPAREN expression RPAREN  */
-#line 536 "1805047.y"
+#line 539 "1805047.y"
 {
 	(yyval.symbolValue) = checkLPAREN_Expression_RPAREN((yyvsp[-1].symbolValue));
 	string str = "(" + stackPop(expression) + ")";
 	stackPush(factor, str);
 	printLog("factor", "LPAREN expression RPAREN", str);
 }
-#line 2088 "y.tab.c"
+#line 2091 "y.tab.c"
     break;
 
   case 70: /* factor: CONST_INT  */
-#line 543 "1805047.y"
+#line 546 "1805047.y"
 {
 	(yyval.symbolValue) = setIntermediateValues("intermediate", integer, stoi(*(yyvsp[0].input_string)));
 	stackPush(factor, *(yyvsp[0].input_string));
 	printLog("factor", "CONST_INT", *(yyvsp[0].input_string));
 }
-#line 2098 "y.tab.c"
+#line 2101 "y.tab.c"
     break;
 
   case 71: /* factor: CONST_FLOAT  */
-#line 549 "1805047.y"
+#line 552 "1805047.y"
 {
 	(yyval.symbolValue) = setIntermediateValues("intermediate", "float", stof(*(yyvsp[0].input_string)));
 	stackPush(factor, *(yyvsp[0].input_string));
 	printLog("factor", "CONST_FLOAT", *(yyvsp[0].input_string));
 }
-#line 2108 "y.tab.c"
+#line 2111 "y.tab.c"
     break;
 
   case 72: /* factor: variable INCOP  */
-#line 555 "1805047.y"
+#line 558 "1805047.y"
 {
 	(yyval.symbolValue) = checkINCOPCompatibility((yyvsp[-1].symbolValue));
 	string str = stackPop(variable) + "++";
 	stackPush(factor, str);
 	printLog("factor", "variable INCOP", str);
 }
-#line 2119 "y.tab.c"
+#line 2122 "y.tab.c"
     break;
 
   case 73: /* factor: variable DECOP  */
-#line 562 "1805047.y"
+#line 565 "1805047.y"
 {
 	(yyval.symbolValue) = checkDECOPCompatibility((yyvsp[-1].symbolValue));
 	string str = stackPop(variable) + "--";
 	stackPush(factor, str);
 	printLog("factor", "variable DECOP", str);
 }
-#line 2130 "y.tab.c"
+#line 2133 "y.tab.c"
     break;
 
   case 74: /* argument_list: arguments  */
-#line 571 "1805047.y"
+#line 574 "1805047.y"
 {
 	string str = stackPop(arguments);
 	stackPush(argument_list, str);
 	printLog("argument_list", "arguments", str);
 }
-#line 2140 "y.tab.c"
+#line 2143 "y.tab.c"
     break;
 
   case 75: /* argument_list: %empty  */
-#line 577 "1805047.y"
+#line 580 "1805047.y"
 {
 	stackPush(argument_list, "");
 	printLog("argument_list", "", "");
 }
-#line 2149 "y.tab.c"
+#line 2152 "y.tab.c"
     break;
 
   case 76: /* arguments: arguments COMMA logic_expression  */
-#line 584 "1805047.y"
+#line 587 "1805047.y"
 {
 	args.push_back((yyvsp[0].symbolValue));
 	// pushToStackTemp();
@@ -2157,11 +2160,11 @@ yyreduce:
 	stackPush(arguments, str);
 	printLog("arguments", "arguments COMMA logic_expression", str);
 }
-#line 2161 "y.tab.c"
+#line 2164 "y.tab.c"
     break;
 
   case 77: /* arguments: logic_expression  */
-#line 592 "1805047.y"
+#line 595 "1805047.y"
 {
 
 	// pushToStack($1->temp_id);
@@ -2170,11 +2173,11 @@ yyreduce:
 	stackPush(arguments, str);
 	printLog("arguments", "logic_expression", str);
 }
-#line 2174 "y.tab.c"
+#line 2177 "y.tab.c"
     break;
 
 
-#line 2178 "y.tab.c"
+#line 2181 "y.tab.c"
 
       default: break;
     }
@@ -2367,7 +2370,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 603 "1805047.y"
+#line 606 "1805047.y"
 
 
 void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut, FILE* asmPrintOut){

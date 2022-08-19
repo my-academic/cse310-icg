@@ -6,6 +6,10 @@ NUMBER_STRING DB '00000$'
 x1_2 DW 0
 a1_3 DW 0
 b1_3 DW 0
+c1_3 DW 0
+y1_3 DW 3 DUP(0)
+a1_3_1 DW 0
+b1_3_1 DW 0
 
 .code
 
@@ -113,26 +117,10 @@ mov ax, @data
 mov ds,ax
 
 
-;1
-push 1
-
-;2                                                                                                                                                           
+;2
 push 2
 
-;1||2
-        pop bx
-        pop ax
-        cmp ax, 0
-        jne L3
-        cmp bx, 0
-        jne L3
-        push 0
-        jmp L2
-        L3:
-        push 1
-        L2:
-
-;a = 1||2
+;a = 2
 pop ax
 mov a1_3, ax
 
@@ -142,25 +130,9 @@ pop cx
 ;2
 push 2
 
-;0
-push 0
-
-;2&&0
-        pop bx
-        pop ax
-        cmp ax, 0
-        je L5
-        cmp bx, 0
-        je L5
-        push 1
-        jmp L4
-        L5:
-        push 0
-        L4:
-
-;a = 2&&0
+;a = 2
 pop ax
-mov a1_3, ax
+mov a1_3_1, ax
 
 push ax
 pop cx
@@ -175,23 +147,6 @@ mov b1_3, ax
 push ax
 pop cx
 
-;a
-push a1_3
-
-;b
-push b1_3
-
-;g(a,b)
-call g_procedure
-push ax
-
-;a = g(a,b)
-pop ax
-mov a1_3, ax
-
-push ax
-pop cx
-
 ;println(a);
 mov ax, a1_3
 call print_number
@@ -201,8 +156,8 @@ push 0
 
 ;return 0
 pop ax
-jmp L6
-L6: 
+jmp L2
+L2: 
 
 mov ah, 4ch
 int 21h
