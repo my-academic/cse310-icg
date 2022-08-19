@@ -609,7 +609,8 @@ void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut, FILE* asmPri
 	char ch;
 	// cout << has_main_function << endl;
 	if(!has_main_function || syntax_error_count + lexical_error_count > 0) {
-		printError("program has no main function");
+		if(!has_main_function) 
+			printError("program has no main function");
 		return;
 	}
 	do {

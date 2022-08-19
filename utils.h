@@ -244,6 +244,7 @@ void setVariableAndArrayRelatedValues(symbol_info *symbolInfo, string type, symb
 
 void insertDeclarationListRecord(symbol_info *symbolInfo, bool is_array = false, int size_of_array = 0)
 {
+  symbolInfo = new symbol_info(symbolInfo->getName(), symbolInfo->getType());
   if (is_array)
   {
     if (size_of_array <= 0)

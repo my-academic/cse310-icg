@@ -429,26 +429,26 @@ Line 15: declaration_list : declaration_list COMMA ID
 
 a,b
 
-Line 15: declaration_list : declaration_list COMMA ID
+Line 15: declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
 
-a,b,c
+a,b,c[9]
 
 Line 15: declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
 
-a,b,c,y[3]
+a,b,c[9],y[3]
 
 Line 15: var_declaration : type_specifier declaration_list SEMICOLON
 
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 
 Line 15: statement : var_declaration
 
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 
 
 Line 15: statements : statement
 
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 
 
 Line 16: variable : ID
@@ -494,7 +494,7 @@ a=2;
 
 Line 16: statements : statements statement
 
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 a=2;
 
 
@@ -506,22 +506,22 @@ Line 18: declaration_list : ID
 
 a
 
-Line 18: declaration_list : declaration_list COMMA ID
+Line 18: declaration_list : declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
 
-a,b
+a,b[3]
 
 Line 18: var_declaration : type_specifier declaration_list SEMICOLON
 
-int a,b;
+int a,b[3];
 
 Line 18: statement : var_declaration
 
-int a,b;
+int a,b[3];
 
 
 Line 18: statements : statement
 
-int a,b;
+int a,b[3];
 
 
 Line 19: variable : ID
@@ -567,14 +567,14 @@ a=2;
 
 Line 19: statements : statements statement
 
-int a,b;
+int a,b[3];
 a=2;
 
 
 Line 20: compound_statement : LCURL statements RCURL
 
 {
-int a,b;
+int a,b[3];
 a=2;
 }
 
@@ -603,17 +603,17 @@ ScopeTable # 1
 Line 20: statement : compound_statement
 
 {
-int a,b;
+int a,b[3];
 a=2;
 }
 
 
 Line 20: statements : statements statement
 
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 a=2;
 {
-int a,b;
+int a,b[3];
 a=2;
 }
 
@@ -661,13 +661,180 @@ b=2;
 
 Line 21: statements : statements statement
 
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 a=2;
 {
-int a,b;
+int a,b[3];
 a=2;
 }
 b=2;
+
+
+Line 22: factor : CONST_INT
+
+4
+
+Line 22: unary_expression : factor
+
+4
+
+Line 22: term : unary_expression
+
+4
+
+Line 22: simple_expression : term
+
+4
+
+Line 22: rel_expression : simple_expression
+
+4
+
+Line 22: logic_expression : rel_expression
+
+4
+
+Line 22: expression : logic_expression
+
+4
+
+Line 22: variable : ID LTHIRD expression RTHIRD 
+
+c[4]
+
+Line 22: factor : CONST_INT
+
+6
+
+Line 22: unary_expression : factor
+
+6
+
+Line 22: term : unary_expression
+
+6
+
+Line 22: simple_expression : term
+
+6
+
+Line 22: rel_expression : simple_expression
+
+6
+
+Line 22: logic_expression : rel_expression
+
+6
+
+Line 22: expression : variable ASSIGNOP logic_expression
+
+c[4]=6
+
+Line 22: expression_statement : expression SEMICOLON
+
+c[4]=6;
+
+Line 22: statement : expression_statement
+
+c[4]=6;
+
+
+Line 22: statements : statements statement
+
+int a,b,c[9],y[3];
+a=2;
+{
+int a,b[3];
+a=2;
+}
+b=2;
+c[4]=6;
+
+
+Line 23: variable : ID
+
+a
+
+Line 23: factor : CONST_INT
+
+4
+
+Line 23: unary_expression : factor
+
+4
+
+Line 23: term : unary_expression
+
+4
+
+Line 23: simple_expression : term
+
+4
+
+Line 23: rel_expression : simple_expression
+
+4
+
+Line 23: logic_expression : rel_expression
+
+4
+
+Line 23: expression : logic_expression
+
+4
+
+Line 23: variable : ID LTHIRD expression RTHIRD 
+
+c[4]
+
+Line 23: factor : variable
+
+c[4]
+
+Line 23: unary_expression : factor
+
+c[4]
+
+Line 23: term : unary_expression
+
+c[4]
+
+Line 23: simple_expression : term
+
+c[4]
+
+Line 23: rel_expression : simple_expression
+
+c[4]
+
+Line 23: logic_expression : rel_expression
+
+c[4]
+
+Line 23: expression : variable ASSIGNOP logic_expression
+
+a=c[4]
+
+Line 23: expression_statement : expression SEMICOLON
+
+a=c[4];
+
+Line 23: statement : expression_statement
+
+a=c[4];
+
+
+Line 23: statements : statements statement
+
+int a,b,c[9],y[3];
+a=2;
+{
+int a,b[3];
+a=2;
+}
+b=2;
+c[4]=6;
+a=c[4];
 
 
 Line 24: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
@@ -677,13 +844,15 @@ println(a);
 
 Line 24: statements : statements statement
 
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 a=2;
 {
-int a,b;
+int a,b[3];
 a=2;
 }
 b=2;
+c[4]=6;
+a=c[4];
 println(a);
 
 
@@ -722,13 +891,15 @@ return 0;
 
 Line 25: statements : statements statement
 
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 a=2;
 {
-int a,b;
+int a,b[3];
 a=2;
 }
 b=2;
+c[4]=6;
+a=c[4];
 println(a);
 return 0;
 
@@ -736,13 +907,15 @@ return 0;
 Line 26: compound_statement : LCURL statements RCURL
 
 {
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 a=2;
 {
-int a,b;
+int a,b[3];
 a=2;
 }
 b=2;
+c[4]=6;
+a=c[4];
 println(a);
 return 0;
 }
@@ -766,13 +939,15 @@ ScopeTable # 1
 Line 26: func_definition : type_specifier ID LPAREN RPAREN compound_statement
 
 int main(){
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 a=2;
 {
-int a,b;
+int a,b[3];
 a=2;
 }
 b=2;
+c[4]=6;
+a=c[4];
 println(a);
 return 0;
 }
@@ -780,13 +955,15 @@ return 0;
 Line 26: unit : func_definition
 
 int main(){
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 a=2;
 {
-int a,b;
+int a,b[3];
 a=2;
 }
 b=2;
+c[4]=6;
+a=c[4];
 println(a);
 return 0;
 }
@@ -804,19 +981,21 @@ x=f(a)+a+b;
 return x;
 }
 int main(){
-int a,b,c,y[3];
+int a,b,c[9],y[3];
 a=2;
 {
-int a,b;
+int a,b[3];
 a=2;
 }
 b=2;
+c[4]=6;
+a=c[4];
 println(a);
 return 0;
 }
 
 
-Line 26: start : program
+Line 27: start : program
 
 
 
@@ -828,6 +1007,6 @@ ScopeTable # 1
 16 -->  < main : ID> 
 
 
-Total lines: 26
+Total lines: 27
 Total errors: 0
 

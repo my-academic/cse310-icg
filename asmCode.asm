@@ -135,6 +135,46 @@ mov b1_3, ax
 push ax
 pop cx
 
+;4
+push 4
+
+;c[4]
+pop bx
+shl bx, 1
+push bx
+
+
+;6
+push 6
+
+;c[4] = 6
+pop ax
+pop bx
+mov c1_3[bx], ax
+
+push ax
+pop cx
+
+;4
+push 4
+
+;c[4]
+pop bx
+shl bx, 1
+push bx
+
+
+;c[4]
+pop bx
+push c1_3[bx]
+
+;a = c[4]
+pop ax
+mov a1_3, ax
+
+push ax
+pop cx
+
 ;println(a);
 mov ax, a1_3
 call print_number

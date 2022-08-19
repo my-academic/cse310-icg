@@ -6,10 +6,10 @@ NUMBER_STRING DB '00000$'
 x1_2 DW 0
 a1_3 DW 0
 b1_3 DW 0
-c1_3 DW 0
+c1_3 DW 9 DUP(0)
 y1_3 DW 3 DUP(0)
 a1_3_1 DW 0
-b1_3_1 DW 0
+b1_3_1 DW 3 DUP(0)
 
 .code
 
@@ -143,6 +143,46 @@ push 2
 ;b = 2
 pop ax
 mov b1_3, ax
+
+push ax
+pop cx
+
+;4
+push 4
+
+;c[4]
+pop bx
+shl bx, 1
+push bx
+
+
+;6
+push 6
+
+;c[4] = 6
+pop ax
+pop bx
+mov c1_3[bx], ax
+
+push ax
+pop cx
+
+;4
+push 4
+
+;c[4]
+pop bx
+shl bx, 1
+push bx
+
+
+;c[4]
+pop bx
+push c1_3[bx]
+
+;a = c[4]
+pop ax
+mov a1_3, ax
 
 push ax
 pop cx

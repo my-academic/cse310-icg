@@ -12,15 +12,15 @@ int g(int a, int b){
 }
 
 int main(){
-    int a,b,c, y[3];
+    int a,b,c[9], y[3];
 	a =2;
 	{
-		int a , b;
+		int a , b[3];
 		a = 2;
 	}
     b=2;
-	// c[4] = 6;
-	// a = c[4];
+	c[4] = 6;
+	a = c[4];
     println(a);
     return 0;
 }
