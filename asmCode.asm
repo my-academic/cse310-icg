@@ -76,7 +76,6 @@ pop cx
 jmp L4
 add sp, 2
 L3: 
-add sp, 2
 L4: 
 add sp, 2
 
@@ -163,7 +162,6 @@ pop cx
 jmp L9
 add sp, 2
 L8: 
-add sp, 2
 L9: 
 add sp, 2
 

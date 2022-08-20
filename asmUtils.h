@@ -109,8 +109,11 @@ void addFunctionEndStatementInAsm(string name, int param_count, vector<string> r
 {
     for (size_t i = 0; i < return_label.size(); i++)
     {
-        fprintf(asmCodeOut, "%s: \nadd sp, %d\n", return_label[i].c_str(), offset);
+        fprintf(asmCodeOut, "%s: \n", return_label[i].c_str());
     }
+
+    fprintf(asmCodeOut, "add sp, %d\n", offset);
+
     
     if (name == "main")
     {
