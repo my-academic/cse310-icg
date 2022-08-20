@@ -187,7 +187,7 @@ compound_statement : LCURL
 		c += variables_stack[variables_stack.size() - 1][i].size;
 	}
 	fprintf(asmCodeOut, "add sp, %d\n", c * 2);
-	$$->offset = c;
+	$$->offset = c * 2;
 	variables_stack.pop_back();
 	// cout << variables_stack.size() << endl;
 
@@ -270,12 +270,10 @@ statements : statement
 {
 	string str = stackPop(statement);
 	stackPush(statements, str);
-	// fprintf(asmCodeOut, ";fuck me\npop ax\n");
 	printLog("statements", "statement", str + "\n");
 }
 	   | statements statement
 {
-	// fprintf(asmCodeOut, ";fuck me\npop ax\n");
 	string str = stackPop(statements) + "\n" + stackPop(statement);
 	stackPush(statements, str);
 	printLog("statements", "statements statement", str + "\n");
@@ -309,12 +307,12 @@ statement : var_declaration
 		string start_statement = newLabel();
 		string indecop_label = newLabel();
 
-		fprintf(asmCodeOut, "mov ax, cx\ncmp ax, 0\nje %s\njmp %s\n%s:\n", condition_false_label.c_str(), start_statement.c_str(), indecop_label.c_str());
+		fprintf(asmCodeOut, "mov cx, ax\ncmp cx, 0\nje %s\njmp %s\n%s:\n", condition_false_label.c_str(), start_statement.c_str(), indecop_label.c_str());
 		$5->inh_label = condition_false_label;
 		$5->inh_label2 = start_statement;
 		$5->inh_label3 = indecop_label;
 	  } expression {
-		fprintf(asmCodeOut, "pop cx\njmp %s\n%s:\n", $3->inh_label.c_str(), $5->inh_label2.c_str());
+		fprintf(asmCodeOut, "pop ax\njmp %s\n%s:\n", $3->inh_label.c_str(), $5->inh_label2.c_str());
 	  } RPAREN statement
 {
 	string str1 = stackPop(expression_statement);
@@ -347,7 +345,7 @@ statement : var_declaration
 		$3 = new string(condition_check_label);
 	  } expression {
 		string condition_false_label = newLabel();
-		fprintf(asmCodeOut, "pop ax\ncmp ax, 0\nje %s\n", condition_false_label.c_str());
+		fprintf(asmCodeOut, "pop cx\ncmp cx, 0\nje %s\n", condition_false_label.c_str());
 		$5->inh_label = condition_false_label;
 	  } RPAREN statement
 {
@@ -362,7 +360,6 @@ statement : var_declaration
 	string str = "println(" + $3->getName() + ");";
 	stackPush(statement, str);
 	printCurrentStatement(str);
-	// printInAsm($3->temp_id);
 	if($3->offset == 0) {
 		fprintf(asmCodeOut, "mov ax, %s\ncall print_number\n", $3->getName().c_str());
 	}
@@ -385,7 +382,7 @@ statement : var_declaration
 label_if : 
 		{
 			$$ = new string(newLabel());
-			fprintf(asmCodeOut, "pop ax\ncmp ax, 0\nje %s\n", $$->c_str());
+			fprintf(asmCodeOut, "pop cx\ncmp cx, 0\nje %s\n", $$->c_str());
 		} ;
 
 else_if_label : 
@@ -409,7 +406,7 @@ expression_statement 	: SEMICOLON
 			| expression SEMICOLON 
 {
 
-	fprintf(asmCodeOut, "pop cx\n");
+	fprintf(asmCodeOut, "pop ax\n");
 	string str = stackPop(expression) + ";";
 	stackPush(expression_statement, str);
 	printLog("expression_statement", "expression SEMICOLON", str);
@@ -427,6 +424,11 @@ variable : ID
 	 | ID LTHIRD expression RTHIRD 
 {
 	$$ = checkArrayIndex($1->getName(), $3);
+	symbol_info* si = findVariable($1);
+	$$->offset = si->offset;
+
+	// cout << $$ -> offset << endl;
+
 	string str = $1->getName() + "["
 	+ stackPop(expression) + "]";
 	stackPush(variable, str);
@@ -545,21 +547,31 @@ factor	: variable
 	stackPush(factor, str);
 	printLog("factor", "variable", str);
 	printCurrentStatement(str);
-	// string temp = newTemp();
-	// $$ = new symbol_info(str, "intermediate");
-	// $$->setAllValueOf($1);
-	// bufferingVariable(temp, $1->temp_id, $$->temp_index);
-	// $$->temp_id = temp;
-	// if(isArray($1))
-	// 	fprintf(asmCodeOut, "pop bx\npush %s[bx]\n", $1->temp_id.c_str());
-	// else
-	// 	pushToStackTemp($1->temp_id);
+	// if($1->offset == 0) {
+	// 	fprintf(asmCodeOut, "push %s\n", $1->getName().c_str());
+	// }
+	// else {
+	// 	string plus = $1->offset > 0 ? "+": "";
+	// 	fprintf(asmCodeOut, "push [bp%s%d]\n", plus.c_str(), $1->offset);
+	// }
 	if($1->offset == 0) {
-		fprintf(asmCodeOut, "push %s\n", $1->getName().c_str());
+		if (isArray($1))
+		{
+			fprintf(asmCodeOut, "pop bx\npush %s[bx]\n", $1->temp_id.c_str());
+		} 
+		else {
+			fprintf(asmCodeOut, "push %s\n", $1->getName().c_str());
+		}
 	}
 	else {
-		string plus = $1->offset > 0 ? "+": "";
-		fprintf(asmCodeOut, "push [bp%s%d]\n", plus.c_str(), $1->offset);
+		if (isArray($1))
+		{
+			fprintf(asmCodeOut, "pop bx\npush bp\nsub bx, %d\nsub bp, bx\nmov cx, [bp]\npop bp\npush cx\n", $1->offset);
+		} 
+		else {
+			string plus = $1->offset > 0 ? "+": "";
+			fprintf(asmCodeOut, "push [bp%s%d]\n", plus.c_str(), $1->offset);
+		}
 	}
 }
 	| ID LPAREN argument_list RPAREN
@@ -627,8 +639,6 @@ arguments : arguments COMMA logic_expression
 }
 	      | logic_expression
 {
-
-	// pushToStack($1->temp_id);
 	args.push_back($1);
 	string str = stackPop(logic_expression);
 	stackPush(arguments, str);

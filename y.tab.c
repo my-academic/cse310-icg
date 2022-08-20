@@ -689,11 +689,11 @@ static const yytype_int16 yyrline[] =
        0,    44,    44,    44,    55,    61,    69,    75,    81,    89,
       97,   108,   107,   123,   122,   136,   143,   152,   159,   172,
      171,   196,   195,   211,   219,   225,   231,   239,   246,   253,
-     260,   269,   276,   285,   291,   297,   303,   307,   316,   303,
-     327,   334,   344,   348,   344,   359,   376,   386,   392,   402,
-     404,   409,   421,   427,   437,   443,   453,   459,   470,   476,
-     487,   494,   503,   509,   519,   526,   533,   541,   565,   572,
-     579,   585,   591,   598,   607,   614,   620,   628
+     260,   269,   275,   283,   289,   295,   301,   305,   314,   301,
+     325,   332,   342,   346,   342,   357,   373,   383,   389,   399,
+     401,   406,   418,   424,   439,   445,   455,   461,   472,   478,
+     489,   496,   505,   511,   521,   528,   535,   543,   577,   584,
+     591,   597,   603,   610,   619,   626,   632,   640
 };
 #endif
 
@@ -1557,7 +1557,7 @@ yyreduce:
 		c += variables_stack[variables_stack.size() - 1][i].size;
 	}
 	fprintf(asmCodeOut, "add sp, %d\n", c * 2);
-	(yyval.symbolValue)->offset = c;
+	(yyval.symbolValue)->offset = c * 2;
 	variables_stack.pop_back();
 	// cout << variables_stack.size() << endl;
 
@@ -1677,88 +1677,86 @@ yyreduce:
 {
 	string str = stackPop(statement);
 	stackPush(statements, str);
-	// fprintf(asmCodeOut, ";fuck me\npop ax\n");
 	printLog("statements", "statement", str + "\n");
 }
-#line 1684 "y.tab.c"
+#line 1683 "y.tab.c"
     break;
 
   case 32: /* statements: statements statement  */
-#line 277 "1805047.y"
+#line 276 "1805047.y"
 {
-	// fprintf(asmCodeOut, ";fuck me\npop ax\n");
 	string str = stackPop(statements) + "\n" + stackPop(statement);
 	stackPush(statements, str);
 	printLog("statements", "statements statement", str + "\n");
 }
-#line 1695 "y.tab.c"
+#line 1693 "y.tab.c"
     break;
 
   case 33: /* statement: var_declaration  */
-#line 286 "1805047.y"
+#line 284 "1805047.y"
 {
 	string str =  stackPop(var_declaration);
 	stackPush(statement, str);
 	printLog("statement", "var_declaration", str + "\n");
 }
-#line 1705 "y.tab.c"
+#line 1703 "y.tab.c"
     break;
 
   case 34: /* statement: expression_statement  */
-#line 292 "1805047.y"
+#line 290 "1805047.y"
 {
 	string str =  stackPop(expression_statement);
 	stackPush(statement, str);
 	printLog("statement", "expression_statement", str + "\n");
 }
-#line 1715 "y.tab.c"
+#line 1713 "y.tab.c"
     break;
 
   case 35: /* statement: compound_statement  */
-#line 298 "1805047.y"
+#line 296 "1805047.y"
 {
 	string str =  stackPop(compound_statement);
 	stackPush(statement, str);
 	printLog("statement", "compound_statement", str + "\n");
 }
-#line 1725 "y.tab.c"
+#line 1723 "y.tab.c"
     break;
 
   case 36: /* $@6: %empty  */
-#line 303 "1805047.y"
+#line 301 "1805047.y"
                                             {
 		string condition_label = newLabel();
 		fprintf(asmCodeOut, "%s:\n", condition_label.c_str());
 		(yyvsp[0].symbolValue)->inh_label = condition_label;
 	  }
-#line 1735 "y.tab.c"
+#line 1733 "y.tab.c"
     break;
 
   case 37: /* $@7: %empty  */
-#line 307 "1805047.y"
+#line 305 "1805047.y"
                                  {
 		string condition_false_label = newLabel();
 		string start_statement = newLabel();
 		string indecop_label = newLabel();
 
-		fprintf(asmCodeOut, "mov ax, cx\ncmp ax, 0\nje %s\njmp %s\n%s:\n", condition_false_label.c_str(), start_statement.c_str(), indecop_label.c_str());
+		fprintf(asmCodeOut, "mov cx, ax\ncmp cx, 0\nje %s\njmp %s\n%s:\n", condition_false_label.c_str(), start_statement.c_str(), indecop_label.c_str());
 		(yyvsp[0].symbolValue)->inh_label = condition_false_label;
 		(yyvsp[0].symbolValue)->inh_label2 = start_statement;
 		(yyvsp[0].symbolValue)->inh_label3 = indecop_label;
 	  }
-#line 1750 "y.tab.c"
+#line 1748 "y.tab.c"
     break;
 
   case 38: /* $@8: %empty  */
-#line 316 "1805047.y"
+#line 314 "1805047.y"
                        {
-		fprintf(asmCodeOut, "pop cx\njmp %s\n%s:\n", (yyvsp[-4].symbolValue)->inh_label.c_str(), (yyvsp[-2].symbolValue)->inh_label2.c_str());
+		fprintf(asmCodeOut, "pop ax\njmp %s\n%s:\n", (yyvsp[-4].symbolValue)->inh_label.c_str(), (yyvsp[-2].symbolValue)->inh_label2.c_str());
 	  }
-#line 1758 "y.tab.c"
+#line 1756 "y.tab.c"
     break;
 
   case 39: /* statement: FOR LPAREN expression_statement $@6 expression_statement $@7 expression $@8 RPAREN statement  */
-#line 319 "1805047.y"
+#line 317 "1805047.y"
 {
 	string str1 = stackPop(expression_statement);
 	string str2 = stackPop(expression_statement);
@@ -1767,22 +1765,22 @@ yyreduce:
 	printLog("statement", "FOR LPAREN expression_statement expression_statement expression RPAREN statement", str + "\n");
 	fprintf(asmCodeOut, "jmp %s\n%s:\n", (yyvsp[-5].symbolValue)->inh_label3.c_str(), (yyvsp[-5].symbolValue)->inh_label.c_str());
 }
-#line 1771 "y.tab.c"
+#line 1769 "y.tab.c"
     break;
 
   case 40: /* statement: IF LPAREN expression RPAREN label_if statement  */
-#line 328 "1805047.y"
+#line 326 "1805047.y"
 {
 	string str = "if(" + stackPop(expression) + ")" + stackPop(statement);
 	stackPush(statement, str);
 	printLog("statement", "IF LPAREN expression RPAREN statement", str + "\n");
 	fprintf(asmCodeOut, "%s:\n", (yyvsp[-1].temp)->c_str());
 }
-#line 1782 "y.tab.c"
+#line 1780 "y.tab.c"
     break;
 
   case 41: /* statement: IF LPAREN expression RPAREN label_if statement ELSE else_if_label statement  */
-#line 335 "1805047.y"
+#line 333 "1805047.y"
 {
 	string str1 = stackPop(statement);
 	string str2 = stackPop(statement);
@@ -1792,48 +1790,47 @@ yyreduce:
 	else_if_label = "";
 	fprintf(asmCodeOut, "%s:\n", (yyvsp[-1].temp)->c_str());
 }
-#line 1796 "y.tab.c"
+#line 1794 "y.tab.c"
     break;
 
   case 42: /* $@9: %empty  */
-#line 344 "1805047.y"
+#line 342 "1805047.y"
                                      {
 		string condition_check_label = newLabel();
 		fprintf(asmCodeOut, "%s:\n", condition_check_label.c_str());
 		(yyvsp[0].temp) = new string(condition_check_label);
 	  }
-#line 1806 "y.tab.c"
+#line 1804 "y.tab.c"
     break;
 
   case 43: /* $@10: %empty  */
-#line 348 "1805047.y"
+#line 346 "1805047.y"
                        {
 		string condition_false_label = newLabel();
-		fprintf(asmCodeOut, "pop ax\ncmp ax, 0\nje %s\n", condition_false_label.c_str());
+		fprintf(asmCodeOut, "pop cx\ncmp cx, 0\nje %s\n", condition_false_label.c_str());
 		(yyvsp[0].symbolValue)->inh_label = condition_false_label;
 	  }
-#line 1816 "y.tab.c"
+#line 1814 "y.tab.c"
     break;
 
   case 44: /* statement: WHILE LPAREN while_label $@9 expression $@10 RPAREN statement  */
-#line 353 "1805047.y"
+#line 351 "1805047.y"
 {
 	string str = "while (" + stackPop(expression) + ")" + stackPop(statement);
 	stackPush(statement, str);
 	printLog("statement", "WHILE LPAREN expression RPAREN statement", str + "\n");
 	fprintf(asmCodeOut, "jmp %s\n%s:\n", (yyvsp[-5].temp)->c_str(), (yyvsp[-3].symbolValue)->inh_label.c_str());
 }
-#line 1827 "y.tab.c"
+#line 1825 "y.tab.c"
     break;
 
   case 45: /* statement: PRINTLN LPAREN ID RPAREN SEMICOLON  */
-#line 360 "1805047.y"
+#line 358 "1805047.y"
 {
 	findVariable((yyvsp[-2].symbolValue));
 	string str = "println(" + (yyvsp[-2].symbolValue)->getName() + ");";
 	stackPush(statement, str);
 	printCurrentStatement(str);
-	// printInAsm($3->temp_id);
 	if((yyvsp[-2].symbolValue)->offset == 0) {
 		fprintf(asmCodeOut, "mov ax, %s\ncall print_number\n", (yyvsp[-2].symbolValue)->getName().c_str());
 	}
@@ -1844,31 +1841,31 @@ yyreduce:
 
 	printLog("statement", "PRINTLN LPAREN ID RPAREN SEMICOLON", str + "\n");
 }
-#line 1848 "y.tab.c"
+#line 1845 "y.tab.c"
     break;
 
   case 46: /* statement: RETURN expression SEMICOLON  */
-#line 377 "1805047.y"
+#line 374 "1805047.y"
 {
 	checkFuncReturnCompatibility((yyvsp[-1].symbolValue));
 	string str = "return " + stackPop(expression) + ";";
 	stackPush(statement, str);
 	printLog("statement", "RETURN expression SEMICOLON", str + "\n");
 }
-#line 1859 "y.tab.c"
+#line 1856 "y.tab.c"
     break;
 
   case 47: /* label_if: %empty  */
-#line 386 "1805047.y"
+#line 383 "1805047.y"
                 {
 			(yyval.temp) = new string(newLabel());
-			fprintf(asmCodeOut, "pop ax\ncmp ax, 0\nje %s\n", (yyval.temp)->c_str());
+			fprintf(asmCodeOut, "pop cx\ncmp cx, 0\nje %s\n", (yyval.temp)->c_str());
 		}
-#line 1868 "y.tab.c"
+#line 1865 "y.tab.c"
     break;
 
   case 48: /* else_if_label: %empty  */
-#line 392 "1805047.y"
+#line 389 "1805047.y"
                 {
 			if(else_if_label == "") 
 				(yyval.temp) = new string(newLabel());
@@ -1878,70 +1875,75 @@ yyreduce:
 			string temp = *(yyvsp[(-2) - (0)].temp);
 			fprintf(asmCodeOut, "%s:\n", temp.c_str());
 		}
-#line 1882 "y.tab.c"
+#line 1879 "y.tab.c"
     break;
 
   case 49: /* while_label: %empty  */
-#line 402 "1805047.y"
+#line 399 "1805047.y"
               {}
-#line 1888 "y.tab.c"
+#line 1885 "y.tab.c"
     break;
 
   case 50: /* expression_statement: SEMICOLON  */
-#line 405 "1805047.y"
+#line 402 "1805047.y"
 {
 	stackPush(expression_statement, ";");
 	printLog("expression_statement", "SEMICOLON", ";");
 }
-#line 1897 "y.tab.c"
+#line 1894 "y.tab.c"
     break;
 
   case 51: /* expression_statement: expression SEMICOLON  */
-#line 410 "1805047.y"
+#line 407 "1805047.y"
 {
 
-	fprintf(asmCodeOut, "pop cx\n");
+	fprintf(asmCodeOut, "pop ax\n");
 	string str = stackPop(expression) + ";";
 	stackPush(expression_statement, str);
 	printLog("expression_statement", "expression SEMICOLON", str);
 }
-#line 1909 "y.tab.c"
+#line 1906 "y.tab.c"
     break;
 
   case 52: /* variable: ID  */
-#line 422 "1805047.y"
+#line 419 "1805047.y"
 {
 	(yyval.symbolValue) = findVariable((yyvsp[0].symbolValue));
 	stackPush(variable, (yyvsp[0].symbolValue)->getName());
 	printLog("variable", "ID", (yyvsp[0].symbolValue)->getName());
 }
-#line 1919 "y.tab.c"
+#line 1916 "y.tab.c"
     break;
 
   case 53: /* variable: ID LTHIRD expression RTHIRD  */
-#line 428 "1805047.y"
+#line 425 "1805047.y"
 {
 	(yyval.symbolValue) = checkArrayIndex((yyvsp[-3].symbolValue)->getName(), (yyvsp[-1].symbolValue));
+	symbol_info* si = findVariable((yyvsp[-3].symbolValue));
+	(yyval.symbolValue)->offset = si->offset;
+
+	// cout << $$ -> offset << endl;
+
 	string str = (yyvsp[-3].symbolValue)->getName() + "["
 	+ stackPop(expression) + "]";
 	stackPush(variable, str);
 	printLog("variable", "ID LTHIRD expression RTHIRD ", str);
 }
-#line 1931 "y.tab.c"
+#line 1933 "y.tab.c"
     break;
 
   case 54: /* expression: logic_expression  */
-#line 438 "1805047.y"
+#line 440 "1805047.y"
 {
 	string str = stackPop(logic_expression);
 	stackPush(expression, str);
 	printLog("expression", "logic_expression", str);
 }
-#line 1941 "y.tab.c"
+#line 1943 "y.tab.c"
     break;
 
   case 55: /* expression: variable ASSIGNOP logic_expression  */
-#line 444 "1805047.y"
+#line 446 "1805047.y"
 {
 	string str = stackPop(variable) + "=" + stackPop(logic_expression);
 	stackPush(expression, str);
@@ -1949,21 +1951,21 @@ yyreduce:
 
 	(yyval.symbolValue) = checkAssignCompatibility((yyvsp[-2].symbolValue), (yyvsp[0].symbolValue));
 }
-#line 1953 "y.tab.c"
+#line 1955 "y.tab.c"
     break;
 
   case 56: /* logic_expression: rel_expression  */
-#line 454 "1805047.y"
+#line 456 "1805047.y"
 {
 	string str = stackPop(rel_expression);
 	stackPush(logic_expression, str);
 	printLog("logic_expression", "rel_expression", str);
 }
-#line 1963 "y.tab.c"
+#line 1965 "y.tab.c"
     break;
 
   case 57: /* logic_expression: rel_expression LOGICOP rel_expression  */
-#line 460 "1805047.y"
+#line 462 "1805047.y"
 {
 	(yyval.symbolValue) = checkLogicCompetibility((yyvsp[-2].symbolValue), *(yyvsp[-1].input_string), (yyvsp[0].symbolValue));
 	string str1 = stackPop(rel_expression);
@@ -1972,21 +1974,21 @@ yyreduce:
 	stackPush(logic_expression, str);
 	printLog("logic_expression", "rel_expression LOGICOP rel_expression ", str);
 }
-#line 1976 "y.tab.c"
+#line 1978 "y.tab.c"
     break;
 
   case 58: /* rel_expression: simple_expression  */
-#line 471 "1805047.y"
+#line 473 "1805047.y"
 {
 	string str = stackPop(simple_expression);
 	stackPush(rel_expression, str);
 	printLog("rel_expression", "simple_expression", str);
 }
-#line 1986 "y.tab.c"
+#line 1988 "y.tab.c"
     break;
 
   case 59: /* rel_expression: simple_expression RELOP simple_expression  */
-#line 477 "1805047.y"
+#line 479 "1805047.y"
 {
 	(yyval.symbolValue) = checkRELOPCompetibility((yyvsp[-2].symbolValue), *(yyvsp[-1].input_string), (yyvsp[0].symbolValue));
 	string str1 = stackPop(simple_expression);
@@ -1995,43 +1997,43 @@ yyreduce:
 	stackPush(rel_expression, str);
 	printLog("rel_expression", "simple_expression RELOP simple_expression	", str);
 }
-#line 1999 "y.tab.c"
+#line 2001 "y.tab.c"
     break;
 
   case 60: /* simple_expression: term  */
-#line 488 "1805047.y"
+#line 490 "1805047.y"
 {
 	(yyval.symbolValue) = (yyvsp[0].symbolValue);
 	string str = stackPop(term);
 	stackPush(simple_expression, str);
 	printLog("simple_expression", "term", str);
 }
-#line 2010 "y.tab.c"
+#line 2012 "y.tab.c"
     break;
 
   case 61: /* simple_expression: simple_expression ADDOP term  */
-#line 495 "1805047.y"
+#line 497 "1805047.y"
 {
 	(yyval.symbolValue) = checkAdditionCompatibility((yyvsp[-2].symbolValue), *(yyvsp[-1].input_string), (yyvsp[0].symbolValue));
 	string str = stackPop(simple_expression) + *(yyvsp[-1].input_string) + stackPop(term);
 	stackPush(simple_expression, str);
 	printLog("simple_expression", "simple_expression ADDOP term", str);
 }
-#line 2021 "y.tab.c"
+#line 2023 "y.tab.c"
     break;
 
   case 62: /* term: unary_expression  */
-#line 504 "1805047.y"
+#line 506 "1805047.y"
 {
 	string str = stackPop(unary_expression);
 	stackPush(term, str);
 	printLog("term", "unary_expression", str);
 }
-#line 2031 "y.tab.c"
+#line 2033 "y.tab.c"
     break;
 
   case 63: /* term: term MULOP unary_expression  */
-#line 510 "1805047.y"
+#line 512 "1805047.y"
 {
 
 	(yyval.symbolValue) = checkAndDoMulopThings((yyvsp[-2].symbolValue), *(yyvsp[-1].input_string), (yyvsp[0].symbolValue));
@@ -2039,154 +2041,164 @@ yyreduce:
 	stackPush(term, str);
 	printLog("term", "term MULOP unary_expression", str);
 }
-#line 2043 "y.tab.c"
+#line 2045 "y.tab.c"
     break;
 
   case 64: /* unary_expression: ADDOP unary_expression  */
-#line 520 "1805047.y"
+#line 522 "1805047.y"
 {
 	(yyval.symbolValue) = checkUnaryADDOPThings(*(yyvsp[-1].input_string), (yyvsp[0].symbolValue));
 	string str = *(yyvsp[-1].input_string) + stackPop(unary_expression);
 	stackPush(unary_expression, str);
 	printLog("unary_expression", "ADDOP unary_expression", str);
 }
-#line 2054 "y.tab.c"
+#line 2056 "y.tab.c"
     break;
 
   case 65: /* unary_expression: NOT unary_expression  */
-#line 527 "1805047.y"
+#line 529 "1805047.y"
 {
 	(yyval.symbolValue) = checkNotCompatibility((yyvsp[0].symbolValue));
 	string str = "!" + stackPop(unary_expression);
 	stackPush(unary_expression, str);
 	printLog("unary_expression", "ADDOP unary_expression", str);
 }
-#line 2065 "y.tab.c"
+#line 2067 "y.tab.c"
     break;
 
   case 66: /* unary_expression: factor  */
-#line 534 "1805047.y"
+#line 536 "1805047.y"
 {
 	string str = stackPop(factor);
 	stackPush(unary_expression, str);
 	printLog("unary_expression", "factor", str);
 }
-#line 2075 "y.tab.c"
+#line 2077 "y.tab.c"
     break;
 
   case 67: /* factor: variable  */
-#line 542 "1805047.y"
+#line 544 "1805047.y"
 {
 	
 	string str = stackPop(variable);
 	stackPush(factor, str);
 	printLog("factor", "variable", str);
 	printCurrentStatement(str);
-	// string temp = newTemp();
-	// $$ = new symbol_info(str, "intermediate");
-	// $$->setAllValueOf($1);
-	// bufferingVariable(temp, $1->temp_id, $$->temp_index);
-	// $$->temp_id = temp;
-	// if(isArray($1))
-	// 	fprintf(asmCodeOut, "pop bx\npush %s[bx]\n", $1->temp_id.c_str());
-	// else
-	// 	pushToStackTemp($1->temp_id);
+	// if($1->offset == 0) {
+	// 	fprintf(asmCodeOut, "push %s\n", $1->getName().c_str());
+	// }
+	// else {
+	// 	string plus = $1->offset > 0 ? "+": "";
+	// 	fprintf(asmCodeOut, "push [bp%s%d]\n", plus.c_str(), $1->offset);
+	// }
 	if((yyvsp[0].symbolValue)->offset == 0) {
-		fprintf(asmCodeOut, "push %s\n", (yyvsp[0].symbolValue)->getName().c_str());
+		if (isArray((yyvsp[0].symbolValue)))
+		{
+			fprintf(asmCodeOut, "pop bx\npush %s[bx]\n", (yyvsp[0].symbolValue)->temp_id.c_str());
+		} 
+		else {
+			fprintf(asmCodeOut, "push %s\n", (yyvsp[0].symbolValue)->getName().c_str());
+		}
 	}
 	else {
-		string plus = (yyvsp[0].symbolValue)->offset > 0 ? "+": "";
-		fprintf(asmCodeOut, "push [bp%s%d]\n", plus.c_str(), (yyvsp[0].symbolValue)->offset);
+		if (isArray((yyvsp[0].symbolValue)))
+		{
+			fprintf(asmCodeOut, "pop bx\npush bp\nsub bx, %d\nsub bp, bx\nmov cx, [bp]\npop bp\npush cx\n", (yyvsp[0].symbolValue)->offset);
+		} 
+		else {
+			string plus = (yyvsp[0].symbolValue)->offset > 0 ? "+": "";
+			fprintf(asmCodeOut, "push [bp%s%d]\n", plus.c_str(), (yyvsp[0].symbolValue)->offset);
+		}
 	}
 }
-#line 2103 "y.tab.c"
+#line 2115 "y.tab.c"
     break;
 
   case 68: /* factor: ID LPAREN argument_list RPAREN  */
-#line 566 "1805047.y"
+#line 578 "1805047.y"
 {
 	string str = (yyvsp[-3].symbolValue)->getName() + "(" + stackPop(argument_list) + ")";
 	stackPush(factor, str);
 	printLog("factor", "ID LPAREN argument_list RPAREN", str);
 	(yyval.symbolValue) = checkFunctionArguments((yyvsp[-3].symbolValue));
 }
-#line 2114 "y.tab.c"
+#line 2126 "y.tab.c"
     break;
 
   case 69: /* factor: LPAREN expression RPAREN  */
-#line 573 "1805047.y"
+#line 585 "1805047.y"
 {
 	(yyval.symbolValue) = checkLPAREN_Expression_RPAREN((yyvsp[-1].symbolValue));
 	string str = "(" + stackPop(expression) + ")";
 	stackPush(factor, str);
 	printLog("factor", "LPAREN expression RPAREN", str);
 }
-#line 2125 "y.tab.c"
+#line 2137 "y.tab.c"
     break;
 
   case 70: /* factor: CONST_INT  */
-#line 580 "1805047.y"
+#line 592 "1805047.y"
 {
 	(yyval.symbolValue) = setIntermediateValues("intermediate", integer, stoi(*(yyvsp[0].input_string)));
 	stackPush(factor, *(yyvsp[0].input_string));
 	printLog("factor", "CONST_INT", *(yyvsp[0].input_string));
 }
-#line 2135 "y.tab.c"
+#line 2147 "y.tab.c"
     break;
 
   case 71: /* factor: CONST_FLOAT  */
-#line 586 "1805047.y"
+#line 598 "1805047.y"
 {
 	(yyval.symbolValue) = setIntermediateValues("intermediate", "float", stof(*(yyvsp[0].input_string)));
 	stackPush(factor, *(yyvsp[0].input_string));
 	printLog("factor", "CONST_FLOAT", *(yyvsp[0].input_string));
 }
-#line 2145 "y.tab.c"
+#line 2157 "y.tab.c"
     break;
 
   case 72: /* factor: variable INCOP  */
-#line 592 "1805047.y"
+#line 604 "1805047.y"
 {
 	(yyval.symbolValue) = checkINCOPCompatibility((yyvsp[-1].symbolValue));
 	string str = stackPop(variable) + "++";
 	stackPush(factor, str);
 	printLog("factor", "variable INCOP", str);
 }
-#line 2156 "y.tab.c"
+#line 2168 "y.tab.c"
     break;
 
   case 73: /* factor: variable DECOP  */
-#line 599 "1805047.y"
+#line 611 "1805047.y"
 {
 	(yyval.symbolValue) = checkDECOPCompatibility((yyvsp[-1].symbolValue));
 	string str = stackPop(variable) + "--";
 	stackPush(factor, str);
 	printLog("factor", "variable DECOP", str);
 }
-#line 2167 "y.tab.c"
+#line 2179 "y.tab.c"
     break;
 
   case 74: /* argument_list: arguments  */
-#line 608 "1805047.y"
+#line 620 "1805047.y"
 {
 	string str = stackPop(arguments);
 	stackPush(argument_list, str);
 	printLog("argument_list", "arguments", str);
 }
-#line 2177 "y.tab.c"
+#line 2189 "y.tab.c"
     break;
 
   case 75: /* argument_list: %empty  */
-#line 614 "1805047.y"
+#line 626 "1805047.y"
 {
 	stackPush(argument_list, "");
 	printLog("argument_list", "", "");
 }
-#line 2186 "y.tab.c"
+#line 2198 "y.tab.c"
     break;
 
   case 76: /* arguments: arguments COMMA logic_expression  */
-#line 621 "1805047.y"
+#line 633 "1805047.y"
 {
 	args.push_back((yyvsp[0].symbolValue));
 	// pushToStackTemp();
@@ -2194,24 +2206,22 @@ yyreduce:
 	stackPush(arguments, str);
 	printLog("arguments", "arguments COMMA logic_expression", str);
 }
-#line 2198 "y.tab.c"
+#line 2210 "y.tab.c"
     break;
 
   case 77: /* arguments: logic_expression  */
-#line 629 "1805047.y"
+#line 641 "1805047.y"
 {
-
-	// pushToStack($1->temp_id);
 	args.push_back((yyvsp[0].symbolValue));
 	string str = stackPop(logic_expression);
 	stackPush(arguments, str);
 	printLog("arguments", "logic_expression", str);
 }
-#line 2211 "y.tab.c"
+#line 2221 "y.tab.c"
     break;
 
 
-#line 2215 "y.tab.c"
+#line 2225 "y.tab.c"
 
       default: break;
     }
@@ -2404,7 +2414,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 640 "1805047.y"
+#line 650 "1805047.y"
 
 
 void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut, FILE* asmPrintOut){

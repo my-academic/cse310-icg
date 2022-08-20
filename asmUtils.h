@@ -13,7 +13,7 @@ using namespace std;
 // //line and error count
 // extern int line_count;
 // extern int error_count;
-// int syntax_error, err_line;
+// int syntcx_error, err_line;
 
 // extern char* yytext;
 
@@ -100,7 +100,7 @@ void addFuncDefinitionInAsm(string name, int param_count)
 {
     has_main_function |= (name == "main");
     if (name == "main")
-        fprintf(asmCodeOut, "main proc\npush bp\nmov bp, sp\nmov ax, @data\nmov ds,ax\n\n");
+        fprintf(asmCodeOut, "main proc\npush bp\nmov bp, sp\nmov cx, @data\nmov ds,cx\n\n");
     else
         fprintf(asmCodeOut, "%s_procedure proc\npush bp\nmov bp, sp\n\n", name.c_str());
 }
@@ -109,7 +109,7 @@ void addFunctionEndStatementInAsm(string name, int param_count, vector<string> r
 {
     for (size_t i = 0; i < return_label.size(); i++)
     {
-        fprintf(asmCodeOut, "%s: \nadd sp, %d\n", return_label[i].c_str(), offset * 2);
+        fprintf(asmCodeOut, "%s: \nadd sp, %d\n", return_label[i].c_str(), offset);
     }
     
     if (name == "main")
@@ -130,7 +130,7 @@ void addFunctionEndStatementInAsm(string name, int param_count, vector<string> r
 //     fprintf(asmCodeOut, "mov %s, %s\n\n", var_name.c_str(), value.c_str());
 // }
 
-void addArrayIndexInAsm(string var_name, string temp_idx)
+void addArrayIndexInAsm()
 {
     fprintf(asmCodeOut, "pop bx\nshl bx, 1\npush bx\n\n");
 }
@@ -138,22 +138,22 @@ void addArrayIndexInAsm(string var_name, string temp_idx)
 // void addCodeForArrayAssignment(string lhs, string idx, string rhs)
 // {
 //     // fprintf()
-//     fprintf(asmCodeOut, "pop ax\npop bx\nmov %s[bx], ax\n\n", lhs.c_str());
-//     pushToStackTemp("ax");
+//     fprintf(asmCodeOut, "pop cx\npop bx\nmov %s[bx], cx\n\n", lhs.c_str());
+//     pushToStackTemp("cx");
 // }
 
 // void addCodeForVariableAssignment(string lhs, string rhs)
 // {
-//     fprintf(asmCodeOut, "pop ax\nmov %s, ax\n\n", lhs.c_str());
-//     pushToStackTemp("ax");
+//     fprintf(asmCodeOut, "pop cx\nmov %s, cx\n\n", lhs.c_str());
+//     pushToStackTemp("cx");
 // }
 
 // void addCodeForInDeOP(string op, string temp, string variable, string idx = "")
 // {
 //     // if (idx != "")
-//     //     fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\nmov bx, %s\n%s %s[bx]\n\n", variable.c_str(), temp.c_str(), idx.c_str(), op.c_str(), variable.c_str());
+//     //     fprintf(asmCodeOut, "mov cx, %s\nmov %s, cx\nmov bx, %s\n%s %s[bx]\n\n", variable.c_str(), temp.c_str(), idx.c_str(), op.c_str(), variable.c_str());
 //     // else
-//     //     fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\n%s %s\n\n", variable.c_str(), temp.c_str(), op.c_str(), variable.c_str());
+//     //     fprintf(asmCodeOut, "mov cx, %s\nmov %s, cx\n%s %s\n\n", variable.c_str(), temp.c_str(), op.c_str(), variable.c_str());
 //     if (idx != "")
 //         fprintf(asmCodeOut, "pop bx\npush %s[bx]\n%s %s[bx]\n\n",  idx.c_str(),  variable.c_str(), op.c_str(), variable.c_str());
 //     else
@@ -163,9 +163,9 @@ void addArrayIndexInAsm(string var_name, string temp_idx)
 // void bufferingVariable(string temp_var_name, string var_name, string idx = "")
 // {
 //     if (idx == "")
-//         fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\n\n", var_name.c_str(), temp_var_name.c_str());
+//         fprintf(asmCodeOut, "mov cx, %s\nmov %s, cx\n\n", var_name.c_str(), temp_var_name.c_str());
 //     else
-//         fprintf(asmCodeOut, "mov bx, %s\nmov ax, %s[bx]\nmov %s, ax\n\n", idx.c_str(), var_name.c_str(), temp_var_name.c_str());
+//         fprintf(asmCodeOut, "mov bx, %s\nmov cx, %s[bx]\nmov %s, cx\n\n", idx.c_str(), var_name.c_str(), temp_var_name.c_str());
 // }
 
 void pushToStack(string str)
@@ -173,31 +173,31 @@ void pushToStack(string str)
     fprintf(asmCodeOut, "push %s\n", str.c_str());
 }
 
-void callFunction(string str, string temp)
+void callFunction(string str)
 {
-    // fprintf(asmCodeOut, "call %s_procedure\nmov %s, ax\n", str.c_str(), temp.c_str());
+    // fprintf(asmCodeOut, "call %s_procedure\nmov %s, cx\n", str.c_str(), temp.c_str());
     fprintf(asmCodeOut, "call %s_procedure\n", str.c_str());
-    pushToStackTemp("ax");
+    pushToStackTemp("cx");
 }
 
-void setReturnValueInAsm(string str, string return_label)
+void setReturnValueInAsm(string return_label)
 {
-    fprintf(asmCodeOut, "pop ax\njmp %s\n", return_label.c_str());
+    fprintf(asmCodeOut, "pop cx\njmp %s\n", return_label.c_str());
 }
 
-void negateInAssembly(string operand, string assigning)
+void negateInAssembly()
 {
-    fprintf(asmCodeOut, "pop ax\nneg ax\n");
-    pushToStackTemp("ax");
+    fprintf(asmCodeOut, "pop cx\nneg cx\n");
+    pushToStackTemp("cx");
 }
 
-void notOperationOfCinAssembly(string temp_id, string l1, string l2)
+void notOperationOfCinAssembly(string l1, string l2)
 {
-    fprintf(asmCodeOut, "pop ax\ncmp ax, 0\nje %s\nmov ax, 0\njmp %s\n%s:\nmov ax, 1\n%s:\n", l1.c_str(), l2.c_str(), l1.c_str(), l2.c_str());
-    pushToStackTemp("ax");
+    fprintf(asmCodeOut, "pop cx\ncmp cx, 0\nje %s\nmov cx, 0\njmp %s\n%s:\nmov cx, 1\n%s:\n", l1.c_str(), l2.c_str(), l1.c_str(), l2.c_str());
+    pushToStackTemp("cx");
 }
 
-void mulopInAsm(string lt, string rt, string newt, string optr)
+void mulopInAsm(string optr)
 {
     if (optr == "*")
         fprintf(asmCodeOut, 
@@ -215,18 +215,18 @@ void mulopInAsm(string lt, string rt, string newt, string optr)
     pushToStackTemp(optr == "%" ? "dx" : "ax");
 }
 
-void addopInAsm(string lt, string rt, string optr)
+void addopInAsm(string optr)
 {
     // if (optr == "+")
-    //     fprintf(asmCodeOut, "mov ax, %s\nadd %s, ax\n", rt.c_str(), lt.c_str());
+    //     fprintf(asmCodeOut, "mov cx, %s\nadd %s, cx\n", rt.c_str(), lt.c_str());
     // else if (optr == "-")
-    //     fprintf(asmCodeOut, "mov ax, %s\nsub %s, ax\n", rt.c_str(), lt.c_str());
+    //     fprintf(asmCodeOut, "mov cx, %s\nsub %s, cx\n", rt.c_str(), lt.c_str());
     string cmd = optr == "-" ? "sub" : "add";
-    fprintf(asmCodeOut, "pop bx\npop ax\n%s ax, bx\n", cmd.c_str());
-    pushToStackTemp("ax");
+    fprintf(asmCodeOut, "pop bx\npop cx\n%s cx, bx\n", cmd.c_str());
+    pushToStackTemp("cx");
 }
 
-void relopInAsm(string lt, string rt, string optr, string l1, string l2)
+void relopInAsm(string optr, string l1, string l2)
 {
     string branching = optr == "<=" ? "jle" : optr == ">=" ? "jge"
                                           : optr == ">"    ? "jg"
@@ -236,9 +236,9 @@ void relopInAsm(string lt, string rt, string optr, string l1, string l2)
                                                            : "";
     fprintf(asmCodeOut, 
         "\
-        pop ax\n\
+        pop cx\n\
         pop bx\n\
-        cmp bx, ax\n\
+        cmp bx, cx\n\
         %s %s\n\
         push 0\n\
         jmp %s\n\
@@ -251,14 +251,14 @@ void relopInAsm(string lt, string rt, string optr, string l1, string l2)
         l2.c_str());
 }
 
-void logicopInAsm(string lt, string rt, string optr, string l1, string l2)
+void logicopInAsm(string optr, string l1, string l2)
 {
     string branching = optr == "&&" ? "je" : optr == "||" ? "jne" :"";
     fprintf(asmCodeOut, 
         "\
         pop bx\n\
-        pop ax\n\
-        cmp ax, 0\n\
+        pop cx\n\
+        cmp cx, 0\n\
         %s %s\n\
         cmp bx, 0\n\
         %s %s\n\
@@ -277,7 +277,7 @@ void logicopInAsm(string lt, string rt, string optr, string l1, string l2)
 }
 
 // void printInAsm(string str){
-//     fprintf(asmCodeOut, "mov ax, %s\ncall print_number\n", str.c_str());
+//     fprintf(asmCodeOut, "mov cx, %s\ncall print_number\n", str.c_str());
 // }
 
 
@@ -377,7 +377,7 @@ void logicopInAsm(string lt, string rt, string optr, string l1, string l2)
     //   string model= ".model small\n";
     //   string stack = "\n.stack 100h\n";
     //   string datapart = "\n.data \n\n\t\t"+data_asmcode+"\n";
-    //   string codepart = "\n.code\n\nmain proc \nmov ax,@data\nmov ds,ax\n\n"+codeOptimization(code_asmcode)+"\n";
+    //   string codepart = "\n.code\n\nmain proc \nmov cx,@data\nmov ds,cx\n\n"+codeOptimization(code_asmcode)+"\n";
     //   optimizedCode<<model+stack+datapart+codepart+"\n\nMOV AH, 4CH\nINT 21H\nmain ENDP\n\n";
     //   optimizedCode<<codeOptimization(func_asmcode);
     //   optimizedCode<<println_code;
@@ -388,7 +388,7 @@ void logicopInAsm(string lt, string rt, string optr, string l1, string l2)
     //   string model= ".model small\n";
     //   string stack = "\n.stack 100h\n";
     //   string datapart = "\n.data \n\n\t\t"+data_asmcode+"\n";
-    //   string codepart = "\n.code\n\nmain proc \nmov ax,@data\nmov ds,ax\n\n"+code_asmcode+"\n";
+    //   string codepart = "\n.code\n\nmain proc \nmov cx,@data\nmov ds,cx\n\n"+code_asmcode+"\n";
     //   codefile<<model+stack+datapart+codepart+"\n\nMOV AH, 4CH\nINT 21H\nmain ENDP\n\n";
     //   codefile<<func_asmcode;
     //   codefile<<println_code;
@@ -440,8 +440,8 @@ string newTemp()
 
 //   for(int i=func->tempids.size()-1, j=0;i>=0;i--,j++){
 //     //cout<<"name : "<<func->ids[i]<<"  temp : "<<func->tempids[i]<<endl;
-//     temp += "mov ax, [BP+"+to_string(j*2+4)+"]\n";
-//     temp += "mov "+func->tempids[i]+", ax\n";
+//     temp += "mov cx, [BP+"+to_string(j*2+4)+"]\n";
+//     temp += "mov "+func->tempids[i]+", cx\n";
 //   }
 //   temp += code;
 //   if(!hasReturnStatement){
@@ -461,11 +461,11 @@ string newTemp()
 
 //   //cout<<line_count<<" logicop : "<<exp1->getTempSymbol()<<"  "<<exp2->getTempSymbol()<<endl;
 //   if(op->getName()=="&&"){
-//     codeTemp += "mov ax, "+ exp1->getTempSymbol() +"\n";
-//     codeTemp +="cmp   ax, 1\n";
+//     codeTemp += "mov cx, "+ exp1->getTempSymbol() +"\n";
+//     codeTemp +="cmp   cx, 1\n";
 //     codeTemp += "jnge  "+label1+"\n";
-//     codeTemp += "mov ax, "+ exp2->getTempSymbol() +"\n";
-//     codeTemp += "cmp  ax, 1\n";
+//     codeTemp += "mov cx, "+ exp2->getTempSymbol() +"\n";
+//     codeTemp += "cmp  cx, 1\n";
 //     codeTemp += "jnge  "+label1+"\n";
 //     codeTemp += "mov  "+temp+", 1\n";
 //     codeTemp += "jmp  "+label2+"\n";
@@ -474,11 +474,11 @@ string newTemp()
 //   }
 
 //   else if(op->getName()=="||"){
-//     codeTemp += "mov ax, "+ exp1->getTempSymbol() +"\n";
-//     codeTemp += "cmp  ax, 1\n";
+//     codeTemp += "mov cx, "+ exp1->getTempSymbol() +"\n";
+//     codeTemp += "cmp  cx, 1\n";
 //     codeTemp += "jge  " + label2 + "\n";
-//     codeTemp += "mov ax, "+ exp2->getTempSymbol() +"\n";
-//     codeTemp += "cmp  ax, 1\n";
+//     codeTemp += "mov cx, "+ exp2->getTempSymbol() +"\n";
+//     codeTemp += "cmp  cx, 1\n";
 //     codeTemp += "jge  " + label2 + "\n";
 //     codeTemp += "mov  "+temp+", 0\n";
 //     codeTemp += "jmp  " + label1+"\n";
@@ -496,8 +496,8 @@ string newTemp()
 // string handle_relop_code(symbol_info *exp1, symbol_info *op, symbol_info *exp2){
 //   string codeTemp;
 //   //cout<<line_count<<" relop :"<<exp1->getTempSymbol()<<"  "<<exp2->getTempSymbol()<<endl;
-//   codeTemp += "mov ax, " + exp1->getTempSymbol()+"\n";
-//   codeTemp += "cmp ax, " + exp2->getTempSymbol()+"\n";
+//   codeTemp += "mov cx, " + exp1->getTempSymbol()+"\n";
+//   codeTemp += "cmp cx, " + exp2->getTempSymbol()+"\n";
 
 //   string temp=newTemp();
 //   string label1=newLabel();
@@ -537,14 +537,14 @@ string newTemp()
 //   string codeTemp;
 //   string temp = newTemp();
 //   //cout<<line_count<<" addop : "<<exp1->getTempSymbol()<<"  "<<exp2->getTempSymbol()<<endl;
-//   codeTemp = "mov ax, "+exp1->getTempSymbol()+"\n";
+//   codeTemp = "mov cx, "+exp1->getTempSymbol()+"\n";
 //   if(op->getName()=="+"){
-//     codeTemp += "add ax, "+exp2->getTempSymbol()+"\n";
+//     codeTemp += "add cx, "+exp2->getTempSymbol()+"\n";
 //   }
 //   else if(op->getName()=="-"){
-//     codeTemp += "sub ax, "+exp2->getTempSymbol()+"\n";
+//     codeTemp += "sub cx, "+exp2->getTempSymbol()+"\n";
 //   }
-//   codeTemp += "mov "+temp+", ax\n";
+//   codeTemp += "mov "+temp+", cx\n";
 
 //   tempVar = temp;
 //   tempSet = true;
@@ -556,20 +556,20 @@ string newTemp()
 //   string codeTemp;
 
 //   //cout<<line_count<<" mulop: "<<exp1->getTempSymbol()<<"  "<<exp2->getTempSymbol()<<endl;
-//   codeTemp += "mov ax, "+ exp1->getTempSymbol()+"\n";
+//   codeTemp += "mov cx, "+ exp1->getTempSymbol()+"\n";
 //   codeTemp += "mov bx, "+ exp2->getTempSymbol() +"\n";
 
 //   string temp=newTemp();
 
 //   if(op->getName()=="*"){
 //     codeTemp += "mul bx\n";
-//     codeTemp += "mov "+ temp + ", ax\n";
+//     codeTemp += "mov "+ temp + ", cx\n";
 //   }
 //   else if(op->getName()=="/"){
-//     // clear dx, perform 'div bx' and mov ax to temp
+//     // clear dx, perform 'div bx' and mov cx to temp
 //     codeTemp += "xor dx, dx\n";
 //     codeTemp += "div bx\n";
-//     codeTemp += "mov "+ temp + ", ax\n";
+//     codeTemp += "mov "+ temp + ", cx\n";
 //   }
 //   else{
 //     // clear dx, perform 'div bx' and mov dx to temp
@@ -588,9 +588,9 @@ string newTemp()
 //   string codeTemp;
 //   string temp = newTemp();
 
-//   codeTemp += "mov ax, "+exp->getTempSymbol()+"\n";
-//   codeTemp += "neg ax\n";
-//   codeTemp += "mov "+temp + ", ax\n";
+//   codeTemp += "mov cx, "+exp->getTempSymbol()+"\n";
+//   codeTemp += "neg cx\n";
+//   codeTemp += "mov "+temp + ", cx\n";
 
 //   tempVar = temp;
 //   tempSet = true;

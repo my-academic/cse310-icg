@@ -114,6 +114,6 @@ public:
     void print()
     {
         // fprintf(logout, " < %s : %s> ", name.c_str(), type.c_str());
-        cout << "< " << name << " : " << type << "> ";
+        cout << "< " << name << " : " << type << ", " << id_type << "> ";
     }
 };

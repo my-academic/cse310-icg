@@ -1,12 +1,20 @@
-int main(){
-    int a,b,c[3];
-    a=1*(2+3)%3;
-    b= 1<5;
-    c[0]=2;
-    if(a && b)
-        c[0]++;
-    else
-        c[1]=c[0];
-    println(a);
-    println(b);
+int func (int n){
+  int i;
+  if (n==0) return 0;
+  i=n;
+  return func(n-1)+i;
+}
+
+int func2 (int n){
+  int i;
+  if (n==0) return 0;
+  i=n;
+  return func(n-1)+i;
+}
+
+int main() {
+	int a;
+	a = func(7);
+	println(a);
+	return 0;
 }

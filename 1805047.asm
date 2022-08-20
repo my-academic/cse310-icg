@@ -7,171 +7,215 @@ NUMBER_STRING DB '00000$'
 .code
 
 
-;int main function
-main proc
+;int func function
+func_procedure proc
 push bp
 mov bp, sp
-mov ax, @data
-mov ds,ax
 
 sub sp, 2
-sub sp, 2
-sub sp, 6
 
-;1
-push 1
+;n
+push [bp+4]
 
-;2
-push 2
+;0
+push 0
 
-;3
-push 3
-
-;2+3
-pop bx
-pop ax
-add ax, bx
-push ax
-
-;1*(2+3)
-        pop ax
+;n==0
+        pop cx
         pop bx
-        mul bx
-push ax
-
-;3
-push 3
-
-;1*(2+3)%3
-        pop bx
-        pop ax
-        xor dx, dx
-        div bx
-push dx
-
-;a = 1*(2+3)%3
-pop ax
-mov word ptr [bp-2], ax
-push ax
-pop cx
-
-;1
-push 1
-
-;5
-push 5
-
-;1<5
-        pop ax
-        pop bx
-        cmp bx, ax
-        jl L1
+        cmp bx, cx
+        je L1
         push 0
         jmp L0
         L1:
         push 1
         L0:
-
-;b = 1<5
-pop ax
-mov word ptr [bp-4], ax
-push ax
 pop cx
+cmp cx, 0
+je L2
 
 ;0
 push 0
 
-;c[0]
-pop bx
-shl bx, 1
-push bx
-
-
-;2
-push 2
-
-;c[0] = 2
-pop ax
-mov word ptr c[0], ax
-push ax
+;return 0
 pop cx
+jmp L3
+L2:
 
-;a
-push [bp-2]
+;n
+push [bp+4]
 
-;b
-push [bp-4]
-
-;a&&b
-        pop bx
-        pop ax
-        cmp ax, 0
-        je L3
-        cmp bx, 0
-        je L3
-        push 1
-        jmp L2
-        L3:
-        push 0
-        L2:
-pop ax
-cmp ax, 0
-je L4
-
-;0
-push 0
-
-;c[0]
-pop bx
-shl bx, 1
-push bx
-
-
-;c[0]++
-push c[0]++
-mov ax, c[0]++
-inc ax
- mov word ptr c[0]++, ax
+;i = n
 pop cx
-jmp L5
-L4:
+mov word ptr [bp-2], cx
+push cx
+pop ax
+
+;n
+push [bp+4]
 
 ;1
 push 1
 
-;c[1]
+;n-1
 pop bx
-shl bx, 1
-push bx
+pop cx
+sub cx, bx
+push cx
 
+;func(n-1)
+call func_procedure
+push cx
+
+;i
+push [bp-2]
+
+;func(n-1)+i
+pop bx
+pop cx
+add cx, bx
+push cx
+
+;return func(n-1)+i
+pop cx
+jmp L4
+add sp, 2
+L3: 
+add sp, 2
+L4: 
+add sp, 2
+
+pop bp
+ret 2
+func_procedure endp
+
+
+;func function ended
+
+
+
+;int func2 function
+func2_procedure proc
+push bp
+mov bp, sp
+
+sub sp, 2
+
+;n
+push [bp+4]
 
 ;0
 push 0
 
-;c[0]
-pop bx
-shl bx, 1
-push bx
-
-
-;c[0]
-push c[0]
-
-;c[1] = c[0]
-pop ax
-mov word ptr c[1], ax
-push ax
+;n==0
+        pop cx
+        pop bx
+        cmp bx, cx
+        je L6
+        push 0
+        jmp L5
+        L6:
+        push 1
+        L5:
 pop cx
-L5:
+cmp cx, 0
+je L7
+
+;0
+push 0
+
+;return 0
+pop cx
+jmp L8
+L7:
+
+;n
+push [bp+4]
+
+;i = n
+pop cx
+mov word ptr [bp-2], cx
+push cx
+pop ax
+
+;n
+push [bp+4]
+
+;1
+push 1
+
+;n-1
+pop bx
+pop cx
+sub cx, bx
+push cx
+
+;func(n-1)
+call func_procedure
+push cx
+
+;i
+push [bp-2]
+
+;func(n-1)+i
+pop bx
+pop cx
+add cx, bx
+push cx
+
+;return func(n-1)+i
+pop cx
+jmp L9
+add sp, 2
+L8: 
+add sp, 2
+L9: 
+add sp, 2
+
+pop bp
+ret 2
+func2_procedure endp
+
+
+;func2 function ended
+
+
+
+;int main function
+main proc
+push bp
+mov bp, sp
+mov cx, @data
+mov ds,cx
+
+sub sp, 2
+
+;7
+push 7
+
+;func(7)
+call func_procedure
+push cx
+
+;a = func(7)
+pop cx
+mov word ptr [bp-2], cx
+push cx
+pop ax
 
 ;println(a);
 mov ax, [bp-2]
 call print_number
 
-;println(b);
-mov ax, [bp-4]
-call print_number
-add sp, 10
+;0
+push 0
+
+;return 0
+pop cx
+jmp L10
+add sp, 2
+L10: 
+add sp, 2
 
 mov ah, 4ch
 int 21h
