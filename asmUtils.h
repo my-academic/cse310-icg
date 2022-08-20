@@ -24,8 +24,16 @@ using namespace std;
 FILE *asmDataOut, *asmCodeOut;
 string else_if_label = "";
 
-vector<vector<string>> variables; // stack for variables
-int bp_current_position = 0;
+class var_info {
+public: 
+    string name;
+    int size;
+
+    var_info(string n, int s): name(n), size(s) {}
+};
+
+vector<vector<var_info>> variables_stack; // stack for variables
+int bp_current_position = -1;
 
 bool has_main_function = false;
 
@@ -83,25 +91,25 @@ void initiateAssembly()
 void addDataInAssembly(string name, string scope_id, bool is_array = false, int size_of_array = 0)
 {
     if (!is_array)
-        fprintf(asmDataOut, "%s%s DW 0\n", name.c_str(), scope_id.c_str());
+        fprintf(asmDataOut, "%s DW 0\n", name.c_str());
     else
-        fprintf(asmDataOut, "%s%s DW %d DUP(0)\n", name.c_str(), scope_id.c_str(), size_of_array);
+        fprintf(asmDataOut, "%s DW %d DUP(0)\n", name.c_str(), size_of_array);
 }
 
 void addFuncDefinitionInAsm(string name, int param_count)
 {
     has_main_function |= (name == "main");
     if (name == "main")
-        fprintf(asmCodeOut, "main proc\nmov ax, @data\nmov ds,ax\n\n");
+        fprintf(asmCodeOut, "main proc\npush bp\nmov bp, sp\nmov ax, @data\nmov ds,ax\n\n");
     else
         fprintf(asmCodeOut, "%s_procedure proc\npush bp\nmov bp, sp\n\n", name.c_str());
 }
 
-void addFunctionEndStatementInAsm(string name, int param_count, vector<string> return_label)
+void addFunctionEndStatementInAsm(string name, int param_count, vector<string> return_label, int offset)
 {
     for (size_t i = 0; i < return_label.size(); i++)
     {
-        fprintf(asmCodeOut, "%s: \n", return_label[i].c_str());
+        fprintf(asmCodeOut, "%s: \nadd sp, %d\n", return_label[i].c_str(), offset * 2);
     }
     
     if (name == "main")
@@ -114,49 +122,51 @@ void addFunctionEndStatementInAsm(string name, int param_count, vector<string> r
         fprintf(asmCodeOut, "\npop bp\nret %d\n", param_count * 2);
         fprintf(asmCodeOut, "%s_procedure endp\n\n", name.c_str());
     }
+    bp_current_position --;
 }
 
-void addCodeForConst(string var_name, string value)
-{
-    fprintf(asmCodeOut, "mov %s, %s\n\n", var_name.c_str(), value.c_str());
-}
+// void addCodeForConst(string var_name, string value)
+// {
+//     fprintf(asmCodeOut, "mov %s, %s\n\n", var_name.c_str(), value.c_str());
+// }
 
 void addArrayIndexInAsm(string var_name, string temp_idx)
 {
     fprintf(asmCodeOut, "pop bx\nshl bx, 1\npush bx\n\n");
 }
 
-void addCodeForArrayAssignment(string lhs, string idx, string rhs)
-{
-    fprintf(asmCodeOut, "pop ax\npop bx\nmov %s[bx], ax\n\n", lhs.c_str());
-    pushToStackTemp("ax");
-}
+// void addCodeForArrayAssignment(string lhs, string idx, string rhs)
+// {
+//     // fprintf()
+//     fprintf(asmCodeOut, "pop ax\npop bx\nmov %s[bx], ax\n\n", lhs.c_str());
+//     pushToStackTemp("ax");
+// }
 
-void addCodeForVariableAssignment(string lhs, string rhs)
-{
-    fprintf(asmCodeOut, "pop ax\nmov %s, ax\n\n", lhs.c_str());
-    pushToStackTemp("ax");
-}
+// void addCodeForVariableAssignment(string lhs, string rhs)
+// {
+//     fprintf(asmCodeOut, "pop ax\nmov %s, ax\n\n", lhs.c_str());
+//     pushToStackTemp("ax");
+// }
 
-void addCodeForInDeOP(string op, string temp, string variable, string idx = "")
-{
-    // if (idx != "")
-    //     fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\nmov bx, %s\n%s %s[bx]\n\n", variable.c_str(), temp.c_str(), idx.c_str(), op.c_str(), variable.c_str());
-    // else
-    //     fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\n%s %s\n\n", variable.c_str(), temp.c_str(), op.c_str(), variable.c_str());
-    if (idx != "")
-        fprintf(asmCodeOut, "pop bx\npush %s[bx]\n%s %s[bx]\n\n",  idx.c_str(),  variable.c_str(), op.c_str(), variable.c_str());
-    else
-        fprintf(asmCodeOut, "push %s\n%s %s\n\n", variable.c_str(), op.c_str(), variable.c_str());
-}
+// void addCodeForInDeOP(string op, string temp, string variable, string idx = "")
+// {
+//     // if (idx != "")
+//     //     fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\nmov bx, %s\n%s %s[bx]\n\n", variable.c_str(), temp.c_str(), idx.c_str(), op.c_str(), variable.c_str());
+//     // else
+//     //     fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\n%s %s\n\n", variable.c_str(), temp.c_str(), op.c_str(), variable.c_str());
+//     if (idx != "")
+//         fprintf(asmCodeOut, "pop bx\npush %s[bx]\n%s %s[bx]\n\n",  idx.c_str(),  variable.c_str(), op.c_str(), variable.c_str());
+//     else
+//         fprintf(asmCodeOut, "push %s\n%s %s\n\n", variable.c_str(), op.c_str(), variable.c_str());
+// }
 
-void bufferingVariable(string temp_var_name, string var_name, string idx = "")
-{
-    if (idx == "")
-        fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\n\n", var_name.c_str(), temp_var_name.c_str());
-    else
-        fprintf(asmCodeOut, "mov bx, %s\nmov ax, %s[bx]\nmov %s, ax\n\n", idx.c_str(), var_name.c_str(), temp_var_name.c_str());
-}
+// void bufferingVariable(string temp_var_name, string var_name, string idx = "")
+// {
+//     if (idx == "")
+//         fprintf(asmCodeOut, "mov ax, %s\nmov %s, ax\n\n", var_name.c_str(), temp_var_name.c_str());
+//     else
+//         fprintf(asmCodeOut, "mov bx, %s\nmov ax, %s[bx]\nmov %s, ax\n\n", idx.c_str(), var_name.c_str(), temp_var_name.c_str());
+// }
 
 void pushToStack(string str)
 {
@@ -266,9 +276,9 @@ void logicopInAsm(string lt, string rt, string optr, string l1, string l2)
         l2.c_str());
 }
 
-void printInAsm(string str){
-    fprintf(asmCodeOut, "mov ax, %s\ncall print_number\n", str.c_str());
-}
+// void printInAsm(string str){
+//     fprintf(asmCodeOut, "mov ax, %s\ncall print_number\n", str.c_str());
+// }
 
 
 // void saveASMinStack(nonterminals nt, string str){

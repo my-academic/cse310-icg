@@ -204,6 +204,7 @@ symbol_info *findVariable(symbol_info *symbolInfo)
 {
   pair<symbol_info *, string> p1 = findSymbol(symbolInfo);
   symbol_info *s = p1.first;
+  s->offset = 0;
   if (s == nullptr)
   {
     printError("Undeclared variable " + symbolInfo->getName());
@@ -221,10 +222,30 @@ symbol_info *findVariable(symbol_info *symbolInfo)
   }
   if (i < size)
   {
+    s->offset = ((size - 1 - i) * 2 + 4);
     s->temp_id = "[bp+" + to_string((size - 1 - i) * 2 + 4) + "]";
   }
   else
     s->temp_id = s->getName() + p1.second;
+
+  int offset = 0, c = 0;
+
+  for (size_t i = bp_current_position; i < variables_stack.size(); i++)
+  {
+      for (size_t j = 0; j < variables_stack[i].size(); j++)
+      {
+          c += variables_stack[i][j].size;
+          if(variables_stack[i][j].name == s->getName()) {
+            offset = c;
+          }
+      }
+      
+  }
+  cout << s->getName() << " " << s->offset << " " << c << " " << offset << endl;
+  if(s->offset == 0) {
+    s->offset = -offset * 2;
+  }
+  
   return s;
 }
 
@@ -244,6 +265,9 @@ void setVariableAndArrayRelatedValues(symbol_info *symbolInfo, string type, symb
 
 void insertDeclarationListRecord(symbol_info *symbolInfo, bool is_array = false, int size_of_array = 0)
 {
+
+  symbolInfo = new symbol_info(symbolInfo->getName(), symbolInfo->getType());
+
   if (is_array)
   {
     if (size_of_array <= 0)
@@ -255,7 +279,19 @@ void insertDeclarationListRecord(symbol_info *symbolInfo, bool is_array = false,
     symbolInfo->id_type = VARIABLE;
   }
   variables.push_back(symbolInfo);
+  if(current_function == nullptr) {
+    // global
   addDataInAssembly(symbolInfo->getName(), symbolTable->getCurrentScopeId(), is_array, size_of_array);
+
+  }
+  else {
+    // local
+    var_info vi(symbolInfo->getName(), is_array ? size_of_array : 1);
+    variables_stack[variables_stack.size() - 1].push_back(vi);
+    fprintf(asmCodeOut, "sub sp, %d\n", is_array ? size_of_array * 2 : 1 * 2);
+  }
+  // addDataInAssembly(symbolInfo->getName(), symbolTable->getCurrentScopeId(), is_array, size_of_array);
+  
 }
 
 void setVariableAndArrayValues(string type)
@@ -270,7 +306,8 @@ void setVariableAndArrayValues(string type)
     if (s == nullptr)
     {
       symbolTable->insert(variables[i]->getName(), variables[i]->getType());
-      s = symbolTable->lookup(variables[i]->getName()).first;
+      pair<symbol_info*, string> p = symbolTable->lookup(variables[i]->getName());
+      s = p.first;
       setVariableAndArrayRelatedValues(s, type, variables[i]);
     }
     else
@@ -372,6 +409,7 @@ void setFunctionValues(string return_type, symbol_info *symbolInfo, bool is_defi
   isFunctionStarted = true;
   printCurrentStatement(return_type + " " + symbolInfo->getName() + " function");
   addFuncDefinitionInAsm(symbolInfo->getName(), parameters.size());
+  bp_current_position ++;
 }
 
 symbol_info *checkArrayIndex(string var_name, symbol_info *idx)
@@ -432,17 +470,30 @@ symbol_info *checkAssignCompatibility(symbol_info *lhs, symbol_info *rhs)
     return nullptr;
   }
   symbol_info *s = new symbol_info(lhs->getName() + " = " + rhs->getName(), "intermediate");
+  s->offset = lhs->offset;
+    
+  printCurrentStatement(s->getName());
 
-  if (isArray(lhs))
-  {
-    printCurrentStatement(s->getName());
-    addCodeForArrayAssignment(lhs->temp_id, lhs->temp_index, rhs->temp_id);
+  if(s->offset == 0) {
+    fprintf(asmCodeOut, "pop ax\nmov word ptr %s, ax\n", lhs->getName().c_str());
   }
-  else
-  {
-    printCurrentStatement(s->getName());
-    addCodeForVariableAssignment(lhs->temp_id, rhs->temp_id);
+  else {
+    string plus = s->offset > 0 ? "+": "";
+    fprintf(asmCodeOut, "pop ax\nmov word ptr [bp%s%d], ax\n", plus.c_str(), s->offset);
   }
+
+  pushToStackTemp("ax");
+
+  // if (isArray(lhs))
+  // {
+  //   printCurrentStatement(s->getName());
+  //   addCodeForArrayAssignment(lhs->temp_id, lhs->temp_index, rhs->temp_id);
+  // }
+  // else
+  // {
+  //   printCurrentStatement(s->getName());
+  //   addCodeForVariableAssignment(lhs->temp_id, rhs->temp_id);
+  // }
   s->id_type = VARIABLE;
   s->variable_type = lhs->variable_type;
   return s;
@@ -495,6 +546,7 @@ symbol_info *checkAndDoMulopThings(symbol_info *left, string optr, symbol_info *
   mulopInAsm(left->temp_id, right->temp_id, left->temp_id, optr);
   s->id_type = VARIABLE;
   s->temp_id = left->temp_id;
+  s->offset = left->offset;
   s->variable_type = left->variable_type == fraction || right->variable_type == fraction ? fraction : integer;
   return s;
 }
@@ -508,6 +560,7 @@ symbol_info *checkAdditionCompatibility(symbol_info *left, string optr, symbol_i
   printCurrentStatement(s->getName());
   addopInAsm(left->temp_id, right->temp_id, optr);
   s->temp_id = left->temp_id;
+  s->offset = left->offset;
   s->id_type = VARIABLE;
   s->variable_type = left->variable_type == fraction || right->variable_type == fraction ? fraction : integer;
   return s;
@@ -522,6 +575,7 @@ symbol_info *checkRELOPCompetibility(symbol_info *left, string optr, symbol_info
   printCurrentStatement(s->getName());
   relopInAsm(left->temp_id, right->temp_id, optr, newLabel(), newLabel());
   s->temp_id = left->temp_id;
+  s->offset = left->offset;
   s->id_type = VARIABLE;
   s->variable_type = integer;
   return s;
@@ -536,6 +590,7 @@ symbol_info *checkLogicCompetibility(symbol_info *left, string optr, symbol_info
   printCurrentStatement(s->getName());
   logicopInAsm(left->temp_id, right->temp_id, optr, newLabel(), newLabel());
   s->temp_id = left->temp_id;
+  s->offset = left -> offset;
   s->id_type = VARIABLE;
   s->variable_type = integer;
   return s;
@@ -618,17 +673,29 @@ symbol_info *checkINDECopCompatibility(symbol_info *symbolInfo, string optr)
   symbol_info *s = new symbol_info(symbolInfo->getName() + optr, intermediate);
   s->id_type = VARIABLE;
   s->variable_type = symbolInfo->variable_type;
+  s->offset = symbolInfo->offset;
   // s->temp_id = newTemp();
-  if (isArray(symbolInfo))
-  {
-    printCurrentStatement(s->getName());
-    addCodeForInDeOP(optr == "++" ? "inc" : "dec", s->temp_id, symbolInfo->temp_id, symbolInfo->temp_index);
+  printCurrentStatement(s->getName());
+
+  if(s->offset == 0) {
+    fprintf(asmCodeOut, "push %s\nmov ax, %s\n%s ax\n mov word ptr %s, ax\n", s->getName().c_str(), s->getName().c_str(), optr == "++" ? "inc" : "dec", s->getName().c_str());
   }
-  else
-  {
-    printCurrentStatement(s->getName());
-    addCodeForInDeOP(optr == "++" ? "inc" : "dec", s->temp_id, symbolInfo->temp_id);
+  else {
+    string plus = s ->offset < 0 ? "" : "+";
+    fprintf(asmCodeOut, "push [bp%s%d]\nmov ax, [bp%s%d]\n%s ax\n mov word ptr [bp%s%d], ax\n", plus.c_str(), s->offset, plus.c_str(), s->offset, optr == "++" ? "inc" : "dec", plus.c_str(), s->offset);
   }
+  // if (isArray(symbolInfo))
+  // {
+  //   printCurrentStatement(s->getName());
+  //   string plus = s ->offset < 0 ? "" : "+";
+  //   fprintf(asmCodeOut, "push [bp%s%d]\ninc [bp%s%d]\n", plus.c_str(), s->offset, plus.c_str(), s->offset);
+  //   addCodeForInDeOP(optr == "++" ? "inc" : "dec", s->temp_id, symbolInfo->temp_id, symbolInfo->temp_index);
+  // }
+  // else
+  // {
+  //   printCurrentStatement(s->getName());
+  //   addCodeForInDeOP(optr == "++" ? "inc" : "dec", s->temp_id, symbolInfo->temp_id);
+  // }
   return s;
 }
 
@@ -652,6 +719,7 @@ symbol_info *checkUnaryADDOPThings(string optr, symbol_info *symbolInfo)
   s->variable_type = symbolInfo->variable_type;
   printCurrentStatement(s->getName());
   s->temp_id = symbolInfo->temp_id;
+  s->offset = symbolInfo->offset;
   if(optr == "-"){
     string temp = newTemp();
     negateInAssembly(symbolInfo->temp_id, temp);
@@ -669,6 +737,7 @@ symbol_info *checkNotCompatibility(symbol_info *symbolInfo)
   s->id_type = VARIABLE;
   s->variable_type = integer;
   s->temp_id = symbolInfo->temp_id;
+  s->offset = symbolInfo->offset;
   string l1 = newLabel();
   string l2 = newLabel();
   printCurrentStatement(s->getName());
@@ -683,6 +752,7 @@ symbol_info *checkLPAREN_Expression_RPAREN(symbol_info *symbolInfo)
 
   symbol_info *s = new symbol_info("(" + symbolInfo->getName() + ")", intermediate);
   s->temp_id = symbolInfo->temp_id;
+  s->offset = symbolInfo->offset;
   s->temp_index = symbolInfo->temp_index;
   s->id_type = VARIABLE;
   s->variable_type = symbolInfo->variable_type;

@@ -23,6 +23,7 @@ public:
     string inh_label;
     string inh_label2;
     string inh_label3;
+    int offset;
 
     vector<string> return_label;
 

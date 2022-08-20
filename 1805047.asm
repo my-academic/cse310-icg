@@ -3,161 +3,175 @@
 .data
 MINUS DB ?
 NUMBER_STRING DB '00000$'
-x1_2 DW 0
-a1_3 DW 0
-b1_3 DW 0
-c1_3 DW 0
-y1_3 DW 3 DUP(0)
-a1_3_1 DW 0
-b1_3_1 DW 0
 
 .code
 
 
-;int f function
-f_procedure proc
+;int main function
+main proc
 push bp
 mov bp, sp
+mov ax, @data
+mov ds,ax
 
+sub sp, 2
+sub sp, 2
+sub sp, 6
+
+;1
+push 1
 
 ;2
 push 2
 
-;a
-push [bp+4]
+;3
+push 3
 
-;2*a
+;2+3
+pop bx
+pop ax
+add ax, bx
+push ax
+
+;1*(2+3)
         pop ax
         pop bx
         mul bx
 push ax
 
-;return 2*a
+;3
+push 3
+
+;1*(2+3)%3
+        pop bx
+        pop ax
+        xor dx, dx
+        div bx
+push dx
+
+;a = 1*(2+3)%3
 pop ax
-jmp L0
-
-;9
-push 9
-
-;a = 9
-pop ax
-mov [bp+4], ax
-
-push ax
-pop cx
-L0: 
-
-pop bp
-ret 2
-f_procedure endp
-
-
-;f function ended
-
-
-
-;int g function
-g_procedure proc
-push bp
-mov bp, sp
-
-
-;a
-push [bp+6]
-
-;f(a)
-call f_procedure
-push ax
-
-;a
-push [bp+6]
-
-;f(a)+a
-pop bx
-pop ax
-add ax, bx
-push ax
-
-;b
-push [bp+4]
-
-;f(a)+a+b
-pop bx
-pop ax
-add ax, bx
-push ax
-
-;x = f(a)+a+b
-pop ax
-mov x1_2, ax
-
+mov word ptr [bp-2], ax
 push ax
 pop cx
 
-;x
-push x1_2
+;1
+push 1
 
-;return x
+;5
+push 5
+
+;1<5
+        pop ax
+        pop bx
+        cmp bx, ax
+        jl L1
+        push 0
+        jmp L0
+        L1:
+        push 1
+        L0:
+
+;b = 1<5
 pop ax
-jmp L1
-L1: 
-
-pop bp
-ret 4
-g_procedure endp
-
-
-;g function ended
-
-
-
-;int main function
-main proc
-mov ax, @data
-mov ds,ax
-
-
-;2
-push 2
-
-;a = 2
-pop ax
-mov a1_3, ax
-
+mov word ptr [bp-4], ax
 push ax
 pop cx
-
-;2
-push 2
-
-;a = 2
-pop ax
-mov a1_3_1, ax
-
-push ax
-pop cx
-
-;2
-push 2
-
-;b = 2
-pop ax
-mov b1_3, ax
-
-push ax
-pop cx
-
-;println(a);
-mov ax, a1_3
-call print_number
 
 ;0
 push 0
 
-;return 0
+;c[0]
+pop bx
+shl bx, 1
+push bx
+
+
+;2
+push 2
+
+;c[0] = 2
 pop ax
-jmp L2
-L2: 
+mov word ptr c[0], ax
+push ax
+pop cx
+
+;a
+push [bp-2]
+
+;b
+push [bp-4]
+
+;a&&b
+        pop bx
+        pop ax
+        cmp ax, 0
+        je L3
+        cmp bx, 0
+        je L3
+        push 1
+        jmp L2
+        L3:
+        push 0
+        L2:
+pop ax
+cmp ax, 0
+je L4
+
+;0
+push 0
+
+;c[0]
+pop bx
+shl bx, 1
+push bx
+
+
+;c[0]++
+push c[0]++
+mov ax, c[0]++
+inc ax
+ mov word ptr c[0]++, ax
+pop cx
+jmp L5
+L4:
+
+;1
+push 1
+
+;c[1]
+pop bx
+shl bx, 1
+push bx
+
+
+;0
+push 0
+
+;c[0]
+pop bx
+shl bx, 1
+push bx
+
+
+;c[0]
+push c[0]
+
+;c[1] = c[0]
+pop ax
+mov word ptr c[1], ax
+push ax
+pop cx
+L5:
+
+;println(a);
+mov ax, [bp-2]
+call print_number
+
+;println(b);
+mov ax, [bp-4]
+call print_number
+add sp, 10
 
 mov ah, 4ch
 int 21h

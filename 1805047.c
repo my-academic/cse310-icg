@@ -1,26 +1,12 @@
-
-
-int f(int a){
-    return 2*a;
-    a=9;
-}
-
-int g(int a, int b){
-    int x;
-    x=f(a)+a+b;
-    return x;
-}
-
 int main(){
-    int a,b,c, y[3];
-	a =2;
-	{
-		int a , b;
-		a = 2;
-	}
-    b=2;
-	// c[4] = 6;
-	// a = c[4];
+    int a,b,c[3];
+    a=1*(2+3)%3;
+    b= 1<5;
+    c[0]=2;
+    if(a && b)
+        c[0]++;
+    else
+        c[1]=c[0];
     println(a);
-    return 0;
+    println(b);
 }

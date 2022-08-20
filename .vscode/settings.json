@@ -12,6 +12,25 @@
     "span": "c",
     "regex": "c",
     "utility": "c",
-    "valarray": "c"
+    "valarray": "c",
+    "random": "c",
+    "ostream": "c",
+    "any": "c",
+    "charconv": "c",
+    "chrono": "c",
+    "compare": "c",
+    "functional": "c",
+    "memory_resource": "c",
+    "ratio": "c",
+    "scoped_allocator": "c",
+    "tuple": "c",
+    "type_traits": "c",
+    "variant": "c",
+    "*.tcc": "c",
+    "deque": "c",
+    "list": "c",
+    "unordered_map": "c",
+    "unordered_set": "c",
+    "vector": "c"
   }
 }

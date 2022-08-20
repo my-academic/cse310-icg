@@ -109,10 +109,12 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN
 	setFunctionValues(*$1, $2, true);
 } compound_statement 
 {
+
+	// fprintf(asmCodeOut, "add sp, %d\n", $7->offset * 2);
 	string str = stackPop(type_specifier) + " " + $2->getName() + "(" + stackPop(parameter_list) + ")" + stackPop(compound_statement);
 	stackPush(func_definition, str);
 	printLog("func_definition", "type_specifier ID LPAREN parameter_list RPAREN compound_statement", str);
-	addFunctionEndStatementInAsm(current_function->getName(), current_function->sequence_of_parameters.size(), current_function->return_label);
+	addFunctionEndStatementInAsm(current_function->getName(), current_function->sequence_of_parameters.size(), current_function->return_label, $7->offset);
 
 	printCurrentStatement($2->getName() + " function ended\n\n");
 	current_function = nullptr;
@@ -125,7 +127,7 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN
 	string str = stackPop(type_specifier) + " " + $2->getName() + "()" + stackPop(compound_statement);
 	stackPush(func_definition, str);
 	printLog("func_definition", "type_specifier ID LPAREN RPAREN compound_statement", str);
-	addFunctionEndStatementInAsm(current_function->getName(), current_function->sequence_of_parameters.size(), current_function->return_label);
+	addFunctionEndStatementInAsm(current_function->getName(), current_function->sequence_of_parameters.size(), current_function->return_label, $6->offset);
 	current_function = nullptr;
 }
  		;				
@@ -168,6 +170,8 @@ parameter_list  : parameter_list COMMA type_specifier ID
  		
 compound_statement : LCURL 
 {
+
+  	variables_stack.push_back(vector<var_info>());
 	enterNewScope();
 } statements RCURL 
 {
@@ -177,12 +181,26 @@ compound_statement : LCURL
 
 	printTable();
 	exitScope();
+	// cout << variables_stack.size() << endl;
+	int c = 0;
+	for(int i = 0; i < variables_stack[variables_stack.size() - 1].size(); i++) {
+		c += variables_stack[variables_stack.size() - 1][i].size;
+	}
+	fprintf(asmCodeOut, "add sp, %d\n", c * 2);
+	$$->offset = c;
+	variables_stack.pop_back();
+	// cout << variables_stack.size() << endl;
+
 }
  		    | LCURL 
 {
+
+  	variables_stack.push_back(vector<var_info>());
 	enterNewScope();
 } RCURL
 {
+	fprintf(asmCodeOut, "add sp, %d\n", variables_stack[variables_stack.size() - 1].size() * 2);
+	variables_stack.pop_back();
 	string str = "{}";
 	stackPush(compound_statement, str);
 	exitScope();
@@ -290,6 +308,7 @@ statement : var_declaration
 		string condition_false_label = newLabel();
 		string start_statement = newLabel();
 		string indecop_label = newLabel();
+
 		fprintf(asmCodeOut, "mov ax, cx\ncmp ax, 0\nje %s\njmp %s\n%s:\n", condition_false_label.c_str(), start_statement.c_str(), indecop_label.c_str());
 		$5->inh_label = condition_false_label;
 		$5->inh_label2 = start_statement;
@@ -343,7 +362,15 @@ statement : var_declaration
 	string str = "println(" + $3->getName() + ");";
 	stackPush(statement, str);
 	printCurrentStatement(str);
-	printInAsm($3->temp_id);
+	// printInAsm($3->temp_id);
+	if($3->offset == 0) {
+		fprintf(asmCodeOut, "mov ax, %s\ncall print_number\n", $3->getName().c_str());
+	}
+	else {
+		string plus = $3->offset > 0 ? "+": "";
+		fprintf(asmCodeOut, "mov ax, [bp%s%d]\ncall print_number\n", plus.c_str(), $3->offset);
+	}
+
 	printLog("statement", "PRINTLN LPAREN ID RPAREN SEMICOLON", str + "\n");
 }
 	  | RETURN expression SEMICOLON
@@ -523,10 +550,17 @@ factor	: variable
 	// $$->setAllValueOf($1);
 	// bufferingVariable(temp, $1->temp_id, $$->temp_index);
 	// $$->temp_id = temp;
-	if(isArray($1))
-		fprintf(asmCodeOut, "pop bx\npush %s[bx]\n", $1->temp_id.c_str());
-	else
-		pushToStackTemp($1->temp_id);
+	// if(isArray($1))
+	// 	fprintf(asmCodeOut, "pop bx\npush %s[bx]\n", $1->temp_id.c_str());
+	// else
+	// 	pushToStackTemp($1->temp_id);
+	if($1->offset == 0) {
+		fprintf(asmCodeOut, "push %s\n", $1->getName().c_str());
+	}
+	else {
+		string plus = $1->offset > 0 ? "+": "";
+		fprintf(asmCodeOut, "push [bp%s%d]\n", plus.c_str(), $1->offset);
+	}
 }
 	| ID LPAREN argument_list RPAREN
 {
@@ -609,7 +643,8 @@ void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut, FILE* asmPri
 	char ch;
 	// cout << has_main_function << endl;
 	if(!has_main_function || syntax_error_count + lexical_error_count > 0) {
-		printError("program has no main function");
+		if(!has_main_function) 
+			printError("program has no main function");
 		return;
 	}
 	do {
