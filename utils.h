@@ -590,8 +590,8 @@ symbol_info *checkLogicCompetibility(symbol_info *left, string optr, symbol_info
     return nullptr;
 
   symbol_info *s = new symbol_info(left->getName() + optr + right->getName(), intermediate);
-  printCurrentStatement(s->getName());
-  logicopInAsm(optr, newLabel(), newLabel());
+  // printCurrentStatement(s->getName());
+  // logicopInAsm(optr, newLabel(), newLabel());
   s->temp_id = left->temp_id;
   s->offset = left -> offset;
   s->id_type = VARIABLE;

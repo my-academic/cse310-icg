@@ -306,6 +306,7 @@ void runOptimization(FILE* code, FILE* optimizeCode){
                     prev_line[1] == "cx" ||
                     prev_line[1] == "dx"
                     )) {
+                    // extra
                     // push ax -- pop a <=> mov a, ax
                     string rhs = prev_line[1];
                     string lhs = current_line[1];
@@ -323,6 +324,16 @@ void runOptimization(FILE* code, FILE* optimizeCode){
         // adding zero
         else if((current_line[0] == "add" || current_line[0] == "sub") && (current_line[2] == "0")) {
             current_line.clear();
+        }
+
+        // adding one
+        else if((current_line[0] == "add" || current_line[0] == "sub") && (current_line[2] == "1")) {
+            string optr = current_line[0] == "add" ? "inc" : "dec";
+            string operand = current_line[1];
+            current_line.clear();
+
+            current_line.push_back(optr);
+            current_line.push_back(operand);
         }
 
         // if(current_line.size() == 0) {

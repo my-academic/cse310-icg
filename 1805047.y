@@ -458,14 +458,30 @@ logic_expression : rel_expression
 	stackPush(logic_expression, str);
 	printLog("logic_expression", "rel_expression", str);
 }
-		 | rel_expression LOGICOP rel_expression 
+		 | rel_expression LOGICOP {
+			printCurrentStatement($1->getName());
+			string label = newLabel();
+    		string branching = *$2 == "&&" ? "je" : *$2 == "||" ? "jne" :"";
+			fprintf(asmCodeOut, "pop cx\ncmp cx, 0\n%s %s\n", branching.c_str(), label.c_str());
+			$1->inh_label = label;
+		 } rel_expression 
 {
-	$$ = checkLogicCompetibility($1, *$2, $3);
+	$$ = checkLogicCompetibility($1, *$2, $4);
+	printCurrentStatement($4->getName());
+	string branching = *$2 == "&&" ? "je" : *$2 == "||" ? "jne" :"";
+	fprintf(asmCodeOut, "pop cx\ncmp cx, 0\n%s %s\n", branching.c_str(), $1->inh_label.c_str());
 	string str1 = stackPop(rel_expression);
 	string str2 = stackPop(rel_expression);
 	string str = str2 + *$2 + str1;
 	stackPush(logic_expression, str);
 	printLog("logic_expression", "rel_expression LOGICOP rel_expression ", str);
+	printCurrentStatement(str);
+	string label = newLabel();
+	fprintf(asmCodeOut, "push %d\njmp %s\n%s:push %d\n%s:\n", *$2 == "&&",
+        label.c_str(),
+        $1->inh_label.c_str(),
+        *$2 == "||",
+        label.c_str());
 }	
 		 ;
 			
@@ -740,5 +756,6 @@ int main(int argc,char *argv[])
 	fclose(errorout);
 	rename("asmData.asm", "optimized_code.asm");
 	remove("asmCode.asm");
+	remove("log.txt");
 	return 0;
 }

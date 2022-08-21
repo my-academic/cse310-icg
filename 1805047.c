@@ -1,13 +1,18 @@
-
+int foo(int a, int b){
+	if(a+b <= 5){
+		return 7;
+	}
+	return foo(a-2,b-1) + 2*foo(a-1,b-2);
+}
+ 
+ 
 int main(){
-    int a,b,c[3];
-    a=1*(2+3)%3;
-    b= 1<5;
-    c[0]=2;
-    if(a && b)
-        c[0]++;
-    else
-        c[1]=c[0];
-    println(a);
-    println(b);
+	int i,j,k;
+	i = 7;
+	j = 3;
+ 
+	k = foo(i,j);
+	println(k);
+ 
+	return 0;
 }

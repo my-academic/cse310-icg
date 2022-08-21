@@ -7,7 +7,139 @@ NUMBER_STRING DB '00000$'
 .code
 
 
-;line 2: int main function
+;line 1: int foo function
+foo_procedure proc
+push bp
+mov bp, sp
+
+
+;line 2: a
+push [bp+6]
+
+;line 2: b
+push [bp+4]
+
+;line 2: a+b
+pop bx
+pop cx
+add cx, bx
+push cx
+
+;line 2: 5
+push 5
+
+;line 2: a+b<=5
+        pop cx
+        pop bx
+        cmp bx, cx
+        jle L1
+        push 0
+        jmp L0
+        L1:
+        push 1
+        L0:
+pop cx
+cmp cx, 0
+je L2
+
+;line 3: 7
+push 7
+
+;line 3: return 7
+pop cx
+jmp L3
+add sp, 0
+L2:
+
+;line 5: a
+push [bp+6]
+
+;line 5: 2
+push 2
+
+;line 5: a-2
+pop bx
+pop cx
+sub cx, bx
+push cx
+
+;line 5: b
+push [bp+4]
+
+;line 5: 1
+push 1
+
+;line 5: b-1
+pop bx
+pop cx
+sub cx, bx
+push cx
+
+;line 5: foo(a-2,b-1)
+call foo_procedure
+push cx
+
+;line 5: 2
+push 2
+
+;line 5: a
+push [bp+6]
+
+;line 5: 1
+push 1
+
+;line 5: a-1
+pop bx
+pop cx
+sub cx, bx
+push cx
+
+;line 5: b
+push [bp+4]
+
+;line 5: 2
+push 2
+
+;line 5: b-2
+pop bx
+pop cx
+sub cx, bx
+push cx
+
+;line 5: foo(a-1,b-2)
+call foo_procedure
+push cx
+
+;line 5: 2*foo(a-1,b-2)
+        pop ax
+        pop bx
+        mul bx
+push ax
+
+;line 5: foo(a-2,b-1)+2*foo(a-1,b-2)
+pop bx
+pop cx
+add cx, bx
+push cx
+
+;line 5: return foo(a-2,b-1)+2*foo(a-1,b-2)
+pop cx
+jmp L4
+add sp, 0
+L3: 
+L4: 
+add sp, 0
+
+pop bp
+ret 4
+foo_procedure endp
+
+
+;line 6: foo function ended
+
+
+
+;line 9: int main function
 main proc
 push bp
 mov bp, sp
@@ -16,185 +148,55 @@ mov ds, cx
 
 sub sp, 2
 sub sp, 2
-sub sp, 6
+sub sp, 2
 
-;line 4: 1
-push 1
+;line 11: 7
+push 7
 
-;line 4: 2
-push 2
-
-;line 4: 3
-push 3
-
-;line 4: 2+3
-pop bx
-pop cx
-add cx, bx
-push cx
-
-;line 4: 1*(2+3)
-        pop ax
-        pop bx
-        mul bx
-push ax
-
-;line 4: 3
-push 3
-
-;line 4: 1*(2+3)%3
-        pop bx
-        pop ax
-        xor dx, dx
-        div bx
-push dx
-
-;line 4: a = 1*(2+3)%3
+;line 11: i = 7
 pop cx
 mov word ptr [bp-2], cx
 push cx
 pop ax
 
-;line 5: 1
-push 1
+;line 12: 3
+push 3
 
-;line 5: 5
-push 5
-
-;line 5: 1<5
-        pop cx
-        pop bx
-        cmp bx, cx
-        jl L1
-        push 0
-        jmp L0
-        L1:
-        push 1
-        L0:
-
-;line 5: b = 1<5
+;line 12: j = 3
 pop cx
 mov word ptr [bp-4], cx
 push cx
 pop ax
 
-;line 6: 0
-push 0
-
-;line 6: c[0]
-pop bx
-shl bx, 1
-push bx
-
-
-;line 6: 2
-push 2
-
-;line 6: c[0] = 2
-pop cx
-pop bx
-push bp
-sub bx, -6
-sub bp, bx
-mov word ptr [bp], cx
-pop bp
-push cx
-pop ax
-
-;line 7: a
+;line 14: i
 push [bp-2]
 
-;line 7: b
+;line 14: j
 push [bp-4]
 
-;line 7: a&&b
-        pop bx
-        pop cx
-        cmp cx, 0
-        je L3
-        cmp bx, 0
-        je L3
-        push 1
-        jmp L2
-        L3:
-        push 0
-        L2:
-pop cx
-cmp cx, 0
-je L4
+;line 14: foo(i,j)
+call foo_procedure
+push cx
 
-;line 8: 0
+;line 14: k = foo(i,j)
+pop cx
+mov word ptr [bp-6], cx
+push cx
+pop ax
+
+;line 15: println(k);
+mov ax, [bp-6]
+call print_number
+
+;line 17: 0
 push 0
 
-;line 8: c[0]
-pop bx
-shl bx, 1
-push bx
-
-
-;line 8: c[0]++
-pop bx
-push bp
-sub bx, -6
-sub bp, bx
-mov cx, [bp]
-mov ax, cx
-inc cx
-mov word ptr [bp], cx
-pop bp
-push ax
-pop ax
+;line 17: return 0
+pop cx
 jmp L5
-L4:
-
-;line 10: 1
-push 1
-
-;line 10: c[1]
-pop bx
-shl bx, 1
-push bx
-
-
-;line 10: 0
-push 0
-
-;line 10: c[0]
-pop bx
-shl bx, 1
-push bx
-
-
-;line 10: c[0]
-pop bx
-push bp
-sub bx, -6
-sub bp, bx
-mov cx, [bp]
-pop bp
-push cx
-
-;line 10: c[1] = c[0]
-pop cx
-pop bx
-push bp
-sub bx, -6
-sub bp, bx
-mov word ptr [bp], cx
-pop bp
-push cx
-pop ax
-L5:
-
-;line 11: println(a);
-mov ax, [bp-2]
-call print_number
-
-;line 12: println(b);
-mov ax, [bp-4]
-call print_number
-add sp, 10
-add sp, 10
+add sp, 6
+L5: 
+add sp, 6
 
 mov ah, 4ch
 int 21h
