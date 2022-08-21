@@ -2443,6 +2443,15 @@ void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut, FILE* asmPri
         // If it is EOF stop eading.
     } while (ch != EOF);
 
+	fclose(wholeasm);
+	wholeasm = fopen("code.asm", "r");
+
+	FILE *optimizeCode = fopen("optimized_code.asm", "w");
+
+	runOptimization(wholeasm, optimizeCode);
+	// fclose(optimizeCode);
+	// fclose(wholeas)
+
 	do {
         ch = fgetc(asmPrintOut);
 
@@ -2481,7 +2490,7 @@ int main(int argc,char *argv[])
 	asmDataOut = fopen("asmData.asm", "r");
 	asmCodeOut = fopen("asmCode.asm", "r");
  	asmPrintOut= fopen("println.asm", "r");
-	wholeasm = fopen("1805047.asm", "w");
+	wholeasm = fopen("code.asm", "w");
 
 	concatFile(wholeasm, asmDataOut, asmCodeOut,asmPrintOut);
 

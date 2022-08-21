@@ -2,7 +2,7 @@
 using namespace std;
 
 // line and error count
-extern int line_count;
+
 extern int lexical_error_count;
 int syntax_error_count = 0;
 

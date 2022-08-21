@@ -713,143 +713,61 @@ Line 16: statements : statement
 int a;
 
 
-Line 17: variable : ID
+Line 17: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
 
-a
-
-Line 17: factor : CONST_INT
-
-7
-
-Line 17: unary_expression : factor
-
-7
-
-Line 17: term : unary_expression
-
-7
-
-Line 17: simple_expression : term
-
-7
-
-Line 17: rel_expression : simple_expression
-
-7
-
-Line 17: logic_expression : rel_expression
-
-7
-
-Line 17: arguments : logic_expression
-
-7
-
-Line 17: argument_list : arguments
-
-7
-
-Line 17: factor : ID LPAREN argument_list RPAREN
-
-func(7)
-
-Line 17: unary_expression : factor
-
-func(7)
-
-Line 17: term : unary_expression
-
-func(7)
-
-Line 17: simple_expression : term
-
-func(7)
-
-Line 17: rel_expression : simple_expression
-
-func(7)
-
-Line 17: logic_expression : rel_expression
-
-func(7)
-
-Line 17: expression : variable ASSIGNOP logic_expression
-
-a=func(7)
-
-Line 17: expression_statement : expression SEMICOLON
-
-a=func(7);
-
-Line 17: statement : expression_statement
-
-a=func(7);
+println(a);
 
 
 Line 17: statements : statements statement
 
 int a;
-a=func(7);
-
-
-Line 18: statement : PRINTLN LPAREN ID RPAREN SEMICOLON
-
 println(a);
+
+
+Line 18: factor : CONST_INT
+
+0
+
+Line 18: unary_expression : factor
+
+0
+
+Line 18: term : unary_expression
+
+0
+
+Line 18: simple_expression : term
+
+0
+
+Line 18: rel_expression : simple_expression
+
+0
+
+Line 18: logic_expression : rel_expression
+
+0
+
+Line 18: expression : logic_expression
+
+0
+
+Line 18: statement : RETURN expression SEMICOLON
+
+return 0;
 
 
 Line 18: statements : statements statement
 
 int a;
-a=func(7);
-println(a);
-
-
-Line 19: factor : CONST_INT
-
-0
-
-Line 19: unary_expression : factor
-
-0
-
-Line 19: term : unary_expression
-
-0
-
-Line 19: simple_expression : term
-
-0
-
-Line 19: rel_expression : simple_expression
-
-0
-
-Line 19: logic_expression : rel_expression
-
-0
-
-Line 19: expression : logic_expression
-
-0
-
-Line 19: statement : RETURN expression SEMICOLON
-
-return 0;
-
-
-Line 19: statements : statements statement
-
-int a;
-a=func(7);
 println(a);
 return 0;
 
 
-Line 20: compound_statement : LCURL statements RCURL
+Line 19: compound_statement : LCURL statements RCURL
 
 {
 int a;
-a=func(7);
 println(a);
 return 0;
 }
@@ -867,26 +785,24 @@ ScopeTable # 1
 13 -->  < func : ID> 
 16 -->  < main : ID> 
 
-Line 20: func_definition : type_specifier ID LPAREN RPAREN compound_statement
+Line 19: func_definition : type_specifier ID LPAREN RPAREN compound_statement
 
 int main(){
 int a;
-a=func(7);
 println(a);
 return 0;
 }
 
-Line 20: unit : func_definition
+Line 19: unit : func_definition
 
 int main(){
 int a;
-a=func(7);
 println(a);
 return 0;
 }
 
 
-Line 20: program : program unit
+Line 19: program : program unit
 
 int func(int n){
 int i;
@@ -902,13 +818,12 @@ return func(n-1)+i;
 }
 int main(){
 int a;
-a=func(7);
 println(a);
 return 0;
 }
 
 
-Line 20: start : program
+Line 19: start : program
 
 
 
@@ -920,6 +835,6 @@ ScopeTable # 1
 16 -->  < main : ID> 
 
 
-Total lines: 20
+Total lines: 19
 Total errors: 0
 

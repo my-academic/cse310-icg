@@ -23,7 +23,7 @@ using namespace std;
 // ofstream logfile, errorfile;
 FILE *asmDataOut, *asmCodeOut;
 string else_if_label = "";
-
+extern int line_count;
 class var_info {
 public: 
     string name;
@@ -74,9 +74,10 @@ void pushToStackTemp(string str) {
 int labelCount = 0;
 int tempCount = 0;
 
+
 void printCurrentStatement(string str)
 {
-    fprintf(asmCodeOut, "\n;%s\n", str.c_str());
+    fprintf(asmCodeOut, "\n;line %d: %s\n", line_count, str.c_str());
 }
 
 void initiateAssembly()
@@ -279,6 +280,154 @@ void logicopInAsm(string optr, string l1, string l2)
         l2.c_str());
 }
 
+void runOptimization(FILE* code, FILE* optimizeCode){
+
+     char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    vector<string> lines, token, token1, token2;
+    string intermediate;
+
+    // fp = fopen("/etc/motd", "r");
+    if (code == NULL)
+        exit(EXIT_FAILURE);
+
+    while ((read = getline(&line, &len, code)) != -1) {
+        // printf("Retrieved line of length %zu:\n", read);
+        // printf("%s\n", line);
+        string s(line);
+        lines.push_back(line);
+    }
+
+    vector<string> prev_line, current_line;
+
+    for(int i = 0; i < lines.size(); i++){
+        //cout << lines[i] << '\n';
+        stringstream check2(lines[i]);
+        while(getline(check2, intermediate, ' ')) {
+            if(intermediate[intermediate.length()-1]==','){
+                intermediate.replace(intermediate.length()-1,1,"");
+            }
+            token.push_back(intermediate);
+            cout << intermediate << endl;
+        }
+
+        current_line = token;
+
+        if(i == 0 && token.size() != 0 && token[0][0] == ";") {
+            prev_line = token;
+            token.clear();
+            continue;
+        }
+
+        else if(current_line[0] == "mov" && prev_line == "mov") {
+
+        }
+
+        if(token1.size()==0){
+        token1 = token;
+        token.clear();
+        }
+        else if(token2.size()==0){
+        token2 = token;
+        token.clear();
+        }
+        else{
+        token1.clear();
+        token1 = token2;
+        token2.clear();
+        token2 = token;
+        token.clear();
+        }
+
+
+        // for(int i = 0; i < token1.size(); i++){
+        //     cout << token1[i] << " ";
+        // }
+
+        // cout << endl;
+
+        // for(int i = 0; i < token2.size(); i++){
+        //     cout << token2[i] << " ";
+        // }
+
+        // cout << endl;
+
+        //optimization for mov
+        // if(token1.size()==token2.size() && token1.size()==3){
+        //cout<<token1.size()<<endl;
+        // for(int j=0;j<token2.size();j++){
+        //   cout<<"first : "<<token1[j]<<" \tsecond line : "<<token2[j]<<"\n";
+        // }
+        // if(token1[0]=="mov" && token2[0]=="mov"){
+        //     if(token1[2]==token2[1] && token1[1] == token2[2]){
+        //     cout<<lines[i]<<" is redundant.\n";
+        //     lines[i]=";"+lines[i]+"    is removed for optimization";
+        //     }
+        // }
+        // }
+
+        // finalOutput += lines[i]+"\n";
+    }
+
+    // string finalOutput="";
+    // vector<string> lines;
+    // vector <string> token1, token2, token;
+    
+
+    // // stringstream class check1
+    // stringstream check1(inputCode);
+
+    // string intermediate;
+
+    // // Tokenizing w.r.t. space '\n'
+    // while(getline(check1, intermediate, '\n')) {lines.push_back(intermediate);}
+
+    // for(int i = 0; i < lines.size(); i++){
+    //     //cout << lines[i] << '\n';
+    //     stringstream check2(lines[i]);
+    //     while(getline(check2, intermediate, ' ')) {
+    //     if(intermediate[intermediate.length()-1]==','){
+    //         intermediate.replace(intermediate.length()-1,1,"");
+    //     }
+    //     token.push_back(intermediate);
+    //     }
+
+    //     if(token1.size()==0){
+    //     token1 = token;
+    //     token.clear();
+    //     }
+    //     else if(token2.size()==0){
+    //     token2 = token;
+    //     token.clear();
+    //     }
+    //     else{
+    //     token1.clear();
+    //     token1 = token2;
+    //     token2.clear();
+    //     token2 = token;
+    //     token.clear();
+    //     }
+
+    //     //optimization for mov
+    //     if(token1.size()==token2.size() && token1.size()==3){
+    //     //cout<<token1.size()<<endl;
+    //     // for(int j=0;j<token2.size();j++){
+    //     //   cout<<"first : "<<token1[j]<<" \tsecond line : "<<token2[j]<<"\n";
+    //     // }
+    //     if(token1[0]=="mov" && token2[0]=="mov"){
+    //         if(token1[2]==token2[1] && token1[1] == token2[2]){
+    //         cout<<lines[i]<<" is redundant.\n";
+    //         lines[i]=";"+lines[i]+"    is removed for optimization";
+    //         }
+    //     }
+    //     }
+
+    //     finalOutput += lines[i]+"\n";
+    // }
+    // return finalOutput;
+}
+
 // void printInAsm(string str){
 //     fprintf(asmCodeOut, "mov cx, %s\ncall print_number\n", str.c_str());
 // }
@@ -318,63 +467,7 @@ void logicopInAsm(string optr, string l1, string l2)
     //   data_asmcode+=t;
     // }
 
-    // string codeOptimization(string inputCode){
-    //   string finalOutput="";
-    //   vector<string> lines;
-    //   vector <string> token1, token2, token;
-
-    //   // stringstream class check1
-    //   stringstream check1(inputCode);
-
-    //   string intermediate;
-
-    //   // Tokenizing w.r.t. space '\n'
-    //   while(getline(check1, intermediate, '\n')) {lines.push_back(intermediate);}
-
-    //   for(int i = 0; i < lines.size(); i++){
-    //       //cout << lines[i] << '\n';
-    //       stringstream check2(lines[i]);
-    //       while(getline(check2, intermediate, ' ')) {
-    //         if(intermediate[intermediate.length()-1]==','){
-    //           intermediate.replace(intermediate.length()-1,1,"");
-    //         }
-    //         token.push_back(intermediate);
-    //       }
-
-    //       if(token1.size()==0){
-    //         token1 = token;
-    //         token.clear();
-    //       }
-    //       else if(token2.size()==0){
-    //         token2 = token;
-    //         token.clear();
-    //       }
-    //       else{
-    //         token1.clear();
-    //         token1 = token2;
-    //         token2.clear();
-    //         token2 = token;
-    //         token.clear();
-    //       }
-
-    //       //optimization for mov
-    //       if(token1.size()==token2.size() && token1.size()==3){
-    //         //cout<<token1.size()<<endl;
-    //         // for(int j=0;j<token2.size();j++){
-    //         //   cout<<"first : "<<token1[j]<<" \tsecond line : "<<token2[j]<<"\n";
-    //         // }
-    //         if(token1[0]=="mov" && token2[0]=="mov"){
-    //           if(token1[2]==token2[1] && token1[1] == token2[2]){
-    //             cout<<lines[i]<<" is redundant.\n";
-    //             lines[i]=";"+lines[i]+"    is removed for optimization";
-    //           }
-    //         }
-    //       }
-
-    //       finalOutput += lines[i]+"\n";
-    //   }
-    //   return finalOutput;
-    // }
+    
 
     // void WriteOptimized_code(){
     //   string model= ".model small\n";

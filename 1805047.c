@@ -14,7 +14,6 @@ int func2 (int n){
 
 int main() {
 	int a;
-	a = func(7);
 	println(a);
 	return 0;
 }
