@@ -657,44 +657,49 @@ void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut, FILE* asmPri
 			printError("program has no main function");
 		return;
 	}
-	/* do {
-        ch = fgetc(asmDataOut);
-		if(ch == EOF) break;
-        fprintf(wholeasm, "%c", ch);
- 
-        // Checking if character is not EOF.
-        // If it is EOF stop eading.
-    } while (ch != EOF); */
-	do {
-        ch = fgetc(asmCodeOut);
-
-		if(ch == EOF) break;
-        fprintf(wholeasm, "%c", ch);
- 
-        // Checking if character is not EOF.
-        // If it is EOF stop eading.
-    } while (ch != EOF);
-
-	fclose(wholeasm);
-	wholeasm = fopen("code.asm", "r");
 
 	FILE *optimizeCode = fopen("optimized_code.asm", "w");
 
-	runOptimization(wholeasm, optimizeCode);
-	fclose(optimizeCode);
-	// fclose(wholeas)
-	optimizeCode = fopen("optimized_code.asm", "a");
+	runOptimization(asmCodeOut, optimizeCode);
+	fclose(optimizeCode); 
+	optimizeCode = fopen("optimized_code.asm", "r");
+	FILE* code = fopen("code.asm", "w");
+	FILE* datacopy = fopen("asmData.asm", "r");
+
+	// code.asm
+	do {
+        ch = fgetc(datacopy);
+		if(ch == EOF) break;
+        fprintf(code, "%c", ch);
+    } while (ch != EOF);
+	fclose(asmCodeOut);
+	asmCodeOut = fopen("asmCode.asm", "r");
+	do {
+        ch = fgetc(asmCodeOut);
+		if(ch == EOF) break;
+        fprintf(code, "%c", ch);
+    } while (ch != EOF);
+
+	// end code.asm
+
+	// optimized_code.asm
+	do {
+        ch = fgetc(optimizeCode);
+		if(ch == EOF) break;
+        fprintf(asmDataOut, "%c", ch);
+    } while (ch != EOF);
+
+	// end optimized_code.asm
 
 	do {
         ch = fgetc(asmPrintOut);
 
 		if(ch == EOF) break;
-        fprintf(optimizeCode, "%c", ch);
- 
-        // Checking if character is not EOF.
-        // If it is EOF stop eading.
+        fprintf(asmDataOut, "%c", ch);
+        fprintf(code, "%c", ch);
     } while (ch != EOF);
 	fclose(optimizeCode);
+	fclose(code);
 }
 
 
@@ -721,7 +726,7 @@ int main(int argc,char *argv[])
 	fclose(asmDataOut);
 	fclose(asmCodeOut);
 
-	asmDataOut = fopen("asmData.asm", "r");
+	asmDataOut = fopen("asmData.asm", "a");
 	asmCodeOut = fopen("asmCode.asm", "r");
  	asmPrintOut= fopen("println.asm", "r");
 	wholeasm = fopen("code.asm", "w");
@@ -733,5 +738,7 @@ int main(int argc,char *argv[])
 	fclose(wholeasm);
 	fclose(logout);
 	fclose(errorout);
+	rename("asmData.asm", "optimized_code.asm");
+	remove("asmCode.asm");
 	return 0;
 }

@@ -1,335 +1,227 @@
+.model small
+.stack 100h
+.data
+MINUS DB ?
+NUMBER_STRING DB '00000$'
+
+;line 2: int main function
 
  
-.code
- 
+main proc 
+push bp 
+mov bp,  sp 
+mov cx,  @data 
+mov ds,  cx 
+sub sp,  2 
+sub sp,  2 
 
- 
+;line 4: 1
 
- 
-func_procedure proc
- 
-push bp
- 
-mov bp,  sp
- 
+sub sp,  6 
 
- 
-sub sp,  2
- 
+;line 4: 2
 
- 
-push [bp+4]
- 
+push 1 
 
- 
-push 0
- 
+;line 4: 3
 
- 
-pop cx
- 
-pop bx
- 
-cmp bx,  cx
- 
-je L0
- 
-push 0
- 
-jmp L1
- 
-L0:
- 
-push 1
- 
-L1:
- 
-pop cx
- 
-cmp cx,  0
- 
-je L2
- 
+push 2 
 
- 
-push 0
- 
+;line 4: 2+3
 
- 
-pop cx
- 
-jmp L3
- 
-L2:
- 
+mov bx,  3 
 
- 
-push [bp+4]
- 
+pop cx 
+add cx,  bx 
 
- 
-pop cx
- 
-mov word ptr [bp-2],  cx
- 
-push cx
- 
-pop ax
- 
+;line 4: 1*(2+3)
 
- 
-push [bp+4]
- 
+mov ax,  cx 
 
- 
-push 1
- 
+pop bx 
+mul bx 
 
- 
-pop bx
- 
-pop cx
- 
-sub cx,  bx
- 
-push cx
- 
+;line 4: 3
 
- 
-call func_procedure
- 
-push cx
- 
+push ax 
 
- 
-push [bp-2]
- 
+;line 4: 1*(2+3)%3
 
- 
-pop bx
- 
-pop cx
- 
-add cx,  bx
- 
-push cx
- 
+mov bx,  3 
 
- 
-pop cx
- 
-jmp L4
- 
-add sp,  2
- 
+pop ax 
+xor dx,  dx 
+div bx 
+
+;line 4: a = 1*(2+3)%3
+
+mov cx,  dx 
+
+mov word ptr [bp-2],  cx 
+mov ax,  cx 
+
+;line 5: 1
+
+
+
+;line 5: 5
+
+push 1 
+
+;line 5: 1<5
+
+mov cx,  5 
+
+pop bx 
+cmp bx,  cx 
+jl L1 
+push 0 
+jmp L0 
+L1: 
+push 1 
+
+;line 5: b = 1<5
+
+L0: 
+pop cx 
+mov word ptr [bp-4],  cx 
+mov ax,  cx 
+
+;line 6: 0
+
+
+
+;line 6: c[0]
+
+mov bx,  0 
+
+shl bx,  1 
+
+;line 6: 2
+
+push bx 
+
+;line 6: c[0] = 2
+
+mov cx,  2 
+
+pop bx 
+push bp 
+sub bx,  -6 
+sub bp,  bx 
+mov word ptr [bp],  cx 
+pop bp 
+mov ax,  cx 
+
+;line 7: a
+
+
+
+;line 7: b
+
+push [bp-2] 
+
+;line 7: a&&b
+
+mov bx,  [bp-4] 
+
+pop cx 
+cmp cx,  0 
+je L3 
+cmp bx,  0 
+je L3 
+push 1 
+jmp L2 
 L3: 
- 
+push 0 
+L2: 
+pop cx 
+cmp cx,  0 
+
+;line 8: 0
+
+je L4 
+
+;line 8: c[0]
+
+mov bx,  0 
+
+shl bx,  1 
+
+;line 8: c[0]++
+
+
+
+push bp 
+sub bx,  -6 
+sub bp,  bx 
+mov cx,  [bp] 
+mov ax,  cx 
+inc cx 
+mov word ptr [bp],  cx 
+pop bp 
+
+
+jmp L5 
+
+;line 10: 1
+
 L4: 
- 
-add sp,  2
- 
 
- 
-pop bp
- 
-ret 2
- 
-func_procedure endp
- 
+;line 10: c[1]
 
- 
+mov bx,  1 
 
- 
+shl bx,  1 
 
- 
+;line 10: 0
 
- 
+push bx 
 
- 
-func2_procedure proc
- 
-push bp
- 
-mov bp,  sp
- 
+;line 10: c[0]
 
- 
-sub sp,  2
- 
+mov bx,  0 
 
- 
-push [bp+4]
- 
+shl bx,  1 
 
- 
-push 0
- 
+;line 10: c[0]
 
- 
-pop cx
- 
-pop bx
- 
-cmp bx,  cx
- 
-je L5
- 
-push 0
- 
-jmp L6
- 
-L5:
- 
-push 1
- 
-L6:
- 
-pop cx
- 
-cmp cx,  0
- 
-je L7
- 
 
- 
-push 0
- 
 
- 
-pop cx
- 
-jmp L8
- 
-L7:
- 
+push bp 
+sub bx,  -6 
+sub bp,  bx 
+mov cx,  [bp] 
+pop bp 
 
- 
-push [bp+4]
- 
+;line 10: c[1] = c[0]
 
- 
-pop cx
- 
-mov word ptr [bp-2],  cx
- 
-push cx
- 
-pop ax
- 
 
- 
-push [bp+4]
- 
+mov bx,  cx 
 
- 
-push 1
- 
+push bp 
+sub bx,  -6 
+sub bp,  bx 
+mov word ptr [bp],  cx 
+pop bp 
+mov ax,  cx 
 
- 
-pop bx
- 
-pop cx
- 
-sub cx,  bx
- 
-push cx
- 
 
- 
-call func_procedure
- 
-push cx
- 
+;line 11: println(a);
 
- 
-push [bp-2]
- 
+L5: 
+mov ax,  [bp-2] 
 
- 
-pop bx
- 
-pop cx
- 
-add cx,  bx
- 
-push cx
- 
+;line 12: println(b);
 
- 
-pop cx
- 
-jmp L9
- 
-add sp,  2
- 
-L8: 
- 
-L9: 
- 
-add sp,  2
- 
-
- 
-pop bp
- 
-ret 2
- 
-func2_procedure endp
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-main proc
- 
-push bp
- 
-mov bp,  sp
- 
-mov cx,  @data
- 
-mov ds,cx
- 
-
- 
-sub sp,  2
- 
-
- 
-mov ax,  [bp-2]
- 
-call print_number
- 
-
- 
-push 0
- 
-
- 
-pop cx
- 
-jmp L10
- 
-add sp,  2
- 
-L10: 
- 
-add sp,  2
- 
-
- 
-mov ah,  4ch
- 
-int 21h
- 
-main endp
- 
+call print_number 
+mov ax,  [bp-4] 
+call print_number 
+add sp,  10 
+add sp,  10 
+mov ah,  4ch 
+int 21h 
+main endp 
 PRINT_CHARACTER PROC
     
     ; PRINT VALUE IN DL

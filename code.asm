@@ -1,203 +1,283 @@
+.model small
+.stack 100h
+.data
+MINUS DB ?
+NUMBER_STRING DB '00000$'
 
 .code
 
 
-;line 1: int func function
-func_procedure proc
-push bp
-mov bp, sp
-
-sub sp, 2
-
-;line 3: n
-push [bp+4]
-
-;line 3: 0
-push 0
-
-;line 3: n==0
-        pop cx
-        pop bx
-        cmp bx, cx
-        je L0
-        push 0
-        jmp L1
-        L0:
-        push 1
-        L1:
-pop cx
-cmp cx, 0
-je L2
-
-;line 3: 0
-push 0
-
-;line 3: return 0
-pop cx
-jmp L3
-L2:
-
-;line 4: n
-push [bp+4]
-
-;line 4: i = n
-pop cx
-mov word ptr [bp-2], cx
-push cx
-pop ax
-
-;line 5: n
-push [bp+4]
-
-;line 5: 1
-push 1
-
-;line 5: n-1
-pop bx
-pop cx
-sub cx, bx
-push cx
-
-;line 5: func(n-1)
-call func_procedure
-push cx
-
-;line 5: i
-push [bp-2]
-
-;line 5: func(n-1)+i
-pop bx
-pop cx
-add cx, bx
-push cx
-
-;line 5: return func(n-1)+i
-pop cx
-jmp L4
-add sp, 2
-L3: 
-L4: 
-add sp, 2
-
-pop bp
-ret 2
-func_procedure endp
-
-
-;line 6: func function ended
-
-
-
-;line 8: int func2 function
-func2_procedure proc
-push bp
-mov bp, sp
-
-sub sp, 2
-
-;line 10: n
-push [bp+4]
-
-;line 10: 0
-push 0
-
-;line 10: n==0
-        pop cx
-        pop bx
-        cmp bx, cx
-        je L5
-        push 0
-        jmp L6
-        L5:
-        push 1
-        L6:
-pop cx
-cmp cx, 0
-je L7
-
-;line 10: 0
-push 0
-
-;line 10: return 0
-pop cx
-jmp L8
-L7:
-
-;line 11: n
-push [bp+4]
-
-;line 11: i = n
-pop cx
-mov word ptr [bp-2], cx
-push cx
-pop ax
-
-;line 12: n
-push [bp+4]
-
-;line 12: 1
-push 1
-
-;line 12: n-1
-pop bx
-pop cx
-sub cx, bx
-push cx
-
-;line 12: func(n-1)
-call func_procedure
-push cx
-
-;line 12: i
-push [bp-2]
-
-;line 12: func(n-1)+i
-pop bx
-pop cx
-add cx, bx
-push cx
-
-;line 12: return func(n-1)+i
-pop cx
-jmp L9
-add sp, 2
-L8: 
-L9: 
-add sp, 2
-
-pop bp
-ret 2
-func2_procedure endp
-
-
-;line 13: func2 function ended
-
-
-
-;line 15: int main function
+;line 2: int main function
 main proc
 push bp
 mov bp, sp
 mov cx, @data
-mov ds,cx
+mov ds, cx
 
 sub sp, 2
+sub sp, 2
+sub sp, 6
 
-;line 17: println(a);
+;line 4: 1
+push 1
+
+;line 4: 2
+push 2
+
+;line 4: 3
+push 3
+
+;line 4: 2+3
+pop bx
+pop cx
+add cx, bx
+push cx
+
+;line 4: 1*(2+3)
+        pop ax
+        pop bx
+        mul bx
+push ax
+
+;line 4: 3
+push 3
+
+;line 4: 1*(2+3)%3
+        pop bx
+        pop ax
+        xor dx, dx
+        div bx
+push dx
+
+;line 4: a = 1*(2+3)%3
+pop cx
+mov word ptr [bp-2], cx
+push cx
+pop ax
+
+;line 5: 1
+push 1
+
+;line 5: 5
+push 5
+
+;line 5: 1<5
+        pop cx
+        pop bx
+        cmp bx, cx
+        jl L1
+        push 0
+        jmp L0
+        L1:
+        push 1
+        L0:
+
+;line 5: b = 1<5
+pop cx
+mov word ptr [bp-4], cx
+push cx
+pop ax
+
+;line 6: 0
+push 0
+
+;line 6: c[0]
+pop bx
+shl bx, 1
+push bx
+
+
+;line 6: 2
+push 2
+
+;line 6: c[0] = 2
+pop cx
+pop bx
+push bp
+sub bx, -6
+sub bp, bx
+mov word ptr [bp], cx
+pop bp
+push cx
+pop ax
+
+;line 7: a
+push [bp-2]
+
+;line 7: b
+push [bp-4]
+
+;line 7: a&&b
+        pop bx
+        pop cx
+        cmp cx, 0
+        je L3
+        cmp bx, 0
+        je L3
+        push 1
+        jmp L2
+        L3:
+        push 0
+        L2:
+pop cx
+cmp cx, 0
+je L4
+
+;line 8: 0
+push 0
+
+;line 8: c[0]
+pop bx
+shl bx, 1
+push bx
+
+
+;line 8: c[0]++
+pop bx
+push bp
+sub bx, -6
+sub bp, bx
+mov cx, [bp]
+mov ax, cx
+inc cx
+mov word ptr [bp], cx
+pop bp
+push ax
+pop ax
+jmp L5
+L4:
+
+;line 10: 1
+push 1
+
+;line 10: c[1]
+pop bx
+shl bx, 1
+push bx
+
+
+;line 10: 0
+push 0
+
+;line 10: c[0]
+pop bx
+shl bx, 1
+push bx
+
+
+;line 10: c[0]
+pop bx
+push bp
+sub bx, -6
+sub bp, bx
+mov cx, [bp]
+pop bp
+push cx
+
+;line 10: c[1] = c[0]
+pop cx
+pop bx
+push bp
+sub bx, -6
+sub bp, bx
+mov word ptr [bp], cx
+pop bp
+push cx
+pop ax
+L5:
+
+;line 11: println(a);
 mov ax, [bp-2]
 call print_number
 
-;line 18: 0
-push 0
-
-;line 18: return 0
-pop cx
-jmp L10
-add sp, 2
-L10: 
-add sp, 2
+;line 12: println(b);
+mov ax, [bp-4]
+call print_number
+add sp, 10
+add sp, 10
 
 mov ah, 4ch
 int 21h
 main endp
 
+PRINT_CHARACTER PROC
+    
+    ; PRINT VALUE IN DL
+    MOV AH, 2
+    INT 21H
+    RET   
+    
+    
+PRINT_CHARACTER ENDP  
+
+PRINT_NEW_LINE PROC
+    MOV AH, 2
+    MOV DL, 13
+    INT 21H
+    MOV DL, 10
+    INT 21H
+    RET
+PRINT_NEW_LINE ENDP  
+
+PRINT_NUMBER PROC  
+    
+    ;PRINT VALUE IN AX 
+    
+    LEA SI, NUMBER_STRING    
+    MOV CX, 5
+    RESET_NUMBER_STRING:    
+    MOV [SI], '0'
+    INC SI
+    LOOP RESET_NUMBER_STRING    
+    
+    DEC SI
+    CMP AX, 0
+    JE PRINT_NUMBER_N0T_MINUS
+          
+    MOV MINUS, 0
+    CMP AX, 0
+    JGE PRINT_NUMBER_LOOP1
+    NEG AX
+    MOV MINUS, 1
+    PRINT_NUMBER_LOOP1: 
+    XOR DX, DX 
+    
+                
+    CMP AX, 0
+    JE END_PRINT_NUMBER_LOOP1
+    
+    MOV BX, 10
+    
+    DIV BX
+    ADD DL, '0'
+    MOV [SI], DL   
+    
+    DEC SI  
+    
+    LOOP PRINT_NUMBER_LOOP1  
+    END_PRINT_NUMBER_LOOP1:   
+    
+    INC SI
+    
+    MOV DH, MINUS
+    CMP DH, 0
+    JE PRINT_NUMBER_N0T_MINUS
+    MOV DL, '-'
+    CALL PRINT_CHARACTER
+    
+    PRINT_NUMBER_N0T_MINUS:
+    MOV DX, SI
+    CALL PRINT_STRING  
+    CALL PRINT_NEW_LINE
+    
+    RET
+PRINT_NUMBER ENDP 
+
+PRINT_STRING PROC 
+    ;PRINT VALUE IN DX
+    MOV AH, 9
+    INT 21H
+    RET   
+PRINT_STRING ENDP  
+
+END MAIN 

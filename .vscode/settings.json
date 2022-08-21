@@ -34,6 +34,8 @@
     "vector": "c",
     "cstdlib": "c",
     "queue": "c",
-    "__split_buffer": "c"
+    "__split_buffer": "c",
+    "forward_list": "c",
+    "system_error": "c"
   }
 }

@@ -244,7 +244,7 @@ symbol_info *findVariable(symbol_info *symbolInfo)
           c += variables_stack[i][j].size;
       }
   }
-  cout << s->getName() << " " << s->offset << " " << c << " " << offset << endl;
+  // cout << s->getName() << " " << s->offset << " " << c << " " << offset << endl;
   if(s->offset == 0) {
     s->offset = found ? -(offset + 1) * 2 : 0;
   }
@@ -733,9 +733,9 @@ symbol_info *checkUnaryADDOPThings(string optr, symbol_info *symbolInfo)
   s->temp_id = symbolInfo->temp_id;
   s->offset = symbolInfo->offset;
   if(optr == "-"){
-    string temp = newTemp();
+    // string temp = newTemp();
     negateInAssembly();
-    s->temp_id = temp;
+    // s->temp_id = temp;
   }
   return s;
 }
