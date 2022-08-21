@@ -1,8 +1,3 @@
-.model small
-.stack 100h
-.data
-MINUS DB ?
-NUMBER_STRING DB '00000$'
 
 .code
 
@@ -24,12 +19,12 @@ push 0
         pop cx
         pop bx
         cmp bx, cx
-        je L1
+        je L0
         push 0
-        jmp L0
-        L1:
-        push 1
+        jmp L1
         L0:
+        push 1
+        L1:
 pop cx
 cmp cx, 0
 je L2
@@ -110,12 +105,12 @@ push 0
         pop cx
         pop bx
         cmp bx, cx
-        je L6
+        je L5
         push 0
-        jmp L5
-        L6:
-        push 1
+        jmp L6
         L5:
+        push 1
+        L6:
 pop cx
 cmp cx, 0
 je L7

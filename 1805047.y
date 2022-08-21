@@ -657,14 +657,14 @@ void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut, FILE* asmPri
 			printError("program has no main function");
 		return;
 	}
-	do {
+	/* do {
         ch = fgetc(asmDataOut);
 		if(ch == EOF) break;
         fprintf(wholeasm, "%c", ch);
  
         // Checking if character is not EOF.
         // If it is EOF stop eading.
-    } while (ch != EOF);
+    } while (ch != EOF); */
 	do {
         ch = fgetc(asmCodeOut);
 
@@ -681,18 +681,20 @@ void concatFile(FILE* wholeasm, FILE* asmDataOut, FILE* asmCodeOut, FILE* asmPri
 	FILE *optimizeCode = fopen("optimized_code.asm", "w");
 
 	runOptimization(wholeasm, optimizeCode);
-	// fclose(optimizeCode);
+	fclose(optimizeCode);
 	// fclose(wholeas)
+	optimizeCode = fopen("optimized_code.asm", "a");
 
 	do {
         ch = fgetc(asmPrintOut);
 
 		if(ch == EOF) break;
-        fprintf(wholeasm, "%c", ch);
+        fprintf(optimizeCode, "%c", ch);
  
         // Checking if character is not EOF.
         // If it is EOF stop eading.
     } while (ch != EOF);
+	fclose(optimizeCode);
 }
 
 

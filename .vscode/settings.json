@@ -32,6 +32,8 @@
     "unordered_map": "c",
     "unordered_set": "c",
     "vector": "c",
-    "cstdlib": "c"
+    "cstdlib": "c",
+    "queue": "c",
+    "__split_buffer": "c"
   }
 }

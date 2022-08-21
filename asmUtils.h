@@ -297,48 +297,199 @@ void runOptimization(FILE* code, FILE* optimizeCode){
         // printf("%s\n", line);
         string s(line);
         lines.push_back(line);
+        // cout << line << endl;
     }
 
     vector<string> prev_line, current_line;
+    string output = "";
+    vector<string> optimized_lines;
 
-    for(int i = 0; i < lines.size(); i++){
+    for(int i = 0; i < lines.size(); i++) {
         //cout << lines[i] << '\n';
         stringstream check2(lines[i]);
         while(getline(check2, intermediate, ' ')) {
             if(intermediate[intermediate.length()-1]==','){
                 intermediate.replace(intermediate.length()-1,1,"");
             }
-            token.push_back(intermediate);
-            cout << intermediate << endl;
+            if(intermediate == " " || intermediate == "") {
+
+            }
+            else 
+                token.push_back(intermediate);
+            // cout << intermediate << endl;
         }
 
         current_line = token;
 
-        if(i == 0 && token.size() != 0 && token[0][0] == ";") {
-            prev_line = token;
+        if(i == 0 || token.size() == 0 || token[0][0] == ';') {
+            // prev_line = token;
+            if(i == 0) {
+                prev_line = token;
+            }
             token.clear();
             continue;
         }
-
-        else if(current_line[0] == "mov" && prev_line == "mov") {
-
+        // mov optimization
+        else if(current_line[0] == "mov" && prev_line[0] == "mov") {
+            if(current_line[1] == prev_line[1] && current_line[2] == prev_line[2]) {
+                // will do optimize
+                current_line.clear();
+            }
+            else if(current_line[1] == prev_line[2] && current_line[2] == prev_line[1]) {
+                // will do optimize
+                current_line.clear();
+            }
+        }
+        // push pop optimization
+        else if(current_line[0] == "pop" && prev_line[0] == "push") {
+            if(current_line[1] == prev_line[1]) {
+                // will do optimize
+                prev_line.clear();
+                current_line.clear();
+            }
         }
 
-        if(token1.size()==0){
-        token1 = token;
-        token.clear();
+        // extra
+        // push
+        else if(current_line[0] == "pop" && prev_line[0] == "push"){
+            if(
+                current_line[1] != prev_line[1] 
+                && 
+                (
+                current_line[1] == "ax" ||
+                current_line[1] == "bx" ||
+                current_line[1] == "cx" ||
+                current_line[1] == "dx" ||
+                prev_line[1] == "ax" ||
+                prev_line[1] == "bx" ||
+                prev_line[1] == "cx" ||
+                prev_line[1] == "dx"
+                )) {
+                // push ax -- pop a <=> mov a, ax
+                string rhs = prev_line[1];
+                string lhs = current_line[1];
+                prev_line.clear();
+                current_line.clear();
+                prev_line.push_back("mov");
+                prev_line.push_back(lhs);
+                prev_line.push_back(rhs);
+            }
         }
-        else if(token2.size()==0){
-        token2 = token;
-        token.clear();
+
+        // adding zero
+        else if((current_line[0] == "add" || current_line[0] == "sub") && (current_line[2] == "0")) {
+            current_line.clear();
         }
-        else{
-        token1.clear();
-        token1 = token2;
-        token2.clear();
-        token2 = token;
-        token.clear();
+
+        
+
+        // print prev_line
+        if(prev_line.size() >= 3) {
+            prev_line[prev_line.size() - 2] += ", ";
         }
+
+        cout << " prev line " << prev_line.size() << endl; 
+
+        for (size_t i = 0; i < prev_line.size(); i++)
+        {
+            output += prev_line[i] + " ";
+            // cout << prev_line[i] <<  " ";
+        }
+
+        cout << endl;
+
+        for (int i = 0; i < current_line.size(); i++) {
+            // cout << current_line[i] << " ";
+        }
+        
+        cout << endl;
+        output += "\n";
+        // cout << output << endl;
+        // prev_line.push_back(output);
+
+        optimized_lines.push_back(output);
+        
+
+        
+
+        token.clear();
+
+        
+
+
+        prev_line = current_line;
+        cout << i <<  " " << lines.size() << " " << output.size() << endl;
+        output = "";
+    }
+
+    for (size_t i = 0; i < prev_line.size(); i++)
+    {
+        output += prev_line[i] + " ";
+    }
+
+    output += "\n";
+
+    cout << output.size() << "  " << optimized_lines.size() << endl;
+
+    for(int i = 0; i < optimized_lines.size(); i ++) {
+        for(int j = 0; j < optimized_lines[i].size(); j++) 
+            fprintf(optimizeCode, "%c", optimized_lines[i][j]);
+    }
+
+    // do {
+    //     ch = fgetc(asmCodeOut);
+
+	// 	if(ch == EOF) break;
+    //     fprintf(wholeasm, "%c", ch);
+ 
+    //     // Checking if character is not EOF.
+    //     // If it is EOF stop eading.
+    // } while (ch != EOF);
+    
+
+
+        // mov optimization
+        // else if(current_line[0] == "mov" && prev_line[0] == "mov") {
+        //     if(current_line[1] == prev_line[1] && current_line[2] == prev_line[2]) {
+        //         // will do optimize
+        //         current_line.clear();
+        //     }
+        //     else if(current_line[1] == prev_line[2] && current_line[2] == prev_line[1]) {
+        //         // will do optimize
+        //         current_line.clear();
+        //     }
+        // }
+        // // push optimization
+        // else if(current_line[0] == "push" && prev_line[0] == "pop") {
+        //     if(current_line[1] == prev_line[1]) {
+        //         // will do optimize
+        //         current_line.clear();
+        //     }
+        // }
+
+    //     // extra
+    //     // push
+    //     else if(current_line[0] == "push" && prev_line == "pop"){
+    //         if(current_line[1] != prev_line[1]) {
+    //             // prev
+    //         }
+    //     }
+
+        // if(token1.size()==0){
+        // token1 = token;
+        // token.clear();
+        // }
+        // else if(token2.size()==0){
+        // token2 = token;
+        // token.clear();
+        // }
+        // else{
+        // token1.clear();
+        // token1 = token2;
+        // token2.clear();
+        // token2 = token;
+        // token.clear();
+        // }
 
 
         // for(int i = 0; i < token1.size(); i++){
@@ -368,7 +519,7 @@ void runOptimization(FILE* code, FILE* optimizeCode){
         // }
 
         // finalOutput += lines[i]+"\n";
-    }
+    // }
 
     // string finalOutput="";
     // vector<string> lines;
